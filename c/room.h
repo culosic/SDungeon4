@@ -6,10 +6,10 @@
 #else
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #endif
 
 #include "global.h"
-
 
 // 房间类型
 enum RoomType {
@@ -27,15 +27,19 @@ enum RoomType {
 typedef struct _RoomGenerateData {
 	enum RoomType type;
 	int luck;
-	float cost; // 次级房间消耗游戏时间比率，用来控制游戏时长，和遵守玩家耐心
+	float cost;	 // 次级房间消耗游戏时间比率，用来控制游戏时长，和遵守玩家耐心
 } RoomGenerateData;
 
 // 房间数据定义
 typedef struct _Room {
 	struct _Room *prevRoom;
 	struct _Room *superRoom;
-	int x;
+	struct _Room *linkRooms[4];
+	int linkRoomCount;
+	int x;	//房间在地图上的位置
 	int y;
+	int w;	// 房间横向格子数
+	int h;
 	char *caption;		 // 房间大字标题
 	enum RoomType type;	 // 房间类型
 	int visible;		 // 房间是否已被发现
@@ -45,7 +49,7 @@ typedef struct _Room {
 struct _RoomGenerateData room_gene_data[5] = {
 	{Room_Trap, -20, 0.8},
 	{Room_Battle, 10, 1},
-	{Room_Potions, 10, 0.5},
+	{Room_Potions, 10, 0.6},
 	{Room_Treasure, 20, 0.8},
 	{Room_Elite, 40, 1.5},
 };
@@ -59,38 +63,39 @@ struct _RoomGenerateData room_gene_data[5] = {
  */
 Room *roomInit(int x, int y, enum RoomType type) {
 	Room *room = malloc(sizeof(Room));
-	room->prevRoom = NULL;
-    room->superRoom = NULL;
-    room->x = x;
+	memset(room, 0, sizeof(Room));
+	room->x = x;
 	room->y = y;
+	room->w = 10;
+	room->h = 10;
 	room->type = type;
 	switch (type) {
 	case Room_Init:
 		room->caption = utf8_c("初");
 		break;
+	case Room_Battle:
+		room->caption = utf8_c("战");
+		break;
 	case Room_Trap:
 		room->caption = utf8_c("阵");
 		break;
-	case Room_Battle:
-		room->caption = utf8_c("  ");
-		break;
 	case Room_Potions:
-		room->caption = utf8_c("药");
+		room->caption = utf8_c("釜");
 		break;
 	case Room_Treasure:
-		room->caption = utf8_c("宝");
+		room->caption = utf8_c("箱");
 		break;
 	case Room_Elite:
 		room->caption = utf8_c("魂");
 		break;
 	case Room_Shop:
-		room->caption = utf8_c("商");
+		room->caption = utf8_c("店");
 		break;
 	case Room_Boss:
-		room->caption = utf8_c("终");
+		room->caption = utf8_c("狱");
 		break;
 	default:
-		room->caption = utf8_c("  ");
+		room->caption = utf8_c("");
 		break;
 	}
 	return room;

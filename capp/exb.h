@@ -124,9 +124,10 @@ int sensorOff();
 
 /**
  * 文本编码转换
- * @param text 要转换的本
+ * @param length 要转换的文本的长度
+ * @param text 要转换的文本
  * @param coding 当前文本编码
  * @param tocoding 转换后的文本编码
  * @returns 转换后的文本
  */
-char *ex_coding(char *text, char *coding, char *tocoding);
+char *ex_coding(int length, char *text, char *coding, char *tocoding);

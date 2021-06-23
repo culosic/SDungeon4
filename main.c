@@ -11,7 +11,8 @@ S地牢
 
 */
 
-//加载系统头文件base.h
+#define CAPP
+
 #include "base.h"
 #include "game.h"
 #include "map_draw.h"
