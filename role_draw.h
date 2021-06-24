@@ -13,7 +13,7 @@ void roleDraw(Role* role, float x, float y) {
 	y += role->y;
 	drawCir(x, y, r + rb * 2, 0xff009688);
 	drawCir(x, y, r, 0x77005737);
-	drawTextC("我", x - r, y - r, r * 2, r * 2, 225, 225, 245, 20);
+	drawTextC(utf8_c("我"), x - r, y - r, r * 2, r * 2, 225, 225, 245, 20);
 }
 
 #endif

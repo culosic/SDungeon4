@@ -25,7 +25,7 @@ void roomDraw(Room* room) {
 	drawRect(x - d, y + h, w + d * 2, d, wcolor);
 	drawRect(x - d, y - d, d, h + d * 2, wcolor);
 	// 画门
-	// todo门、墙壁的位置应该保存起来
+	// todo门、墙壁的位置应该保存起来=>已保存到room->tiles，待修改。
 	for (int i = 0; i < room->linkRoomCount; i++) {
 		Room* linkRoom = room->linkRooms[i];
 		if (room->x == linkRoom->x) {

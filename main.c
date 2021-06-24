@@ -25,7 +25,7 @@ int init() {
 
 //event函数，接收消息事件
 int event(int type, int p1, int p2) {
-	// gameEvent(type,p1,p2);
+	gameEvent(type, p1, p2);
 	if (KY_UP == type) {
 		switch (p1) {
 		case _BACK:
