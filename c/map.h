@@ -72,7 +72,7 @@ void mapPrint(Map *map) {
 	}
 	for (int i = 0; i < map->roomCount; i++) {
 		Room *room = map->roomList[i];
-		printf("%s: (%d, %d)\n", room->x, room->y, room->caption);
+		printf("%s: (%d, %d)\n", room->caption, room->x, room->y);
 	}
 }
 
@@ -207,7 +207,7 @@ Map *mapInit(int luck) {
 			ratioStart += range;
 		}
 		if (roomGeneIndex > -1) {
-			Room *room = map->roomList[map->roomCount++] = map->rooms[y][x] = roomInit(roomX, roomY, room_gene_data[roomGeneIndex].type);
+			Room *room = map->roomList[map->roomCount++] = map->rooms[y][x] = roomInit(x, y, room_gene_data[roomGeneIndex].type);
 			Room *super = room->superRoom = map->roomList[slotsSuper[i]];
 			room->linkRooms[room->linkRoomCount++] = super;
 			super->linkRooms[super->linkRoomCount++] = room;

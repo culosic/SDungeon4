@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "c/map.h"
+#include "map.h"
 
 int main() {
 	srand(time(NULL));

@@ -9,11 +9,11 @@
 void roomDraw(Room* room) {
 	//todo 绘制地面，墙体，人物在地图移动，
 	int x = 150;
-	int y = 1100;
+	int y = 100;
 	int w = 500;
 	int h = 500;
 	int d = 30;
-	int doorw = 50;
+	int doorw = 80;
 	int wcolor = 0xffa9a9a9;
 	int fcolor = 0xff696969;
 	int dcolor = 0xff795548;
@@ -25,6 +25,7 @@ void roomDraw(Room* room) {
 	drawRect(x - d, y + h, w + d * 2, d, wcolor);
 	drawRect(x - d, y - d, d, h + d * 2, wcolor);
 	// 画门
+	// todo门、墙壁的位置应该保存起来
 	for (int i = 0; i < room->linkRoomCount; i++) {
 		Room* linkRoom = room->linkRooms[i];
 		if (room->x == linkRoom->x) {

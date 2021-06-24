@@ -66,25 +66,25 @@ void mapDraw(Map* map) {
 			break;
 		}
 
-		// Room* linkRoom = room->prevRoom;
-		// if (linkRoom == NULL) {
-		// 	linkRoom = room->superRoom;
-		// }
-		// if (linkRoom != NULL) {
-		// 	if (room->x == linkRoom->x) {
-		// 		if (room->y > linkRoom->y) {
-		// 			drawRect(x + (c - doorw) / 2, y - d, doorw, d, linkColor);
-		// 		} else {
-		// 			drawRect(x + (c - doorw) / 2, y + c, doorw, d, linkColor);
-		// 		}
-		// 	} else if (room->y == linkRoom->y) {
-		// 		if (room->x > linkRoom->x) {
-		// 			drawRect(x - d, y + (c - doorw) / 2, d, doorw, linkColor);
-		// 		} else {
-		// 			drawRect(x + c, y + (c - doorw) / 2, d, doorw, linkColor);
-		// 		}
-		// 	}
-		// }
+		Room* linkRoom = room->prevRoom;
+		if (linkRoom == NULL) {
+			linkRoom = room->superRoom;
+		}
+		if (linkRoom != NULL) {
+			if (room->x == linkRoom->x) {
+				if (room->y > linkRoom->y) {
+					drawRect(x + (c - doorw) / 2, y - d, doorw, d, linkColor);
+				} else {
+					drawRect(x + (c - doorw) / 2, y + c, doorw, d, linkColor);
+				}
+			} else if (room->y == linkRoom->y) {
+				if (room->x > linkRoom->x) {
+					drawRect(x - d, y + (c - doorw) / 2, d, doorw, linkColor);
+				} else {
+					drawRect(x + c, y + (c - doorw) / 2, d, doorw, linkColor);
+				}
+			}
+		}
 	}
 }
 
