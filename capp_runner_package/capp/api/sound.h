@@ -7,7 +7,7 @@
 // 音频播放位置相关。
 typedef struct
 {
-	int32 pos; // 音频播放位置的指针
+	int32 pos;	// 音频播放位置的指针
 } T_DSM_AUDIO_POS;
 
 /**

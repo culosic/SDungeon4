@@ -77,14 +77,14 @@ struct _RoomGenerateData room_gene_data[5] = {
  * 初始化房间图块
  */
 RoomTile *roomTileInit(int x, int y, int w, int h, enum RoomTileType type) {
-	RoomTile *room = malloc(sizeof(RoomTile));
-	memset(room, 0, sizeof(RoomTile));
-	room->x = x;
-	room->y = y;
-	room->w = w;
-	room->h = h;
-	room->type = type;
-	return type;
+	RoomTile *tile = malloc(sizeof(RoomTile));
+	memset(tile, 0, sizeof(RoomTile));
+	tile->x = x;
+	tile->y = y;
+	tile->w = w;
+	tile->h = h;
+	tile->type = type;
+	return tile;
 }
 
 /**
@@ -157,7 +157,7 @@ void roomInitTile(Room *room) {
 	room->tiles[room->tileCount++] = roomTileInit(0, roomH + wallD, roomW + wallD * 2, wallD, RoomTile_Floor);
 	room->tiles[room->tileCount++] = roomTileInit(0, 0, 500, 500, RoomTile_Floor);
 	// 门
-	for (int i = 0; i < room->linkRoomCount; i++) {
+	for (int i =0; i < room->linkRoomCount; i++) {
 		Room *linkRoom = room->linkRooms[i];
 		if (room->x == linkRoom->x) {
 			if (room->y > linkRoom->y) {  // 上

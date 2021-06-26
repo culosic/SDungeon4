@@ -11,82 +11,77 @@
 // 是否为debug模式
 #define _DEBUG 1
 
-typedef unsigned short uint16;	  // 有符号16bit整型
-typedef unsigned long int uint32; // 无符号32bit整型
-typedef long int int32;			  // 有符号32bit整型
-typedef unsigned char uint8;	  // 无符号8bit整型
-typedef signed char int8;		  // 有符号8bit整型
-typedef signed short int16;		  // 有符号16bit整型
+typedef unsigned short uint16;	   // 有符号16bit整型
+typedef unsigned long int uint32;  // 无符号32bit整型
+typedef long int int32;			   // 有符号32bit整型
+typedef unsigned char uint8;	   // 无符号8bit整型
+typedef signed char int8;		   // 有符号8bit整型
+typedef signed short int16;		   // 有符号16bit整型
 
 // 下面四项为大部分系统函数的返回值，没有在系统内定义，如果需要这些宏定义请在其他头文件中定义
-#define MR_SUCCESS 0 // 成功
-#define MR_FAILED -1 // 失败
-#define MR_IGNORE 1	 // 不关心
-#define MR_WAITING 2 // 异步(非阻塞)模式
+#define MR_SUCCESS 0  // 成功
+#define MR_FAILED -1  // 失败
+#define MR_IGNORE 1	  // 不关心
+#define MR_WAITING 2  // 异步(非阻塞)模式
 
 #define NULL (void *)0
 #define TRUE 1
 #define FALSE 0
-#define SCRW 400 // 系统内部宏，值为屏幕宽
-#define SCRH 300 // 系统内部宏，值为屏幕高
+#define SCRW 400  // 系统内部宏，值为屏幕宽
+#define SCRH 300  // 系统内部宏，值为屏幕高
 
 // 基本按键值（未定义的其他按键也可以使用，但需知道其键值）
-enum
-{
-	_0,			 // 按键 0
-	_1,			 // 按键 1
-	_2,			 // 按键 2
-	_3,			 // 按键 3
-	_4,			 // 按键 4
-	_5,			 // 按键 5
-	_6,			 // 按键 6
-	_7,			 // 按键 7
-	_8,			 // 按键 8
-	_9,			 // 按键 9
-	_STAR,		 // 按键 *
-	_POUND,		 // 按键 #
-	_UP,		 // 按键 上
-	_DOWN,		 // 按键 下
-	_LEFT,		 // 按键 左
-	_RIGHT,		 // 按键 右
-	_SLEFT = 17, // 按键 左软键
-	_SRIGHT,	 // 按键 右软键
-	_MENU = 17,	 // 菜单键
-	_BACK,		 // 返回键
-	_SEND,		 // 按键 接听键
-	_SELECT		 // 按键 确认/选择（若方向键中间有确认键，建议设为该键）
+enum {
+	_0,			  // 按键 0
+	_1,			  // 按键 1
+	_2,			  // 按键 2
+	_3,			  // 按键 3
+	_4,			  // 按键 4
+	_5,			  // 按键 5
+	_6,			  // 按键 6
+	_7,			  // 按键 7
+	_8,			  // 按键 8
+	_9,			  // 按键 9
+	_STAR,		  // 按键 *
+	_POUND,		  // 按键 #
+	_UP,		  // 按键 上
+	_DOWN,		  // 按键 下
+	_LEFT,		  // 按键 左
+	_RIGHT,		  // 按键 右
+	_SLEFT = 17,  // 按键 左软键
+	_SRIGHT,	  // 按键 右软键
+	_MENU = 17,	  // 菜单键
+	_BACK,		  // 返回键
+	_SEND,		  // 按键 接听键
+	_SELECT		  // 按键 确认/选择（若方向键中间有确认键，建议设为该键）
 };
 
 // 基本事件（其他事件需自己定义）
-enum
-{
-	KY_DOWN,	 // 按键按下
-	KY_UP,		 // 按键释放
-	MS_DOWN,	 // 鼠标按下
-	MS_UP,		 // 鼠标释放
-	MN_SLT,		 // 菜单选择
-	MN_RET,		 // 菜单返回
-	MR_DIALOG,	 // 对话框
-	MS_MOVE = 12 // 鼠标移动
+enum {
+	KY_DOWN,	  // 按键按下
+	KY_UP,		  // 按键释放
+	MS_DOWN,	  // 鼠标按下
+	MS_UP,		  // 鼠标释放
+	MN_SLT,		  // 菜单选择
+	MN_RET,		  // 菜单返回
+	MR_DIALOG,	  // 对话框
+	MS_MOVE = 12  // 鼠标移动
 };
 
-enum
-{
-	DLG_OK,	   // 对话框/文本框等的"确定"键被点击(选择)
-	DLG_CANCEL // 对话框/文本框等的"取消"("返回")键被点击(选择)
+enum {
+	DLG_OK,		// 对话框/文本框等的"确定"键被点击(选择)
+	DLG_CANCEL	// 对话框/文本框等的"取消"("返回")键被点击(选择)
 };
 
-enum
-{
-	SEEK_SET, // 从文件起始开始
-	SEEK_CUR, // 从当前位置开始
-	SEEK_END  // 从文件末尾开始
+enum {
+	SEEK_SET,  // 从文件起始开始
+	SEEK_CUR,  // 从当前位置开始
+	SEEK_END   // 从文件末尾开始
 };
-enum
-{
-	IS_FILE = 1,	// 文件
-	IS_DIR = 2,		// 目录
-	IS_INVALID = 8, // 无效(非文件、非目录)
+enum {
+	IS_FILE = 1,	 // 文件
+	IS_DIR = 2,		 // 目录
+	IS_INVALID = 8,	 // 无效(非文件、非目录)
 };
 
 typedef struct
@@ -895,12 +890,12 @@ int32 getuptime(void);
 
 typedef struct
 {
-	uint16 year;  // 年
-	uint8 month;  // 月
-	uint8 day;	  // 日
-	uint8 hour;	  // 时，24小时制
-	uint8 minute; // 分
-	uint8 second; // 秒
+	uint16 year;   // 年
+	uint8 month;   // 月
+	uint8 day;	   // 日
+	uint8 hour;	   // 时，24小时制
+	uint8 minute;  // 分
+	uint8 second;  // 秒
 } mr_datetime;
 
 /*

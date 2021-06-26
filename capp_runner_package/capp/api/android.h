@@ -5,25 +5,22 @@
 #include <base.h>
 
 // 控件event事件的类型
-enum
-{
-	VIEW_DOWN = 20, // 控件被按下
-	VIEW_UP = 21	// 控件被释放
+enum {
+	VIEW_DOWN = 20,	 // 控件被按下
+	VIEW_UP = 21	 // 控件被释放
 };
 
 // view的显示方式
-enum
-{
-	VISIBLE = 0,   // 显示
-	INVISIBLE = 4, // 不显示，但占用屏幕空间
-	GONE = 8	   // 不显示，并不占用屏幕空间
+enum {
+	VISIBLE = 0,	// 显示
+	INVISIBLE = 4,	// 不显示，但占用屏幕空间
+	GONE = 8		// 不显示，并不占用屏幕空间
 };
 
 // toast的显示类型
-enum
-{
-	LENGTH_SHORT, // 短时间显示
-	LENGTH_LONG	  // 长时间显示
+enum {
+	LENGTH_SHORT,  // 短时间显示
+	LENGTH_LONG	   // 长时间显示
 };
 
 /**

@@ -1,6 +1,7 @@
 {
 	"手机C main.c": {
 		"prefix": "capp",
+		"scope": "c",
 		"body": [
 			"#include <base.h>",
 			"",
@@ -32,6 +33,7 @@
 	},
 	"手机C-游戏 main.c": {
 		"prefix": "cappg",
+		"scope": "c",
 		"body": [
 			"#include <base.h>",
 			"",

@@ -5,8 +5,7 @@
 #include <base.h>
 
 // 保存图片的类型
-enum
-{
+enum {
 	_JPG = 0,
 	_PNG = 1,
 	_BMP16 = 2
@@ -15,12 +14,12 @@ enum
 // bmp图片信息
 typedef struct
 {
-	uint32 width;  // 宽度
-	uint32 height; // 高度
+	uint32 width;	// 宽度
+	uint32 height;	// 高度
 	uint32 stride;
-	int32 format; // 格式
-	uint32 flags; // 0 for now
-	void *ptr;	  // 缓存
+	int32 format;  // 格式
+	uint32 flags;  // 0 for now
+	void *ptr;	   // 缓存
 } BITMAPINFO;
 
 /**
