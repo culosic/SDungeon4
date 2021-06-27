@@ -3,6 +3,7 @@
 
 #ifdef CAPP
 #include "base.h"
+#include "ex_math.h"
 #else
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,26 +11,29 @@
 #endif
 
 #include "global.h"
+#include "map.h"
+#include "room.h"
 
 // 角色数据定义
 typedef struct _Role {
+	Room *room;
 	float x;
 	float y;
 	float v0;
-	float a;   // 开始行走和结束行走的实时加速度
-	float vx;  // 当前x轴速度分量
-	float vy;  // 当前y轴速度分量
+	int direction;	// 移动方向
+	float v;		// 当前速度
 } Role;
 
 /**
  * 初始化
  */
-Role *roleInit(int x, int y) {
+Role *roleInit(Room *room, int x, int y) {
 	Role *role = malloc(sizeof(Role));
 	memset(role, 0, sizeof(Role));
+	role->room = room;
 	role->x = x;
 	role->y = y;
-	role->v0 = 1;
+	role->v0 = 600;
 	return role;
 }
 
@@ -40,50 +44,103 @@ void roleDispose(Role *role) {
 	free(role);
 }
 
+void roleGotoRoom(Role *role, Room *room) {
+	Room *originRoom = role->room;
+	Map *map = originRoom->map;
+	role->room = map->currentRoom = room;
+	role->x = 100; // TODO 应该等于下一个房间的对应的门坐标
+	role->y = 100;
+}
+
 /**
  * 更新角色
  */
-void roleUpdate(Role *role) {
-	role->x += role->vx;
-	role->y += role->vy;
+void roleUpdate(Role *role, float t) {
+	if (role->direction) {
+		role->v = role->v0;
+	} else {
+		role->v = 0;
+	}
+	switch (role->direction) {
+	case 2:
+		role->y -= role->v * t;
+		break;
+	case 6:
+		role->x += role->v * t;
+		break;
+	case 8:
+		role->y += role->v * t;
+		break;
+	case 4:
+		role->x -= role->v * t;
+		break;
+	default:
+		break;
+	}
+	// 碰撞检测
+	if (role->direction) {
+		int r = 22;
+		Room *room = role->room;
+		for (int i = room->tileCount - 1; i >= 0; i--) {
+			RoomTile *tile = room->tiles[i];
+			if (tile->type != RoomTile_Floor) {
+				if (isCirCollRect(role->x, role->y, r, tile->x, tile->y, tile->w, tile->h)) {
+					if (tile->type == RoomTile_Door) {
+						// 切换房间
+						roleGotoRoom(role, tile->linkRoom);
+					} else if (tile->type == RoomTile_Wall) {
+						switch (role->direction) {
+						case 2:
+							role->y = tile->y + r + tile->h + 1;
+							break;
+						case 6:
+							role->x = tile->x - r - 1;
+							break;
+						case 8:
+							role->y = tile->y - r - 1;
+							break;
+						case 4:
+							role->x = tile->x + r + tile->w + 1;
+							break;
+						default:
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
 }
 
 /**
  * 角色控制事件
  */
 void roleEvent(Role *role, int type, int p, int q) {
+	int keyDirection = 0;
+	switch (p) {
+	case _UP:
+		keyDirection = 2;
+		break;
+	case _RIGHT:
+		keyDirection = 6;
+		break;
+	case _DOWN:
+		keyDirection = 8;
+		break;
+	case _LEFT:
+		keyDirection = 4;
+		break;
+	default:
+		break;
+	}
 	if (type == KY_DOWN) {
-		switch (p) {
-		case _UP:
-			role->vx = 0;
-			role->vy = -role->v0;
-			break;
-		case _RIGHT:
-			role->vx = role->v0;
-			role->vy = 0;
-			break;
-		case _DOWN:
-			role->vx = 0;
-			role->vy = role->v0;
-			break;
-		case _LEFT:
-			role->vx = -role->v0;
-			role->vy = 0;
-			break;
-		default:
-			break;
+		if (keyDirection) {
+			role->direction = keyDirection;
 		}
 	} else if (type == KY_UP) {
-		switch (p) {
-		case _UP:
-		case _RIGHT:
-		case _DOWN:
-		case _LEFT:
-			role->vx = 0;
-			role->vy = 0;
-			break;
-		default:
-			break;
+		if (keyDirection && keyDirection == role->direction) {	// 兼容两个方向键同时按下的情况
+			role->direction = 0;
 		}
 	}
 }

@@ -10,7 +10,6 @@
 #include "role_draw.h"
 
 typedef struct _Game {
-	int32 updateTimer;
 	int32 drawTimer;
 	int32 drawLastTime;
 	float fpsDT;
@@ -22,29 +21,33 @@ typedef struct _Game {
 Game game;
 
 // 逻辑运算相关
-void gameUpdate(long data) {
-	roleUpdate(game.role);
+void gameLogic(float t) {
+	roleUpdate(game.role, t);
 }
 
-void gameDrawFPS() {
+void gameDrawFPS(float t) {
 	char s[20];
-	float delta = getuptime() - game.drawLastTime;
-	game.fpsDT += delta;
-	if (game.fps < 1 || game.fpsDT > 3000) {
+	game.fpsDT += t;
+	if (game.fps < 1 || game.fpsDT > 1000) {
 		game.fpsDT = 0;
-		game.fps = 1000 / delta;
+		game.fps = 1.0 / t;
 	}
 	sprintf(s, "FPS %.1f", game.fps);
 	drawTextC(s, 0, 0, 150, 60, 255, 255, 255, 30);
 }
 
-// 绘制相关
-void gameDraw(long data) {
+void gameUpdate(long data) {
+	float t = (getuptime() - game.drawLastTime) / 1000.0;
+
+	// 逻辑
+	gameLogic(t);
+
+	// 绘图
 	cls(40, 50, 60);
 	mapDraw(game.map);
 	mapDrawRoom(game.map);
-	roleDraw(game.role, 300, 300);
-	gameDrawFPS();
+	roleDraw(game.role);
+	gameDrawFPS(t);
 	ref(0, 0, SCRW, SCRH);
 
 	game.drawLastTime = getuptime();
@@ -59,15 +62,13 @@ void gameInit() {
 	setpadtype(2);
 	setTextSize(0, 14);
 	game.map = mapInit(60);
-	game.role = roleInit(0, 0);
-	game.updateTimer = timercreate();
+	game.role = roleInit(game.map->currentRoom, 100, 100);
 	game.drawTimer = timercreate();
-	timerstart(game.updateTimer, 1000 / FPS, 0, &gameUpdate, 1);
-	timerstart(game.drawTimer, 1000 / FPS, 0, &gameDraw, 1);
+	timerstart(game.drawTimer, 1000 / FPS, 0, &gameUpdate, 1);
+	game.drawLastTime = getuptime();
 }
 
 void gameDispose() {
-	timerstop(game.updateTimer);
 	timerstop(game.drawTimer);
 	mapDispose(game.map);
 }

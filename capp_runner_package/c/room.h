@@ -10,6 +10,7 @@
 #endif
 
 #include "global.h"
+#include "map.h"
 
 // 房间图块类型
 enum RoomTileType {
@@ -25,6 +26,8 @@ typedef struct _RoomTile {
 	int y;
 	int w;
 	int h;
+	char *caption;
+	struct _Room *linkRoom;
 } RoomTile;
 
 // 房间类型
@@ -48,6 +51,7 @@ typedef struct _RoomGenerateData {
 
 // 房间数据定义
 typedef struct _Room {
+	struct _Map *map;
 	struct _Room *prevRoom;
 	struct _Room *superRoom;
 	struct _Room *linkRooms[4];
@@ -62,6 +66,9 @@ typedef struct _Room {
 	char *caption;		 // 房间大字标题
 	enum RoomType type;	 // 房间类型
 	int visible;		 // 房间是否已被发现
+
+	float px;  // 房间x坐标
+	float py;  // 房间y坐标
 } Room;
 
 // 次级房间随机生成数据
@@ -94,9 +101,10 @@ RoomTile *roomTileInit(int x, int y, int w, int h, enum RoomTileType type) {
  * @param type 房间类型
  * @returns 房间对象
  */
-Room *roomInit(int x, int y, enum RoomType type) {
+Room *roomInit(struct _Map *map, int x, int y, enum RoomType type) {
 	Room *room = malloc(sizeof(Room));
 	memset(room, 0, sizeof(Room));
+	room->map = map;
 	room->x = x;
 	room->y = y;
 	room->w = 10;
@@ -131,6 +139,8 @@ Room *roomInit(int x, int y, enum RoomType type) {
 		room->caption = utf8_c("");
 		break;
 	}
+	room->px = 150;
+	room->py = 150;
 	return room;
 }
 
@@ -150,28 +160,33 @@ void roomInitTile(Room *room) {
 	float wallD = 30;	// 墙壁厚度
 	float doorW = 80;	// 门宽度
 	// 地板
-	room->tiles[room->tileCount++] = roomTileInit(wallD, wallD, roomW, roomH, RoomTile_Floor);
+	RoomTile *floor = roomTileInit(wallD, wallD, roomW, roomH, RoomTile_Floor);
+	floor->caption = room->caption;
+	room->tiles[room->tileCount++] = floor;
 	// 墙壁
-	room->tiles[room->tileCount++] = roomTileInit(0, 0, roomW + wallD * 2, wallD, RoomTile_Floor);
-	room->tiles[room->tileCount++] = roomTileInit(roomW + wallD, 0, wallD, roomH + wallD * 2, RoomTile_Floor);
-	room->tiles[room->tileCount++] = roomTileInit(0, roomH + wallD, roomW + wallD * 2, wallD, RoomTile_Floor);
-	room->tiles[room->tileCount++] = roomTileInit(0, 0, 500, 500, RoomTile_Floor);
+	room->tiles[room->tileCount++] = roomTileInit(0, 0, roomW + wallD * 2, wallD, RoomTile_Wall);
+	room->tiles[room->tileCount++] = roomTileInit(roomW + wallD, 0, wallD, roomH + wallD * 2, RoomTile_Wall);
+	room->tiles[room->tileCount++] = roomTileInit(0, roomH + wallD, roomW + wallD * 2, wallD, RoomTile_Wall);
+	room->tiles[room->tileCount++] = roomTileInit(0, 0, wallD, roomH + wallD * 2, RoomTile_Wall);
 	// 门
-	for (int i =0; i < room->linkRoomCount; i++) {
+	for (int i = 0; i < room->linkRoomCount; i++) {
 		Room *linkRoom = room->linkRooms[i];
+		RoomTile *tile = NULL;
 		if (room->x == linkRoom->x) {
 			if (room->y > linkRoom->y) {  // 上
-				room->tiles[room->tileCount++] = roomTileInit(wallD + roomW / 2, 0, doorW, wallD, RoomTile_Floor);
+				tile = roomTileInit(wallD + roomW / 2 - doorW / 2, 0, doorW, wallD, RoomTile_Door);
 			} else {  // 下
-				room->tiles[room->tileCount++] = roomTileInit(wallD + roomW / 2, roomH + wallD, doorW, wallD, RoomTile_Floor);
+				tile = roomTileInit(wallD + roomW / 2 - doorW / 2, roomH + wallD, doorW, wallD, RoomTile_Door);
 			}
 		} else if (room->y == linkRoom->y) {
 			if (room->x > linkRoom->x) {  // 左
-				room->tiles[room->tileCount++] = roomTileInit(0, wallD + roomH / 2, wallD, doorW, RoomTile_Floor);
+				tile = roomTileInit(0, wallD + roomH / 2 - doorW / 2, wallD, doorW, RoomTile_Door);
 			} else {  // 右
-				room->tiles[room->tileCount++] = roomTileInit(roomW + wallD * 2, wallD + roomH / 2, wallD, doorW, RoomTile_Floor);
+				tile = roomTileInit(roomW + wallD, wallD + roomH / 2 - doorW / 2, wallD, doorW, RoomTile_Door);
 			}
 		}
+		tile->linkRoom = linkRoom;
+		room->tiles[room->tileCount++] = tile;
 	}
 }
 

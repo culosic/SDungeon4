@@ -85,7 +85,7 @@ Map *mapInit(int luck) {
 	int roomX = 1, roomY = 1;
 	int downOrRight = rand() % 2;
 	int turnIndex = rand() % 5;
-	map->roomList[map->roomCount++] = map->rooms[roomY][roomX] = roomInit(roomX, roomY, Room_Init);
+	map->roomList[map->roomCount++] = map->rooms[roomY][roomX] = roomInit(map, roomX, roomY, Room_Init);
 	for (int i = 0; i < 6; i++) {
 		if (i == turnIndex) {
 			downOrRight = downOrRight == true ? false : true;
@@ -99,7 +99,7 @@ Map *mapInit(int luck) {
 		} else {
 			type = Room_Battle;
 		}
-		Room *room = map->roomList[map->roomCount++] = map->rooms[roomY][roomX] = roomInit(roomX, roomY, type);
+		Room *room = map->roomList[map->roomCount++] = map->rooms[roomY][roomX] = roomInit(map, roomX, roomY, type);
 		Room *prev = room->prevRoom = map->roomList[map->roomCount - 2];
 		room->linkRooms[room->linkRoomCount++] = prev;
 		prev->linkRooms[prev->linkRoomCount++] = room;
@@ -123,7 +123,7 @@ Map *mapInit(int luck) {
 			if (top == NULL) {
 				slots[slotCount++] = x + (y - 1) * 10;
 				slotsSuper[slotCount - 1] = i;
-				// map->rooms[y - 1][x] = roomInit(x, y - 1, Room_Init);
+				// map->rooms[y - 1][x] = roomInit(map, x, y - 1, Room_Init);
 			}
 		}
 		if (x < 9) {
@@ -131,7 +131,7 @@ Map *mapInit(int luck) {
 			if (right == NULL) {
 				slots[slotCount++] = x + 1 + y * 10;
 				slotsSuper[slotCount - 1] = i;
-				// map->rooms[y][x + 1] = roomInit(x + 1, y, Room_Init);
+				// map->rooms[y][x + 1] = roomInit(map, x + 1, y, Room_Init);
 			}
 		}
 		if (y < 9) {
@@ -139,7 +139,7 @@ Map *mapInit(int luck) {
 			if (bottom == NULL) {
 				slots[slotCount++] = x + (y + 1) * 10;
 				slotsSuper[slotCount - 1] = i;
-				// map->rooms[y + 1][x] = roomInit(x, y + 1, Room_Init);
+				// map->rooms[y + 1][x] = roomInit(map, x, y + 1, Room_Init);
 			}
 		}
 		if (x > 0) {
@@ -147,7 +147,7 @@ Map *mapInit(int luck) {
 			if (left == NULL) {
 				slots[slotCount++] = x - 1 + y * 10;
 				slotsSuper[slotCount - 1] = i;
-				// map->rooms[y][x - 1] = roomInit(x - 1, y, Room_Init);
+				// map->rooms[y][x - 1] = roomInit(map, x - 1, y, Room_Init);
 			}
 		}
 	}
@@ -207,7 +207,7 @@ Map *mapInit(int luck) {
 			ratioStart += range;
 		}
 		if (roomGeneIndex > -1) {
-			Room *room = map->roomList[map->roomCount++] = map->rooms[y][x] = roomInit(x, y, room_gene_data[roomGeneIndex].type);
+			Room *room = map->roomList[map->roomCount++] = map->rooms[y][x] = roomInit(map, x, y, room_gene_data[roomGeneIndex].type);
 			Room *super = room->superRoom = map->roomList[slotsSuper[i]];
 			room->linkRooms[room->linkRoomCount++] = super;
 			super->linkRooms[super->linkRoomCount++] = room;
@@ -216,6 +216,10 @@ Map *mapInit(int luck) {
 	}
 
 	map->currentRoom = map->roomList[0];
+	for (int i = 0; i < map->roomCount; i++) {
+		roomInitTile(map->roomList[i]);
+	}
+
 	return map;
 }
 

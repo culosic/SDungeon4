@@ -1,6 +1,6 @@
 LOCAL_MODULE    := c
 LOCAL_SRC_FILES := main.c
-LOAD_C_FILES_DIR := src
+LOAD_C_FILES_DIR := capp/libs
 SCREEN:=SCREEN_ORIENTATION_PORTRAIT
 versionName:=1.0
 versionCode:=1
