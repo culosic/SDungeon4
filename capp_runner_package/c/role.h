@@ -48,8 +48,6 @@ void roleGotoRoom(Role *role, Room *room) {
 	Room *originRoom = role->room;
 	Map *map = originRoom->map;
 	role->room = map->currentRoom = room;
-	role->x = 100; // TODO 应该等于下一个房间的对应的门坐标
-	role->y = 100;
 }
 
 /**
@@ -87,8 +85,31 @@ void roleUpdate(Role *role, float t) {
 				if (isCirCollRect(role->x, role->y, r, tile->x, tile->y, tile->w, tile->h)) {
 					if (tile->type == RoomTile_Door) {
 						// 切换房间
+						float roomW = 500;	// 房间x宽度
+						float roomH = 500;	// 房间y宽度
+						float wallD = 30;	// 墙壁厚度
+						float doorW = 80;	// 门宽度
+						float x = role->x;
+						float y = role->y;
+						switch (tile->doorDirection) {
+						case 2:
+							role->y = roomH + wallD - r;
+							break;
+						case 6:
+							role->x = wallD + r;
+							break;
+						case 8:
+							role->y = wallD + r;
+							break;
+						case 4:
+							role->x = roomW + wallD - r;
+							break;
+						default:
+							break;
+						}
 						roleGotoRoom(role, tile->linkRoom);
 					} else if (tile->type == RoomTile_Wall) {
+						// 墙壁碰撞
 						switch (role->direction) {
 						case 2:
 							role->y = tile->y + r + tile->h + 1;

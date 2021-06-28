@@ -28,6 +28,7 @@ typedef struct _RoomTile {
 	int h;
 	char *caption;
 	struct _Room *linkRoom;
+	int doorDirection;
 } RoomTile;
 
 // 房间类型
@@ -139,8 +140,10 @@ Room *roomInit(struct _Map *map, int x, int y, enum RoomType type) {
 		room->caption = utf8_c("");
 		break;
 	}
-	room->px = 150;
-	room->py = 150;
+	float roomW = 500;	// 房间x宽度
+	float roomH = 500;	// 房间y宽度
+	room->px = (SCRW - roomW) / 2;
+	room->py = (SCRH - roomH) / 2;
 	return room;
 }
 
@@ -175,14 +178,18 @@ void roomInitTile(Room *room) {
 		if (room->x == linkRoom->x) {
 			if (room->y > linkRoom->y) {  // 上
 				tile = roomTileInit(wallD + roomW / 2 - doorW / 2, 0, doorW, wallD, RoomTile_Door);
+				tile->doorDirection = 2;
 			} else {  // 下
 				tile = roomTileInit(wallD + roomW / 2 - doorW / 2, roomH + wallD, doorW, wallD, RoomTile_Door);
+				tile->doorDirection = 8;
 			}
 		} else if (room->y == linkRoom->y) {
 			if (room->x > linkRoom->x) {  // 左
 				tile = roomTileInit(0, wallD + roomH / 2 - doorW / 2, wallD, doorW, RoomTile_Door);
+				tile->doorDirection = 4;
 			} else {  // 右
 				tile = roomTileInit(roomW + wallD, wallD + roomH / 2 - doorW / 2, wallD, doorW, RoomTile_Door);
+				tile->doorDirection = 6;
 			}
 		}
 		tile->linkRoom = linkRoom;

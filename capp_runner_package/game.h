@@ -37,20 +37,20 @@ void gameDrawFPS(float t) {
 }
 
 void gameUpdate(long data) {
-	float t = (getuptime() - game.drawLastTime) / 1000.0;
+	int32 now = getuptime();
+	float t = (now - game.drawLastTime) / 1000.0;
+	game.drawLastTime = now;
 
 	// 逻辑
 	gameLogic(t);
 
 	// 绘图
 	cls(40, 50, 60);
-	mapDraw(game.map);
+	// mapDraw(game.map);
 	mapDrawRoom(game.map);
 	roleDraw(game.role);
 	gameDrawFPS(t);
 	ref(0, 0, SCRW, SCRH);
-
-	game.drawLastTime = getuptime();
 }
 
 void gameEvent(int type, int p, int q) {
