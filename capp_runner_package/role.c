@@ -1,58 +1,37 @@
-#ifndef _ROLE_H_
-#define _ROLE_H_
+#include "role.h"
 
-#ifdef CAPP
 #include "base.h"
+#include "boll.h"
 #include "ex_math.h"
-#else
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#endif
-
 #include "global.h"
 #include "map.h"
 #include "room.h"
 
-// 角色数据定义
-typedef struct _Role {
-	Room *room;
-	float x;
-	float y;
-	float v0;
-	int direction;	// 移动方向
-	float v;		// 当前速度
-} Role;
-
-/**
- * 初始化
- */
-Role *roleInit(Room *room, int x, int y) {
+Role *roleCreate(Room *room, int x, int y) {
 	Role *role = malloc(sizeof(Role));
 	memset(role, 0, sizeof(Role));
 	role->room = room;
 	role->x = x;
 	role->y = y;
 	role->v0 = 600;
+	role->boll = bollCreates(room, 5, 0xffffffff, 500, 300);
 	return role;
 }
 
-/**
- * 释放角色占用内存
- */
 void roleDispose(Role *role) {
+	bollDispose(role->boll);
 	free(role);
 }
 
-void roleGotoRoom(Role *role, Room *room) {
+/**
+ * @brief 跳转房间
+ */
+static void roleGotoRoom(Role *role, Room *room) {
 	Room *originRoom = role->room;
 	Map *map = originRoom->map;
 	role->room = map->currentRoom = room;
 }
 
-/**
- * 更新角色
- */
 void roleUpdate(Role *role, float t) {
 	if (role->direction) {
 		role->v = role->v0;
@@ -132,11 +111,47 @@ void roleUpdate(Role *role, float t) {
 			}
 		}
 	}
+	// 子弹检测
+	bollUpdate(role->boll, t);
 }
 
-/**
- * 角色控制事件
- */
+void roleDraw(Role *role) {
+	int r = 20;
+	int rb = 2;
+	Room *room = role->room;
+	float x = room->px + role->x;
+	float y = room->py + role->y;
+	drawCir(x, y, r + rb * 2, 0xff009688);
+	drawCir(x, y, r, 0x77005737);
+	drawTextC(utf8_c("我"), x - r, y - r, r * 2, r * 2, 225, 225, 245, 20);
+	// 绘制子弹
+	bollDraw(role->boll);
+}
+
+// TODO
+int lastDirection = 2;
+
+static void roleShoot(Role *role) {
+	float dx = role->x;
+	float dy = role->y;
+	switch (lastDirection) {
+	default:
+	case 2:
+		dy -= 10;
+		break;
+	case 6:
+		dx += 10;
+		break;
+	case 8:
+		dy += 10;
+		break;
+	case 4:
+		dx -= 10;
+		break;
+	}
+	bollAdd(role->boll, role->x, role->y, dx, dy);
+}
+
 void roleEvent(Role *role, int type, int p, int q) {
 	int keyDirection = 0;
 	switch (p) {
@@ -158,6 +173,9 @@ void roleEvent(Role *role, int type, int p, int q) {
 	if (type == KY_DOWN) {
 		if (keyDirection) {
 			role->direction = keyDirection;
+			lastDirection = keyDirection;
+		} else if (p == _STAR) {
+			roleShoot(role);
 		}
 	} else if (type == KY_UP) {
 		if (keyDirection && keyDirection == role->direction) {	// 兼容两个方向键同时按下的情况
@@ -165,5 +183,3 @@ void roleEvent(Role *role, int type, int p, int q) {
 		}
 	}
 }
-
-#endif
