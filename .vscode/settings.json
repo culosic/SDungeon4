@@ -3,6 +3,12 @@
   "files.associations": {
     "*.h": "c",
     "*.c": "c",
-    "cmath": "c"
+    "cmath": "c",
+    "system_error": "c",
+    "functional": "c"
+  },
+  "code-runner.executorMap": {
+    // 让RunCode总是运行当前目录的main.c
+    "c": "cd $dir && gcc main.c -o $fileNameWithoutExt && $dir$fileNameWithoutExt"
   },
 }

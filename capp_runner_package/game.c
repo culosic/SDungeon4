@@ -17,8 +17,8 @@ void gameDrawFPS(float t) {
 		game.fpsDT = 0;
 		game.fps = 1.0 / t;
 	}
-	sprintf(s, "FPS %.1f", game.fps);
-	drawTextC(s, 0, 0, 150, 60, 255, 255, 255, 30);
+	sprintf(s, "FPS %.1f  SCR %d*%d", game.fps, SCRW, SCRH);
+	drawTextC(s, 0, 0, 400, 60, 255, 255, 255, 30);
 }
 
 void gameUpdate(long data) {
@@ -43,7 +43,11 @@ void gameEvent(int type, int p, int q) {
 }
 
 void gameInit() {
-	setscrsize(SCRWM, SCRWM * SCRH / SCRW);
+	if (SCRW > SCRH) {	// 横屏
+		setscrsize(STAGEH * SCRW / SCRH, STAGEH);
+	} else {  // 竖屏
+		setscrsize(STAGEH, STAGEH * SCRH / SCRW);
+	}
 	setpadtype(2);
 	setTextSize(0, 14);
 	game.map = mapCreate(60);

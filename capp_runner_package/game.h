@@ -2,7 +2,7 @@
 #define _GAME_H_
 
 #define FPS 60.0
-#define SCRWM 800
+#define STAGEH 800
 
 typedef struct _Game {
 	int32 drawTimer;
