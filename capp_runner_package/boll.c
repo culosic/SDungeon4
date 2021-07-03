@@ -23,6 +23,7 @@ Boll *bollCreates(Room *room, float r, int32 color, double v, float range) {
 void bollDispose(Boll *head) {
 	Boll *boll = (Boll *)head;
 	Boll *prev;
+	free(head->data); // TODO 这个data应该游戏结束后销毁
 	while (prev = boll, boll = boll->next) {
 		prev->next = boll->next;
 		free(boll);
@@ -31,30 +32,13 @@ void bollDispose(Boll *head) {
 	}
 }
 
-void bollAdd(Boll *head, float x, float y, float dx, float dy) {
-	BollData *data = head->data;
-	double v0 = 1000;
-	double angle = 0;
-	// TODO data->scattering * (rand() % (int)(M_PI * 50.0) / 50.0) * (rand() % 2 ? 1 : -1);
-	int rightPart = dx > x ? 1 : -1;
+void bollAdd(Boll *head, float x, float y, double angle) {
+	// BollData *data = head->data;
+	double v0 = 600; // TODO 速度放入data。
 	Boll *boll = malloc(sizeof(Boll));
 	memset(boll, 0, sizeof(Boll));
-	int sx = fabs(dx - x) < 1;
-	int sy = fabs(dy - y) < 1;
-	if (sx && !sy) {
-		boll->vy = dy - y > 0 ? v0 : -v0;  // TODO
-	} else if (!sx && sy) {
-		boll->vx = dx - x > 0 ? v0 : -v0;
-	} else {
-		if (sx && sy) {
-			angle += (rand() % (int)(M_PI * 100.0) / 200.0) * (rand() % 2 ? 1 : -1);
-			rightPart = rand() % 2 ? 1 : -1;
-		} else {
-			angle += atan((dy - y) / (dx - x));
-		}
-		boll->vx = v0 * cos(angle) * rightPart;
-		boll->vy = v0 * sin(angle) * rightPart;
-	}
+	boll->vx = v0 * cos(angle);
+	boll->vy = v0 * sin(angle);
 	boll->x = x;
 	boll->y = y;
 	Boll *t = head;
@@ -73,13 +57,13 @@ void bollUpdate(Boll *head, double t) {
 		boll->x += boll->vx * t;
 		boll->y += boll->vy * t;
 		// 碰撞墙壁、超出射程旧销毁
-		// TODO 暂时为碰到屏幕i半圆就销毁。
-		// if (!isCirCollRect(boll->x, boll->y, head->r, 0, 0, SCRW, SCRH)) {
-		// 	prev->next = boll->next;
-		// 	free(boll);
-		// 	boll = prev;
-		// 	// printf("remove boll\n");
-		// }
+		// TODO 暂时设为超出就销毁。
+		if (!isCirCollRect(boll->x, boll->y, data->r, 0, 0, SCRW, SCRH)) {
+			prev->next = boll->next;
+			free(boll);
+			boll = prev;
+			// printf("remove boll\n");
+		}
 	}
 }
 
@@ -87,7 +71,7 @@ void bollDraw(Boll *head) {
 	BollData *data = head->data;
 	Boll *boll = head;
 	Room *room = data->room;
-	while (boll = boll->next) {
+	while ((boll = boll->next)) {
 		float x = room->px + boll->x;
 		float y = room->py + boll->y;
 		drawCir(x, y, data->r, data->color);

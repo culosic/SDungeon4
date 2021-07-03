@@ -8,6 +8,7 @@
 
 #include "base.h"
 #include "boll.c"
+#include "cirpad.c"
 #include "game.c"
 #include "global.c"
 #include "map.c"

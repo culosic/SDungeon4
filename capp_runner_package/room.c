@@ -15,7 +15,7 @@ RoomTile *roomTileCreate(int x, int y, int w, int h, enum RoomTileType type) {
 	return tile;
 }
 
-Room *roomCreate(struct _Map *map, int x, int y, enum RoomType type) {
+Room *roomCreate(Map *map, int x, int y, enum RoomType type) {
 	Room *room = malloc(sizeof(Room));
 	memset(room, 0, sizeof(Room));
 	room->map = map;

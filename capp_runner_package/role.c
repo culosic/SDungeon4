@@ -13,7 +13,7 @@ Role *roleCreate(Room *room, int x, int y) {
 	role->room = room;
 	role->x = x;
 	role->y = y;
-	role->v0 = 600;
+	role->v0 = 300;
 	role->boll = bollCreates(room, 5, 0xffffffff, 500, 300);
 	return role;
 }
@@ -33,43 +33,34 @@ static void roleGotoRoom(Role *role, Room *room) {
 }
 
 void roleUpdate(Role *role, float t) {
-	if (role->direction) {
-		role->v = role->v0;
-	} else {
-		role->v = 0;
-	}
-	switch (role->direction) {
-	case 2:
-		role->y -= role->v * t;
-		break;
-	case 6:
-		role->x += role->v * t;
-		break;
-	case 8:
-		role->y += role->v * t;
-		break;
-	case 4:
-		role->x -= role->v * t;
-		break;
-	default:
-		break;
+	float oldx = role->x;
+	float oldy = role->y;
+	// 移动
+	role->x += role->vx * t;
+	role->y += role->vy * t;
+	// 攻击
+	if (role->attacking || role->attackingT > 0) {
+		if (role->attackingT < 0.3) {  // TODO 攻速应该是role里的
+			role->attackingT += t;
+		} else {
+			role->attackingT = 0;
+			bollAdd(role->boll, role->x, role->y, role->faceAngle);
+		}
 	}
 	// 碰撞检测
-	if (role->direction) {
+	if (role->vx > 0 || role->vy > 0) {
 		int r = 22;
 		Room *room = role->room;
 		for (int i = room->tileCount - 1; i >= 0; i--) {
 			RoomTile *tile = room->tiles[i];
 			if (tile->type != RoomTile_Floor) {
+					printf("%.3f, %.3f----%d\n", role->x, role->y, isCirCollRect(role->x, role->y, r, tile->x, tile->y, tile->w, tile->h));
 				if (isCirCollRect(role->x, role->y, r, tile->x, tile->y, tile->w, tile->h)) {
 					if (tile->type == RoomTile_Door) {
 						// 切换房间
 						float roomW = 500;	// 房间x宽度
 						float roomH = 500;	// 房间y宽度
 						float wallD = 30;	// 墙壁厚度
-						float doorW = 80;	// 门宽度
-						float x = role->x;
-						float y = role->y;
 						switch (tile->doorDirection) {
 						case 2:
 							role->y = roomH + wallD - r;
@@ -88,23 +79,26 @@ void roleUpdate(Role *role, float t) {
 						}
 						roleGotoRoom(role, tile->linkRoom);
 					} else if (tile->type == RoomTile_Wall) {
+						role->x = oldx;
+						role->y = oldy;
+						// TODO 碰撞墙壁后贴住墙壁。
 						// 墙壁碰撞
-						switch (role->direction) {
-						case 2:
-							role->y = tile->y + r + tile->h + 1;
-							break;
-						case 6:
-							role->x = tile->x - r - 1;
-							break;
-						case 8:
-							role->y = tile->y - r - 1;
-							break;
-						case 4:
-							role->x = tile->x + r + tile->w + 1;
-							break;
-						default:
-							break;
-						}
+						// switch (role->direction) {
+						// case 2:
+						// 	role->y = tile->y + r + tile->h + 1;
+						// 	break;
+						// case 6:
+						// 	role->x = tile->x - r - 1;
+						// 	break;
+						// case 8:
+						// 	role->y = tile->y - r - 1;
+						// 	break;
+						// case 4:
+						// 	role->x = tile->x + r + tile->w + 1;
+						// 	break;
+						// default:
+						// 	break;
+						// }
 					}
 					break;
 				}
@@ -121,65 +115,33 @@ void roleDraw(Role *role) {
 	Room *room = role->room;
 	float x = room->px + role->x;
 	float y = room->py + role->y;
+	// 绘制子弹
+	bollDraw(role->boll);
+	// 绘制人物
 	drawCir(x, y, r + rb * 2, 0xff009688);
 	drawCir(x, y, r, 0x77005737);
 	drawTextC(utf8_c("我"), x - r, y - r, r * 2, r * 2, 225, 225, 245, 20);
-	// 绘制子弹
-	bollDraw(role->boll);
 }
 
-// TODO
-int lastDirection = 2;
-
-static void roleShoot(Role *role) {
-	float dx = role->x;
-	float dy = role->y;
-	switch (lastDirection) {
-	default:
-	case 2:
-		dy -= 10;
-		break;
-	case 6:
-		dx += 10;
-		break;
-	case 8:
-		dy += 10;
-		break;
-	case 4:
-		dx -= 10;
-		break;
-	}
-	bollAdd(role->boll, role->x, role->y, dx, dy);
+void roleMove(Role *role, double angle) {
+	role->moving = true;
+	// if (!role->attacking) {	 // 仅移动时，攻击方向跟攻击方向保持一直。
+	role->faceAngle = angle;
+	// }
+	role->vx = role->v0 * cos(angle);
+	role->vy = role->v0 * sin(angle);
 }
 
-void roleEvent(Role *role, int type, int p, int q) {
-	int keyDirection = 0;
-	switch (p) {
-	case _UP:
-		keyDirection = 2;
-		break;
-	case _RIGHT:
-		keyDirection = 6;
-		break;
-	case _DOWN:
-		keyDirection = 8;
-		break;
-	case _LEFT:
-		keyDirection = 4;
-		break;
-	default:
-		break;
-	}
-	if (type == KY_DOWN) {
-		if (keyDirection) {
-			role->direction = keyDirection;
-			lastDirection = keyDirection;
-		} else if (p == _STAR) {
-			roleShoot(role);
-		}
-	} else if (type == KY_UP) {
-		if (keyDirection && keyDirection == role->direction) {	// 兼容两个方向键同时按下的情况
-			role->direction = 0;
-		}
-	}
+void roleStopMove(Role *role) {
+	role->vy = role->vx = 0;
+	role->moving = false;
+}
+
+void roleAttack(Role *role, double angle) {
+	role->attacking = true;
+	role->faceAngle = angle;
+}
+
+void roleStopAttack(Role *role) {
+	role->attacking = false;
 }

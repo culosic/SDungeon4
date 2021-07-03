@@ -1,14 +1,11 @@
 #include "game.h"
 
 #include "base.h"
+#include "cirpad.h"
 #include "exb.h"
+#include "global.h"
 #include "map.h"
 #include "role.h"
-
-// 逻辑运算相关
-void gameLogic(float t) {
-	roleUpdate(game.role, t);
-}
 
 void gameDrawFPS(float t) {
 	char s[20];
@@ -21,25 +18,50 @@ void gameDrawFPS(float t) {
 	drawTextC(s, 0, 0, 400, 60, 255, 255, 255, 30);
 }
 
+void gameUserControll(float t) {
+	Cirpad *dpad = game.dpad;
+	Cirpad *apad = game.apad;
+	Role *role = game.role;
+	cirpadUpdate(dpad, t);
+	cirpadUpdate(apad, t);
+	if (dpad->dragged) {
+		roleMove(role, dpad->angle);
+	} else {
+		roleStopMove(role);
+	}
+	if (apad->active) {
+		roleAttack(role, role->faceAngle);
+	} else {
+		roleStopAttack(role);
+	}
+}
+
 void gameUpdate(long data) {
 	int32 now = getuptime();
 	float t = (now - game.drawLastTime) / 1000.0;
 	game.drawLastTime = now;
 
 	// 逻辑
-	gameLogic(t);
+	gameUserControll(t);
+	roleUpdate(game.role, t);
 
 	// 绘图
 	cls(40, 50, 60);
 	// mapDraw(game.map);
 	mapDrawRoom(game.map);
 	roleDraw(game.role);
+	cirpadDraw(game.dpad);
+	cirpadDraw(game.apad);
 	gameDrawFPS(t);
 	ref(0, 0, SCRW, SCRH);
 }
 
 void gameEvent(int type, int p, int q) {
-	roleEvent(game.role, type, p, q);
+	int result = false;
+	if (!result) {
+		result |= cirpadEvent(game.dpad, type, p, q);
+		result |= cirpadEvent(game.apad, type, p, q);
+	}
 }
 
 void gameInit() {
@@ -48,17 +70,19 @@ void gameInit() {
 	} else {  // 竖屏
 		setscrsize(STAGEH, STAGEH * SCRH / SCRW);
 	}
-	setpadtype(2);
-	setTextSize(0, 14);
 	game.map = mapCreate(60);
 	game.role = roleCreate(game.map->currentRoom, 100, 100);
+	game.dpad = cirpadCreate(200, SCRH - 200, 120, 40, false);
+	game.apad = cirpadCreate(SCRW - 200, SCRH - 200, 120, 40, true);
 	game.drawTimer = timercreate();
-	timerstart(game.drawTimer, 1000 / FPS, 0, &gameUpdate, 1);
+	timerstart(game.drawTimer, 1000 / FPS, 0, gameUpdate, 1);
 	game.drawLastTime = getuptime();
 }
 
 void gameDispose() {
 	timerstop(game.drawTimer);
+	cirpadDispose(game.dpad);
+	cirpadDispose(game.apad);
 	roleDispose(game.role);
 	mapDispose(game.map);
 }

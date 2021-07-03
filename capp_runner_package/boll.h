@@ -37,11 +37,11 @@ void bollDispose(Boll *head);
 /**
  * 发射一个子弹
  */
-void bollAdd(Boll *head, float x, float y, float dx, float dy);
+void bollAdd(Boll *head, float x, float y, double angle);
 /**
  * 更新子弹
  */
-void bollUpdate(Boll *head, double dt);
+void bollUpdate(Boll *head, double t);
 /**
  * 绘制子弹
  */

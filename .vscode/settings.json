@@ -5,7 +5,15 @@
     "*.c": "c",
     "cmath": "c",
     "system_error": "c",
-    "functional": "c"
+    "functional": "c",
+    "array": "c",
+    "tuple": "c",
+    "type_traits": "c",
+    "utility": "c",
+    "random": "c",
+    "fstream": "c",
+    "*.tcc": "c",
+    "limits": "c"
   },
   "code-runner.executorMap": {
     // 让RunCode总是运行当前目录的main.c
