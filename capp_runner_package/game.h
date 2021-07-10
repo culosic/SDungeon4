@@ -15,8 +15,7 @@ typedef struct _Game {
 	float fps;
 
 	struct _Map *map;
-	struct _Role *role;
-	struct _Role *role1;
+	struct _Role *mainRole;
 	struct _Cirpad *dpad;
 	struct _Cirpad *apad;
 } Game;

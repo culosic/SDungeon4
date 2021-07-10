@@ -4,16 +4,14 @@
 
 #include "base.h"
 #include "ex_math.h"
+#include "global.h"
 #include "graphics.h"
 #include "room.h"
 
-Boll *bollCreates(Room *room, float r, int32 color, double v, float range) {
-	Boll *head = malloc(sizeof(Boll));
-	BollData *data = malloc(sizeof(Boll));
-	memset(head, 0, sizeof(Boll));
-	memset(data, 0, sizeof(BollData));
+Boll *bollsCreate(float r, int32 color, double v, float range) {
+	Boll *head = create(sizeof(Boll));
+	BollData *data = create(sizeof(BollData));
 	head->data = data;
-	data->room = room;
 	data->r = r;
 	data->color = color;
 	data->v = v;
@@ -21,23 +19,22 @@ Boll *bollCreates(Room *room, float r, int32 color, double v, float range) {
 	return head;
 }
 
-void bollDispose(Boll *head) {
+void bollsDispose(Boll *head) {
 	Boll *boll = (Boll *)head;
-	Boll *prev;
-	free(head->data);  // TODO 这个data应该游戏结束后销毁
-	while (prev = boll, boll = boll->next) {
-		prev->next = boll->next;
-		free(boll);
-		boll = prev;
-		// printf("remove boll\n");
-	}
+	dispose(head->data);  // TODO 这个data应该游戏结束后销毁
+	do {
+		Boll *prev = boll;
+		boll = boll->next;
+		dispose(prev);
+	} while(boll);
 }
 
-void bollAdd(Boll *head, float x, float y, double angle) {
+void bollAdd(Boll *head, Role *role, float x, float y, double angle) {
 	// BollData *data = head->data;
 	double v0 = 600;  // TODO 速度放入data。
-	Boll *boll = malloc(sizeof(Boll));
-	memset(boll, 0, sizeof(Boll));
+	Boll *boll = create(sizeof(Boll));
+	boll->role = role;
+	boll->room = role->room;
 	boll->vx = v0 * cos(angle);
 	boll->vy = v0 * sin(angle);
 	boll->x = x;
@@ -47,7 +44,6 @@ void bollAdd(Boll *head, float x, float y, double angle) {
 		t = t->next;
 	}
 	t->next = boll;
-	// printf("add boll at (%.1f, %.1f)\n", x, y);
 }
 
 void bollUpdate(Boll *head, double t) {
@@ -55,24 +51,33 @@ void bollUpdate(Boll *head, double t) {
 	Boll *boll = head;
 	Boll *prev;
 	while (prev = boll, boll = boll->next) {
+		Room *room = boll->room;
+		Role *enemy = NULL;
+		RoomTile *tile = NULL;
+		int dispear = false;
 		boll->x += boll->vx * t;
 		boll->y += boll->vy * t;
-		// 碰撞墙壁、超出射程旧销毁
-		// TODO 暂时设为超出就销毁。
-		if (!isCirCollRect(boll->x, boll->y, data->r, 0, 0, SCRW, SCRH)) {
+		if ((enemy = roomCollEnemy(room, boll->x, boll->y, data->r, boll->role))) {
+			// 碰撞到角色，产生伤害。
+			dispear = true;
+			enemy->hp = fmax(0, enemy->hp - boll->role->data->atk);
+		} else if ((tile = roomColl(boll->room, boll->x, boll->y, data->r))) {
+			// 碰撞到墙壁。
+			dispear = true;
+		}
+		if (dispear) {
 			prev->next = boll->next;
-			free(boll);
+			dispose(boll);
 			boll = prev;
-			// printf("remove boll\n");
 		}
 	}
 }
 
-void bollDraw(Boll *head) {
+void bollDraw(Boll *head, double t) {
 	BollData *data = head->data;
 	Boll *boll = head;
-	Room *room = data->room;
 	while ((boll = boll->next)) {
+		Room *room = boll->room;
 		float x = room->px + boll->x;
 		float y = room->py + boll->y;
 		drawCir(x, y, data->r, data->color);

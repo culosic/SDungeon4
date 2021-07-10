@@ -1,5 +1,7 @@
 #include "role.h"
 
+#include <math.h>
+
 #include "base.h"
 #include "boll.h"
 #include "ex_math.h"
@@ -8,28 +10,25 @@
 #include "map.h"
 #include "room.h"
 
-Role *roleCreate(RoleData *data, struct _Room *room, int x, int y, int enemy) {
-	Role *role = malloc(sizeof(Role));
-	memset(role, 0, sizeof(Role));
+Role *roleCreate(RoleData *data, int enemy) {
+	Role *role = create(sizeof(Role));
 	role->data = data;
 	role->fw = data->r * 2 > 20 / 0.5 ? data->r * 2 > 70 / 0.5 ? 70 : data->r * 2 * 0.5 : 20;
-	printf("r:%d,   fw:%d\n", data->r, role->fw);
-	role->room = room;
 	role->hp = data->hp;
 	role->hps = data->hp;
 	role->mp = data->mp;
 	role->mps = data->mp;
-
 	role->enemy = enemy;
-	role->x = x;
-	role->y = y;
-	role->boll = bollCreates(room, 5, 0xffffffff, 500, 300);
+
+	role->boll = bollsCreate(5, 0xffffffff, 500, 300);
+	role->hpPercentT = 1;
+	role->dyingAlphaT = 1;
 	return role;
 }
 
 void roleDispose(Role *role) {
-	bollDispose(role->boll);
-	free(role);
+	bollsDispose(role->boll);
+	dispose(role);
 }
 
 /**
@@ -38,113 +37,129 @@ void roleDispose(Role *role) {
 static void roleGotoRoom(Role *role, Room *room) {
 	Room *originRoom = role->room;
 	Map *map = originRoom->map;
-	role->room = map->currentRoom = room;
+	// TODO 应该由房间的门来让角色跳转房间。
+	roomRoleGoto(originRoom, role, room);
+	map->currentRoom = room; // TODO 仅主角。
 }
 
-void roleUpdate(Role *role, float t) {
+void roleUpdate(Role *role, double t) {
+	if (role->hp < 0) {
+		return;
+	}
 	RoleData *data = role->data;
 	float sx = role->vx * t;
 	float sy = role->vy * t;
 	// 移动
 	role->x += sx;
 	role->y += sy;
-	// 攻击
+	// 攻击（发射+后摇）
+	if (role->attacking && role->attackingT == 0) {
+		bollAdd(role->boll, role, role->x, role->y, role->faceAngle);
+	}
 	if (role->attacking || role->attackingT > 0) {
-		if (role->attackingT < 0.3) {  // TODO 攻速应该是role里的
+		if (role->attackingT < 0.3) {  // TODO 使用武器的攻速
 			role->attackingT += t;
 		} else {
 			role->attackingT = 0;
-			bollAdd(role->boll, role->x, role->y, role->faceAngle);
 		}
 	}
 	// 碰撞检测
-	int xcoll = false;
-	int ycoll = false;
+	int xStopped = false;
+	int yStopped = false;
 	if (role->vx != 0 && role->vy != 0) {
-		int r = data->r;
 		Room *room = role->room;
-		for (int i = room->tileCount - 1; i >= 0; i--) {
-			RoomTile *tile = room->tiles[i];
-			if (tile->type != RoomTile_Floor) {
-				if (isCirCollRect(role->x, role->y, r, tile->x, tile->y, tile->w, tile->h)) {
-					if (tile->type == RoomTile_Door) {
-						// 切换房间
-						float roomW = 500;	// 房间x宽度
-						float roomH = 500;	// 房间y宽度
-						float wallD = 30;	// 墙壁厚度
-						switch (tile->doorDirection) {
-						case 2:
-							role->y = roomH + wallD - r;
-							break;
-						case 6:
-							role->x = wallD + r;
-							break;
-						case 8:
-							role->y = wallD + r;
-							break;
-						case 4:
-							role->x = roomW + wallD - r;
-							break;
-						default:
-							break;
-						}
-						roleGotoRoom(role, tile->linkRoom);
-						break;
-					} else if (tile->type == RoomTile_Wall) {
-						// 墙壁碰撞
-						if (isCirCollRect(role->x, role->y - sy, r, tile->x, tile->y, tile->w, tile->h)) {
-							xcoll = true;
-						}
-						if (isCirCollRect(role->x - sx, role->y, r, tile->x, tile->y, tile->w, tile->h)) {
-							ycoll = true;
-						}
-					}
+		RoomTile *tile = roomColl(room, role->x, role->y, data->r);
+		if (tile && tile->type) {
+			switch (tile->type) {
+			case RoomTile_Door:
+				// 切换房间
+				switch (tile->doorDirection) {
+				case 2:
+					role->y = room->roomH + room->wallD - data->r - 10;
+					break;
+				case 6:
+					role->x = room->wallD + data->r + 10;
+					break;
+				case 8:
+					role->y = room->wallD + data->r + 10;
+					break;
+				case 4:
+					role->x = room->roomW + room->wallD - data->r - 10;
+					break;
+				default:
+					break;
 				}
+				roleGotoRoom(role, tile->linkRoom);
+				break;
+			case RoomTile_Wall:
+				// 墙壁碰撞
+				if (isCirCollRect(role->x, role->y - sy, data->r, tile->x, tile->y, tile->w, tile->h)) {
+					xStopped = true;
+				}
+				if (isCirCollRect(role->x - sx, role->y, data->r, tile->x, tile->y, tile->w, tile->h)) {
+					yStopped = true;
+				}
+				break;
+			default:
+				break;
 			}
 		}
 	}
-	if (xcoll) {
+	if (xStopped) {
 		role->x -= sx;
 	}
-	if (ycoll) {
+	if (yStopped) {
 		role->y -= sy;
 	}
 	// 子弹检测
 	bollUpdate(role->boll, t);
 }
 
-void roleDraw(Role *role) {
+void roleDraw(Role *role, double t) {
 	RoleData *data = role->data;
-	int r = data->r;
-	int b = 3;
-	int fontSize = role->fw;
 	Room *room = role->room;
+	int alive = role->hp > 0;
 	float x = room->px + role->x;
 	float y = room->py + role->y;
 	// 绘制子弹
-	bollDraw(role->boll);
+	bollDraw(role->boll, t);
 	// 绘制人物
-	drawCir(x, y, r + b, data->color);
-	drawCir(x, y, r, data->innerColor);
-	drawText(data->caption, x - fontSize / 2, y - fontSize / 2 - fontSize / 8, 225, 225, 245, fontSize);
-	// 绘制血条
-	int hpWidth = r * 2;
-	int hpHeight = 6;
-	int hpX = x - hpWidth / 2;
-	int hpY = y - r - 10 - hpHeight;
-	float hpPercent = role->hp / role->hps - 0.5;  // TODO test
-	if (hpX < 0) {
-		hpX = 0;
-	} else if (hpX > SCRW - hpWidth) {
-		hpX = SCRW - hpWidth;
+	if (alive) {
+		int fontSize = role->fw;
+		drawCir(x, y, data->r + 3, data->color);
+		drawCir(x, y, data->r, data->innerColor);
+		drawText(data->caption, x - fontSize / 2, y - fontSize / 2 - fontSize / 8, 225, 225, 245, fontSize);
+	} else {
+		if (role->dyingAlphaT > 0) {  // 死亡渐隐
+			role->dyingAlphaT = fmax(role->dyingAlphaT - 1.25 * t, 0);
+			drawCir(x, y, data->r + 3, getAlphaColor(data->color, role->dyingAlphaT));
+			drawCir(x, y, data->r, getAlphaColor(data->innerColor, role->dyingAlphaT));
+		}
 	}
-	if (hpY < 0) {
-		hpY = 0;
-	} else if (hpY > SCRH - hpHeight) {
-		hpY = SCRH - hpHeight;
+	if (alive) {
+		// 绘制血条
+		int hpWidth = data->r * 2;
+		int hpHeight = 6;
+		int hpX = x - hpWidth / 2;
+		int hpY = y - data->r - 10 - hpHeight;
+		float hpPercent = role->hp / role->hps;
+		if (role->hpPercentT > hpPercent) {	 // 血条的扣血动画。
+			role->hpPercentT = fmax(role->hpPercentT - fmax(0.2, hp_decrease_animation_v * (role->hpPercentT - hpPercent)) * t, hpPercent);
+		}
+		if (hpX < 0) {
+			hpX = 0;
+		} else if (hpX > SCRW - hpWidth) {
+			hpX = SCRW - hpWidth;
+		}
+		if (hpY < 0) {
+			hpY = 0;
+		} else if (hpY > SCRH - hpHeight) {
+			hpY = SCRH - hpHeight;
+		}
+		drawRect(hpX, hpY, hpWidth, hpHeight, 0xff660000);
+		drawRect(hpX, hpY, hpWidth * role->hpPercentT, hpHeight, 0xffff0000);
+		drawRect(hpX, hpY, hpWidth * hpPercent, hpHeight, role->enemy ? 0xffbb0000 : 0xff4caf50);
 	}
-	drawRect(hpX, hpY, hpWidth, hpHeight, role->enemy ? 0xff600000 : 0xff222222);
-	drawRect(hpX, hpY, hpWidth * hpPercent, hpHeight, role->enemy ? 0xffcc0000 : 0xff4caf50);
 }
 
 void roleMove(Role *role, double angle) {

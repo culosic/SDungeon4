@@ -1,13 +1,14 @@
 #include "map.h"
 
 #include "base.h"
+#include "data.h"
 #include "global.h"
+#include "graphics.h"
 #include "room.h"
 
 Map *mapCreate(int luck) {
 	// 初始化变量
-	Map *map = malloc(sizeof(Map));
-	memset(map, 0, sizeof(Map));
+	Map *map = create(sizeof(Map));
 
 	// 创建主房间
 	int roomX = 1, roomY = 1;
@@ -152,10 +153,21 @@ Map *mapCreate(int luck) {
 }
 
 void mapDispose(Map *map) {
-	free(map);
+	for (int i = 0; i < map->roomCount; i++) {
+		roomDispose(map->roomList[i]);
+	}
+	dispose(map);
 }
 
-void mapDraw(Map *map) {
+void mapDraw(Map *map, double t) {
+	roomDraw(map->currentRoom, t);
+}
+
+void mapUpdate(Map *map, double t) {
+	roomUpdate(map->currentRoom, t);
+}
+
+void mapDrawMiniMap(Map *map, double t) {
 	int c = 60;
 	int d = 40;
 	int doorw = 10;
@@ -194,7 +206,7 @@ void mapDraw(Map *map) {
 		int32 bcolor = 0x99aa9933;
 		int32 bgcolor = 0xaa336699;
 		int32 linkColor = 0x99aa9933;
-		printf("[%s, %d,%d]\n", room->caption, x, y);
+		// printf("[%s, %d,%d]\n", room->caption, x, y);
 		if (map->currentRoom == room) {
 			bcolor = 0xffaa9933;
 			bgcolor = 0xff336699;
@@ -234,8 +246,4 @@ void mapDraw(Map *map) {
 			}
 		}
 	}
-}
-
-void mapDrawRoom(Map *map) {
-	roomDraw(map->currentRoom);
 }

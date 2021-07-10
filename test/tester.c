@@ -4,9 +4,9 @@
 #include <stdlib.h>
 
 void testerDispose() {
-    for (int i = 0; i < unpassedUnitCount; i++) {
-        free(unpassedUnits[i]);
-    }
+	for (int i = 0; i < unpassedUnitCount; i++) {
+		free(unpassedUnits[i]);
+	}
 }
 
 static int addUnpassedUnit(char *message) {
@@ -31,9 +31,32 @@ int equal(long actual, long expected, char *message) {
 	}
 }
 
+int notEqual(long actual, long expected, char *message) {
+	int result;
+	if (actual == expected) {
+		char *msg = malloc(200 * sizeof(char));
+		sprintf(msg, "%d\t%d\t%s", actual, expected, message);
+		result = addUnpassedUnit(msg);
+	} else {
+		result = addPpassedUnit();
+	}
+}
+
 int floatEqual(double actual, double expected, double minDeta, char *message) {
 	int result;
 	if (fabs(actual - expected) > minDeta) {
+		char *msg = malloc(200 * sizeof(char));
+		sprintf(msg, "%.3f\t%.3f\t%s", actual, expected, message);
+		result = addUnpassedUnit(msg);
+	} else {
+		result = addPpassedUnit();
+	}
+	return result;
+}
+
+int notFloatEqual(double actual, double expected, double minDeta, char *message) {
+	int result;
+	if (fabs(actual - expected) <= minDeta) {
 		char *msg = malloc(200 * sizeof(char));
 		sprintf(msg, "%.3f\t%.3f\t%s", actual, expected, message);
 		result = addUnpassedUnit(msg);

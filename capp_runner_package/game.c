@@ -22,7 +22,7 @@ static void gameDrawFPS(float t) {
 static void gameUserControll(float t) {
 	Cirpad *dpad = game.dpad;
 	Cirpad *apad = game.apad;
-	Role *role = game.role;
+	Role *role = game.mainRole;
 	cirpadUpdate(dpad, t);
 	cirpadUpdate(apad, t);
 	if (dpad->dragged) {
@@ -31,7 +31,9 @@ static void gameUserControll(float t) {
 		roleStopMove(role);
 	}
 	if (apad->active) {
-		roleAttack(role, role->faceAngle);
+		Role *cloestEnemy = roomGetCloestEnemy(role->room, role);
+		double angle = cloestEnemy ? getAngle(role->x, role->y, cloestEnemy->x, cloestEnemy->y) : role->faceAngle;
+		roleAttack(role, angle);
 	} else {
 		roleStopAttack(role);
 	}
@@ -43,18 +45,15 @@ void gameUpdate(long data) {
 	game.drawLastTime = now;
 
 	// 逻辑
+	mapUpdate(game.map, t);
 	gameUserControll(t);
-	roleUpdate(game.role, t);
-	roleUpdate(game.role1, t);
 
 	// 绘图
 	cls(40, 50, 60);
-	// mapDraw(game.map);
-	mapDrawRoom(game.map);
-	roleDraw(game.role);
-	roleDraw(game.role1);
-	cirpadDraw(game.dpad);
-	cirpadDraw(game.apad);
+	// mapDrawMiniMap(game.map, t);
+	mapDraw(game.map, t);
+	cirpadDraw(game.dpad, t);
+	cirpadDraw(game.apad, t);
 	gameDrawFPS(t);
 	ref(0, 0, SCRW, SCRH);
 }
@@ -68,14 +67,24 @@ void gameEvent(int type, int p, int q) {
 }
 
 void gameInit() {
+	cls(40, 50, 60);
+	ref(0, 0, SCRW, SCRH);
 	if (SCRW > SCRH) {	// 横屏
 		setscrsize(STAGEH * SCRW / SCRH, STAGEH);
 	} else {  // 竖屏
 		setscrsize(STAGEH, STAGEH * SCRH / SCRW);
 	}
-	game.map = mapCreate(60);
-	game.role = roleCreate(&role_longxin, game.map->currentRoom, 100, 100, false);
-	game.role1 = roleCreate(&role_mouse, game.map->currentRoom, 300, 200, true);
+	Map *map = game.map = mapCreate(60);
+	Role *mainRole = game.mainRole = roleCreate(&role_longxin, false);
+	Room *initRoom = map->currentRoom;
+	roomAddRole(initRoom, mainRole, 100, 100);
+	roomAddRole(initRoom, roleCreate(&role_mouse, true), 300, 100);
+	roomAddRole(initRoom, roleCreate(&role_mouse, true), 300, 200);
+	roomAddRole(initRoom, roleCreate(&role_mouse, true), 300, 300);
+	roomAddRole(initRoom, roleCreate(&role_mouse, true), 300, 400);
+	roomAddRole(initRoom, roleCreate(&role_wolf, true), 400, 200);
+	roomAddRole(initRoom, roleCreate(&role_scorpion, true), 400, 300);
+	roomAddRole(initRoom, roleCreate(&role_ghost, true), 400, 400);
 	game.dpad = cirpadCreate(200, SCRH - 200, 120, 40, false);
 	game.apad = cirpadCreate(SCRW - 200, SCRH - 200, 120, 40, true);
 	game.drawTimer = timercreate();
@@ -87,7 +96,6 @@ void gameDispose() {
 	timerstop(game.drawTimer);
 	cirpadDispose(game.dpad);
 	cirpadDispose(game.apad);
-	roleDispose(game.role);
-	roleDispose(game.role1);
 	mapDispose(game.map);
+	printf("内存释放情况：%d/%d\n", dispose_times, create_times);
 }

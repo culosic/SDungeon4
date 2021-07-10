@@ -9,6 +9,20 @@
 #define false 0
 #endif
 
+long create_times = 0;
+
+long dispose_times = 0;
+
+/**
+ * @brief 申请内存并清零。必须用dispose释放。程序结束后会计算有没有泄露内存。
+ */
+void* create(int32 size);
+
+/**
+ * @brief 释放由create函数申请的内存。
+ */
+void dispose(void* address);
+
 /**
  * 将utf-8转为gb2312字符串。手机c绘制utf-8会乱码，所以必须转成gb2312再绘制。
  */

@@ -10,7 +10,9 @@ int unitCount = 0;
 
 void testerDispose();
 int equal(long a, long b, char *message);
+int notEqual(long a, long b, char *message);
 int floatEqual(double a, double b, double minDeta, char *message);
+int notFloatEqual(double a, double b, double minDeta, char *message);
 void printReport(int detail);
 
 #endif

@@ -29,8 +29,8 @@ typedef struct _Cirpad {
 
 Cirpad *cirpadCreate(float x, float y, float r, float r2, int justTouch);
 void cirpadDispose(Cirpad *cirpad);
-void cirpadUpdate(Cirpad *pad, int t);
-void cirpadDraw(Cirpad *cirpad);
+void cirpadUpdate(Cirpad *pad, double t);
+void cirpadDraw(Cirpad *cirpad, double t);
 int cirpadEvent(Cirpad *cirpad, int type, int p, int q);
 
 #endif

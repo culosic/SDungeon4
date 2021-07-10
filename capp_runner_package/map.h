@@ -50,7 +50,12 @@ typedef struct _Map {
 
 Map *mapCreate(int luck);
 void mapDispose(Map *map);
-void mapDraw(Map *map);
-void mapDrawRoom(Map *map);
+void mapDraw(Map *map, double t);
+void mapUpdate(Map *map, double t);
+
+/**
+ * @brief 画小地图
+ */
+void mapDrawMiniMap(Map *map, double t);
 
 #endif

@@ -6,6 +6,18 @@
 #include "exb.h"
 #include "graphics.h"
 
+void* create(int32 size) {
+	create_times++;
+	void* memory = malloc(size);
+	memset(memory, 0, size);
+	return memory;
+}
+
+void dispose(void* address) {
+	dispose_times++;
+	free(address);
+}
+
 char* utf8_c(char* c) {
 	return ex_coding(c, strlen(c) + 1, "utf-8", "gb2312");
 }
@@ -44,4 +56,15 @@ float getAngle(float x0, float y0, float x1, float y1) {
 		r = dx < 0 ? (atan(dy / dx) + M_PI) : (-atan(dx / dy) + M_PI * 1.5);
 	}
 	return r;
+}
+
+int32 getAlphaColor(int32 color, float alpha) {
+	if (alpha == 0) {
+		return 0x000000;
+	}
+	if (alpha == 1) {
+		return color;
+	}
+	int32 a = ((int)(255 * alpha)) << 24;
+	return (color & a) + (color ^ 0xff000000);
 }

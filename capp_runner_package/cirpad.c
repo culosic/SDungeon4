@@ -9,8 +9,7 @@
 #include "graphics.h"
 
 Cirpad *cirpadCreate(float x, float y, float r, float barR, int justTouch) {
-	Cirpad *pad = malloc(sizeof(struct _Cirpad));
-	memset(pad, 0, sizeof(struct _Cirpad));
+	Cirpad *pad = create(sizeof(struct _Cirpad));
 	pad->x = x;
 	pad->y = y;
 	pad->r = r;
@@ -23,10 +22,10 @@ Cirpad *cirpadCreate(float x, float y, float r, float barR, int justTouch) {
 }
 
 void cirpadDispose(Cirpad *pad) {
-	free(pad);
+	dispose(pad);
 }
 
-void cirpadUpdate(Cirpad *pad, int t) {
+void cirpadUpdate(Cirpad *pad, double t) {
 	int oldActive = pad->active;
 	int up = true;
 	for (int i = 0; i < 5; i++) {  // 多点触控
@@ -47,7 +46,7 @@ void cirpadUpdate(Cirpad *pad, int t) {
 				pad->dragged = true;
 				pad->angle = getAngle(pad->x, pad->y, x, y);
 			}
-			if (dist <= pad->activeR) {  // 摇杆在范围内拖拽
+			if (dist <= pad->activeR) {	 // 摇杆在范围内拖拽
 				pad->barX = x;
 				pad->barY = y;
 			} else {  // 摇杆拖拽到范围外，仍显示到范围内。
@@ -66,7 +65,7 @@ void cirpadUpdate(Cirpad *pad, int t) {
 	}
 }
 
-void cirpadDraw(Cirpad *pad) {
+void cirpadDraw(Cirpad *pad, double t) {
 	if (pad->justTouch) {
 		drawCir(pad->x, pad->y, pad->activeR, pad->active ? 0x33ffffff : 0x22ffffff);
 		drawCir(pad->x, pad->y, pad->activeR * 0.85, pad->active ? 0xaaffffff : 0x66ffffff);

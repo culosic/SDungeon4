@@ -4,14 +4,17 @@
 #include "boll.h"
 #include "room.h"
 
+// 血量扣除动画的速度。每秒钟扣除血量的比例。
+float hp_decrease_animation_v = 5;
+
 typedef struct _RoleData {
 	// 人物标识
-	char *name;	   // 姓名
-	char *caption;  // 地图大字
-	char *info;   // 人物描述
-	int r;			   // 地图人物半径
-	int color;		   // 地图人物颜色
-	int innerColor;	   // 地图人物内部颜色
+	char *name;		 // 姓名
+	char *caption;	 // 地图大字
+	char *info;		 // 人物描述
+	int r;			 // 地图人物半径
+	int color;		 // 地图人物颜色
+	int innerColor;	 // 地图人物内部颜色
 	// 战斗属性
 	float hp;	// 基础生命值
 	float mp;	// 基础蓝量
@@ -27,7 +30,7 @@ typedef struct _RoleData {
 // 角色数据定义
 typedef struct _Role {
 	struct _RoleData *data;	 // 角色数据
-	int fw;			 // 角色在地图标题字体大小
+	int fw;					 // 角色在地图标题字体大小
 
 	int enemy;
 	float hps;
@@ -50,13 +53,17 @@ typedef struct _Role {
 	int attacking;		// 是否正在攻击
 	double attackingT;	// 攻击准备计时
 
+	// 动画相关
+	float hpPercentT;	 // 血量扣除动画计时。
+	float dyingAlphaT;  // 死亡渐隐动画计时。
+
 	struct _Boll *boll;	 // 子弹链表
 } Role;
 
-Role *roleCreate(RoleData *data, struct _Room *room, int x, int y, int enemy);
+Role *roleCreate(RoleData *data, int enemy);
 void roleDispose(Role *role);
-void roleUpdate(Role *role, float t);
-void roleDraw(Role *role);
+void roleUpdate(Role *role, double t);
+void roleDraw(Role *role, double t);
 
 /**
  * @brief 角色开始移动

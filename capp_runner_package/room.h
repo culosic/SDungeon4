@@ -60,16 +60,45 @@ typedef struct _Room {
 	char *caption;		 // 房间大字标题
 	int visible;		 // 房间是否已被发现
 
-	float px;  // 房间x坐标
-	float py;  // 房间y坐标
+	float px;	  // 房间x坐标
+	float py;	  // 房间y坐标
+	float roomW;  // 房间横宽
+	float roomH;  // 房间纵宽
+	float wallD;  // 墙壁厚度
+	float doorW;  // 门宽度
 
-	// Role *roles[100];  // 房间里的角色。
+	struct _Role *roles[100];  // 房间里的角色。
+	int roleCount;
 } Room;
 
 RoomTile *roomTileCreate(int x, int y, int w, int h, enum RoomTileType type);
 Room *roomCreate(struct _Map *map, int x, int y, enum RoomType type);
 void roomDispose(Room *room);
 void roomInitTile(Room *room);
-void roomDraw(Room *room);
+void roomDraw(Room *room, double t);
+void roomUpdate(Room *room, double t);
+
+/**
+ * @brief 向房间添加一个角色
+ */
+void roomAddRole(Room *room, struct _Role *role, float x, float y);
+/**
+ * @brief 跳转房间
+ */
+void roomRoleGoto(Room *room, struct _Role *role, Room *newRoom);
+/**
+ * @brief 地图碰撞检测
+ * 
+ * @return 碰撞到的地图图块，可以是门、地面等等。
+ */
+RoomTile *roomColl(Room *room, float x, float y, float r);
+/**
+ * @brief 检测是否碰撞到敌人
+ */
+struct _Role *roomCollEnemy(Room *room, float x, float y, float r, struct _Role *role);
+/**
+ * @brief 找到最近的敌人
+ */
+struct _Role *roomGetCloestEnemy(Room *room, struct _Role *role);
 
 #endif
