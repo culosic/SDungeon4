@@ -19,4 +19,6 @@
     // 让RunCode总是运行当前目录的main.c
     "c": "cd $dir && gcc main.c -o $fileNameWithoutExt && $dir$fileNameWithoutExt"
   },
+  "files.encoding": "utf8",
+  "files.autoGuessEncoding": true,
 }

@@ -5,6 +5,7 @@
 #include "base.h"
 #include "ex_math.h"
 #include "graphics.h"
+#include "room.h"
 
 Boll *bollCreates(Room *room, float r, int32 color, double v, float range) {
 	Boll *head = malloc(sizeof(Boll));
@@ -23,7 +24,7 @@ Boll *bollCreates(Room *room, float r, int32 color, double v, float range) {
 void bollDispose(Boll *head) {
 	Boll *boll = (Boll *)head;
 	Boll *prev;
-	free(head->data); // TODO 这个data应该游戏结束后销毁
+	free(head->data);  // TODO 这个data应该游戏结束后销毁
 	while (prev = boll, boll = boll->next) {
 		prev->next = boll->next;
 		free(boll);
@@ -34,7 +35,7 @@ void bollDispose(Boll *head) {
 
 void bollAdd(Boll *head, float x, float y, double angle) {
 	// BollData *data = head->data;
-	double v0 = 600; // TODO 速度放入data。
+	double v0 = 600;  // TODO 速度放入data。
 	Boll *boll = malloc(sizeof(Boll));
 	memset(boll, 0, sizeof(Boll));
 	boll->vx = v0 * cos(angle);

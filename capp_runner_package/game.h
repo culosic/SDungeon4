@@ -14,15 +14,15 @@ typedef struct _Game {
 	float fpsDT;
 	float fps;
 
-	Map *map;
-	Role *role;
-	Cirpad *dpad;
-	Cirpad *apad;
+	struct _Map *map;
+	struct _Role *role;
+	struct _Role *role1;
+	struct _Cirpad *dpad;
+	struct _Cirpad *apad;
 } Game;
 
 Game game;
 
-void gameDrawFPS(float t);
 void gameUpdate(long data);
 void gameEvent(int type, int p, int q);
 void gameInit();

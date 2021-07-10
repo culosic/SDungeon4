@@ -11,7 +11,7 @@
  */
 
 typedef struct _Cirpad {
-	Role *role;
+	struct _Role *role;
 	float x;
 	float y;
 	float r;

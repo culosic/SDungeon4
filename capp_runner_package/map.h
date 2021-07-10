@@ -1,6 +1,8 @@
 #ifndef _MAP_H_
 #define _MAP_H_
 
+#include "room.h"
+
 /**
  * 
  * 地图：10 * 10

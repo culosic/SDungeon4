@@ -3,6 +3,7 @@
 #include "base.h"
 #include "global.h"
 #include "map.h"
+#include "data.h"
 
 RoomTile *roomTileCreate(int x, int y, int w, int h, enum RoomTileType type) {
 	RoomTile *tile = malloc(sizeof(RoomTile));
@@ -26,31 +27,31 @@ Room *roomCreate(Map *map, int x, int y, enum RoomType type) {
 	room->type = type;
 	switch (type) {
 	case Room_Init:
-		room->caption = utf8_c("初");
+		room->caption = room_init_caption;
 		break;
 	case Room_Battle:
-		room->caption = utf8_c("战");
+		room->caption = room_battle_caption;
 		break;
 	case Room_Trap:
-		room->caption = utf8_c("阵");
+		room->caption = room_trap_caption;
 		break;
 	case Room_Potions:
-		room->caption = utf8_c("釜");
+		room->caption = room_potions_caption;
 		break;
 	case Room_Treasure:
-		room->caption = utf8_c("箱");
+		room->caption = room_treasure_caption;
 		break;
 	case Room_Elite:
-		room->caption = utf8_c("魂");
+		room->caption = room_elite_caption;
 		break;
 	case Room_Shop:
-		room->caption = utf8_c("店");
+		room->caption = room_shop_caption;
 		break;
 	case Room_Boss:
-		room->caption = utf8_c("狱");
+		room->caption = room_boss_caption;
 		break;
 	default:
-		room->caption = utf8_c("");
+		room->caption = "";
 		break;
 	}
 	float roomW = 500;	// 房间x宽度

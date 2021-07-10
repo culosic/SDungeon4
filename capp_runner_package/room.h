@@ -1,6 +1,9 @@
 #ifndef _ROOM_H_
 #define _ROOM_H_
 
+#include "map.h"
+#include "role.h"
+
 // 房间图块类型
 enum RoomTileType {
 	RoomTile_Floor,	 // 地板
@@ -49,50 +52,24 @@ typedef struct _Room {
 	struct _RoomTile *tiles[10];
 	int tileCount;
 
-	int x;	//房间在地图上的位置
-	int y;
-	int w;	// 房间横向格子数
-	int h;
-	char *caption;		 // 房间大字标题
+	int x;				 // 房间在地图上的x位置
+	int y;				 // 房间在地图上的y位置
+	int w;				 // 房间横向格子数
+	int h;				 // 房间纵向格子数
 	enum RoomType type;	 // 房间类型
+	char *caption;		 // 房间大字标题
 	int visible;		 // 房间是否已被发现
 
 	float px;  // 房间x坐标
 	float py;  // 房间y坐标
+
+	// Role *roles[100];  // 房间里的角色。
 } Room;
 
-// 次级房间随机生成数据
-struct _RoomGenerateData room_gene_data[5] = {
-	{Room_Trap, -20, 0.8},
-	{Room_Battle, 10, 1},
-	{Room_Potions, 10, 0.6},
-	{Room_Treasure, 20, 0.8},
-	{Room_Elite, 40, 1.5},
-};
-
-/**
- * 创建房间图块
- */
 RoomTile *roomTileCreate(int x, int y, int w, int h, enum RoomTileType type);
-/**
- * 创建房间
- * @param x 房间x坐标
- * @param y 房间y坐标
- * @param type 房间类型
- * @returns 房间对象
- */
 Room *roomCreate(struct _Map *map, int x, int y, enum RoomType type);
-/**
- * 释放房间占用内存
- */
 void roomDispose(Room *room);
-/**
- * 初始化房间里的图块
- */
 void roomInitTile(Room *room);
-/**
- * 绘制房间
- */
 void roomDraw(Room *room);
 
 #endif
