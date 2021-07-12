@@ -1,6 +1,7 @@
 #ifndef _ROOM_H_
 #define _ROOM_H_
 
+#include "base.h"
 #include "map.h"
 #include "role.h"
 

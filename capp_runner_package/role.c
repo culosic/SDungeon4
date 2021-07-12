@@ -2,32 +2,120 @@
 
 #include <math.h>
 
+#include "ai.h"
 #include "base.h"
 #include "boll.h"
+#include "data.h"
 #include "ex_math.h"
 #include "global.h"
 #include "graphics.h"
 #include "map.h"
 #include "room.h"
 
-Role *roleCreate(RoleData *data, int enemy) {
+static RoleData *roleGetData(enum RoleType type) {
+	RoleData *data = NULL;
+	switch (type) {
+	case RoleType_LongXin:
+		data = &role_longxin;
+		break;
+	case RoleType_JingYu:
+		data = &role_jingyu;
+		break;
+	case RoleType_Wu_JingYu:
+		data = &role_wu_jingyu;
+		break;
+	case RoleType_Ne_Giles:
+		data = &role_ne_giles;
+		break;
+	case RoleType_Clark:
+		data = &role_clark;
+		break;
+
+	case RoleType_Mouse:
+		data = &role_mouse;
+		break;
+	case RoleType_Wolf:
+		data = &role_wolf;
+		break;
+	case RoleType_Scorpion:
+		data = &role_scorpion;
+		break;
+
+	case RoleType_Ghost:
+		data = &role_ghost;
+		break;
+	default:
+		data = &role_mouse;
+		break;
+	}
+	return data;
+}
+
+static void *roleCreateAI(Role *role) {
+	void *ai = NULL;
+	switch (role->type) {
+	case RoleType_Mouse:
+		ai = aiMouseCreate(role);
+		break;
+	default:
+		break;
+	}
+	return ai;
+}
+
+static void roleDisposeAI(Role *role) {
+	if (!role->ai) {
+		return;
+	}
+	void *ai = role->ai;
+	switch (role->type) {
+	case RoleType_Mouse:
+		aiMouseDispose(ai);
+		break;
+	default:
+		break;
+	}
+}
+
+static void roleUpdateAI(Role *role, double t) {
+	if (!role->ai) {
+		return;
+	}
+	void *ai = role->ai;
+	switch (role->type) {
+	case RoleType_Mouse:
+		aiMouseUpdate(ai, t);
+		break;
+	default:
+		break;
+	}
+}
+
+Role *roleCreate(enum RoleType type, int enemy, int ai) {
 	Role *role = create(sizeof(Role));
-	role->data = data;
+	RoleData *data = role->data = roleGetData(type);
+	role->type = type;
 	role->fw = data->r * 2 > 20 / 0.5 ? data->r * 2 > 70 / 0.5 ? 70 : data->r * 2 * 0.5 : 20;
 	role->hp = data->hp;
 	role->hps = data->hp;
 	role->mp = data->mp;
 	role->mps = data->mp;
+	role->v = data->v0;
 	role->enemy = enemy;
 
 	role->boll = bollsCreate(5, 0xffffffff, 500, 300);
 	role->hpPercentT = 1;
 	role->dyingAlphaT = 1;
+
+	if (ai) {
+		role->ai = roleCreateAI(role);
+	}
 	return role;
 }
 
 void roleDispose(Role *role) {
 	bollsDispose(role->boll);
+	roleDisposeAI(role);
 	dispose(role);
 }
 
@@ -39,7 +127,7 @@ static void roleGotoRoom(Role *role, Room *room) {
 	Map *map = originRoom->map;
 	// TODO 应该由房间的门来让角色跳转房间。
 	roomRoleGoto(originRoom, role, room);
-	map->currentRoom = room; // TODO 仅主角。
+	map->currentRoom = room;  // TODO 仅主角。
 }
 
 void roleUpdate(Role *role, double t) {
@@ -47,9 +135,11 @@ void roleUpdate(Role *role, double t) {
 		return;
 	}
 	RoleData *data = role->data;
+	// AI
+	roleUpdateAI(role, t);
+	// 移动
 	float sx = role->vx * t;
 	float sy = role->vy * t;
-	// 移动
 	role->x += sx;
 	role->y += sy;
 	// 攻击（发射+后摇）
@@ -168,8 +258,8 @@ void roleMove(Role *role, double angle) {
 	// if (!role->attacking) {	 // 仅移动时，攻击方向跟攻击方向保持一直。
 	role->faceAngle = angle;
 	// }
-	role->vx = data->v0 * cos(angle);
-	role->vy = data->v0 * sin(angle);
+	role->vx = role->v * cos(angle);
+	role->vy = role->v * sin(angle);
 }
 
 void roleStopMove(Role *role) {

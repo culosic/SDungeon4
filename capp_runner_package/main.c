@@ -6,6 +6,7 @@
  * 时间：2021年6月18日
  */
 
+#include "ai.c"
 #include "base.h"
 #include "boll.c"
 #include "cirpad.c"

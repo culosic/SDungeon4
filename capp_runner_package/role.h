@@ -1,11 +1,32 @@
 #ifndef _ROLE_H_
 #define _ROLE_H_
 
+#include "base.h"
 #include "boll.h"
 #include "room.h"
 
 // 血量扣除动画的速度。每秒钟扣除血量的比例。
 float hp_decrease_animation_v = 5;
+
+// 角色枚举表
+enum RoleType {
+	RoleType_Unknown,
+
+	// 人物角色
+	RoleType_LongXin = 0x000001,	// 龙辛
+	RoleType_JingYu = 0x000002,		// 惊羽
+	RoleType_Wu_JingYu = 0x000003,	// 舞·静雨
+	RoleType_Ne_Giles = 0x000004,	// 烈贾尔斯
+	RoleType_Clark = 0x000005,		// 克拉克
+
+	// 第一层小怪
+	RoleType_Mouse = 0x010001,
+	RoleType_Wolf = 0x010002,
+	RoleType_Scorpion = 0x010003,
+
+	// 第一层boss
+	RoleType_Ghost = 0x01ff01,
+};
 
 typedef struct _RoleData {
 	// 人物标识
@@ -30,7 +51,7 @@ typedef struct _RoleData {
 // 角色数据定义
 typedef struct _Role {
 	struct _RoleData *data;	 // 角色数据
-	int fw;					 // 角色在地图标题字体大小
+	enum RoleType type;		 // 角色类型
 
 	int enemy;
 	float hps;
@@ -46,21 +67,25 @@ typedef struct _Role {
 	struct _Room *room;	 // 当前所在房间
 	float x;
 	float y;
-	double vx;			// 当前x速度
-	double vy;			// 当前y速度
-	double faceAngle;	// 面向
-	int moving;			// 是否正在主动移动
-	int attacking;		// 是否正在攻击
-	double attackingT;	// 攻击准备计时
-
-	// 动画相关
-	float hpPercentT;	 // 血量扣除动画计时。
-	float dyingAlphaT;  // 死亡渐隐动画计时。
-
+	double v;			 // 当前总速度
+	double vx;			 // 当前x速度
+	double vy;			 // 当前y速度
+	double faceAngle;	 // 面向
+	int moving;			 // 是否正在主动移动
+	int attacking;		 // 是否正在攻击
+	double attackingT;	 // 攻击准备计时
 	struct _Boll *boll;	 // 子弹链表
+
+	// 绘制、动画相关
+	int fw;				// 角色在地图标题字体大小
+	float hpPercentT;	// 血量扣除动画计时。
+	float dyingAlphaT;	// 死亡渐隐动画计时。
+
+	// AI
+	void *ai;  // ai对象指针
 } Role;
 
-Role *roleCreate(RoleData *data, int enemy);
+Role *roleCreate(enum RoleType type, int enemy, int ai);
 void roleDispose(Role *role);
 void roleUpdate(Role *role, double t);
 void roleDraw(Role *role, double t);

@@ -1,6 +1,8 @@
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
 
+#include "base.h"
+
 #ifndef true
 #define true 1
 #endif
@@ -63,8 +65,20 @@ void drawTextC(char* c, int x, int y, int w, int h, int r, int g, int b, int tex
  * @param y0 起始y位置
  * @param x1 指向x位置
  * @param y1 指向y位置
- * @return 弧度制，与x周逆时针夹角，值域[0，π]
+ * @return 弧度制，与x周逆时针夹角，值域[0，2π]
  */
 float getAngle(float x0, float y0, float x1, float y1);
+
+/**
+ * @brief 获得一个随机的角度
+ * 
+ * @return 弧度制，值域[0，2π]
+ */
+float getRandAngle();
+
+/**
+ * @brief 返回一个随机小数
+ */
+float getRandFloat(float from, float to);
 
 #endif

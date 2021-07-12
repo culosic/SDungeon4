@@ -1,6 +1,7 @@
 #ifndef _CIRPAD_H_
 #define _CIRPAD_H_
 
+#include "base.h"
 #include "role.h"
 
 /**
@@ -20,11 +21,11 @@ typedef struct _Cirpad {
 	float barR;
 	float activeR;
 	int justTouch;
-	
+
 	double angle;
-	int active;  // 是否在挪动或点击摇杆
+	int active;	 // 是否在挪动或点击摇杆
 	int activeI;
-	int dragged;   // 摇杆是否被有效挪动，此时会产生摇杆挪动事件，比如移动角色等。
+	int dragged;  // 摇杆是否被有效挪动，此时会产生摇杆挪动事件，比如移动角色等。
 } Cirpad;
 
 Cirpad *cirpadCreate(float x, float y, float r, float r2, int justTouch);

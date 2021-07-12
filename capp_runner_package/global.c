@@ -68,3 +68,11 @@ int32 getAlphaColor(int32 color, float alpha) {
 	int32 a = ((int)(255 * alpha)) << 24;
 	return (color & a) + (color ^ 0xff000000);
 }
+
+float getRandAngle() {
+	return rand() % (int)(M_PI * 2000000) / 1000000.0;
+}
+
+float getRandFloat(float from, float to) {
+	return from + rand() % (int)(to * 1000000) / 1000000.0;
+}

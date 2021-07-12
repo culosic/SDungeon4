@@ -75,16 +75,16 @@ void gameInit() {
 		setscrsize(STAGEH, STAGEH * SCRH / SCRW);
 	}
 	Map *map = game.map = mapCreate(60);
-	Role *mainRole = game.mainRole = roleCreate(&role_longxin, false);
+	Role *mainRole = game.mainRole = roleCreate(RoleType_LongXin, false, false);
 	Room *initRoom = map->currentRoom;
 	roomAddRole(initRoom, mainRole, 100, 100);
-	roomAddRole(initRoom, roleCreate(&role_mouse, true), 300, 100);
-	roomAddRole(initRoom, roleCreate(&role_mouse, true), 300, 200);
-	roomAddRole(initRoom, roleCreate(&role_mouse, true), 300, 300);
-	roomAddRole(initRoom, roleCreate(&role_mouse, true), 300, 400);
-	roomAddRole(initRoom, roleCreate(&role_wolf, true), 400, 200);
-	roomAddRole(initRoom, roleCreate(&role_scorpion, true), 400, 300);
-	roomAddRole(initRoom, roleCreate(&role_ghost, true), 400, 400);
+	roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 100);
+	// roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 200);
+	// roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 300);
+	// roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 400);
+	// roomAddRole(initRoom, roleCreate(RoleType_Wolf, true, true), 400, 200);
+	// roomAddRole(initRoom, roleCreate(RoleType_Scorpion, true, true), 400, 300);
+	// roomAddRole(initRoom, roleCreate(RoleType_Ghost, true, true), 400, 400);
 	game.dpad = cirpadCreate(200, SCRH - 200, 120, 40, false);
 	game.apad = cirpadCreate(SCRW - 200, SCRH - 200, 120, 40, true);
 	game.drawTimer = timercreate();

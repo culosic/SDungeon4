@@ -1,6 +1,7 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 
+#include "base.h"
 #include "cirpad.h"
 #include "map.h"
 #include "role.h"

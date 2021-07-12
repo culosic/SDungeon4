@@ -1,6 +1,7 @@
 #ifndef _DATA_H_
 #define _DATA_H_
 
+#include "base.h"
 #include "role.h"
 #include "room.h"
 
@@ -133,7 +134,7 @@ struct _RoleData role_mouse = {
 	6,
 	0,
 	1,
-	200,
+	150,
 	10,
 
 	0,
@@ -152,7 +153,7 @@ struct _RoleData role_wolf = {
 	8,
 	0,
 	3,
-	400,
+	300,
 	10,
 
 	0,
