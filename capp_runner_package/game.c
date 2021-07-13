@@ -1,9 +1,10 @@
 #include "game.h"
 
-#include "base.h"
+#include <base.h>
+#include <exb.h>
+
 #include "cirpad.h"
 #include "data.h"
-#include "exb.h"
 #include "global.h"
 #include "map.h"
 #include "role.h"
@@ -77,12 +78,12 @@ void gameInit() {
 	Map *map = game.map = mapCreate(60);
 	Role *mainRole = game.mainRole = roleCreate(RoleType_LongXin, false, false);
 	Room *initRoom = map->currentRoom;
-	roomAddRole(initRoom, mainRole, 100, 100);
+	roomAddRole(initRoom, mainRole, 100, 400);
 	roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 100);
-	// roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 200);
+	roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 200);
 	// roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 300);
 	// roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 400);
-	// roomAddRole(initRoom, roleCreate(RoleType_Wolf, true, true), 400, 200);
+	roomAddRole(initRoom, roleCreate(RoleType_Wolf, true, true), 400, 200);
 	// roomAddRole(initRoom, roleCreate(RoleType_Scorpion, true, true), 400, 300);
 	// roomAddRole(initRoom, roleCreate(RoleType_Ghost, true, true), 400, 400);
 	game.dpad = cirpadCreate(200, SCRH - 200, 120, 40, false);
@@ -97,5 +98,5 @@ void gameDispose() {
 	cirpadDispose(game.dpad);
 	cirpadDispose(game.apad);
 	mapDispose(game.map);
-	printf("内存释放情况：%d/%d\n", dispose_times, create_times);
+	printf(utf8_c("内存释放情况：%d/%d\n"), dispose_times, create_times);
 }

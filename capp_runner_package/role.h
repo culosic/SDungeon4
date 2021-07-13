@@ -1,7 +1,8 @@
 #ifndef _ROLE_H_
 #define _ROLE_H_
 
-#include "base.h"
+#include <base.h>
+
 #include "boll.h"
 #include "room.h"
 
@@ -88,6 +89,7 @@ typedef struct _Role {
 Role *roleCreate(enum RoleType type, int enemy, int ai);
 void roleDispose(Role *role);
 void roleUpdate(Role *role, double t);
+void roleUpdateAddition(Role *role, double t);
 void roleDraw(Role *role, double t);
 
 /**

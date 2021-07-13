@@ -1,9 +1,10 @@
 #include "map.h"
 
-#include "base.h"
+#include <base.h>
+#include <graphics.h>
+
 #include "data.h"
 #include "global.h"
-#include "graphics.h"
 #include "room.h"
 
 Map *mapCreate(int luck) {

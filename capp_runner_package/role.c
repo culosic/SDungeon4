@@ -1,14 +1,16 @@
 #include "role.h"
 
+#include <base.h>
+#include <ex_math.h>
+#include <graphics.h>
 #include <math.h>
 
-#include "ai.h"
-#include "base.h"
+#include "ai/floor1/mouse.h"
+#include "ai/floor1/wolf.h"
 #include "boll.h"
 #include "data.h"
-#include "ex_math.h"
+#include "game.h"
 #include "global.h"
-#include "graphics.h"
 #include "map.h"
 #include "room.h"
 
@@ -57,6 +59,9 @@ static void *roleCreateAI(Role *role) {
 	case RoleType_Mouse:
 		ai = aiMouseCreate(role);
 		break;
+	case RoleType_Wolf:
+		ai = aiWolfCreate(role);
+		break;
 	default:
 		break;
 	}
@@ -72,6 +77,9 @@ static void roleDisposeAI(Role *role) {
 	case RoleType_Mouse:
 		aiMouseDispose(ai);
 		break;
+	case RoleType_Wolf:
+		aiWolfDispose(ai);
+		break;
 	default:
 		break;
 	}
@@ -85,6 +93,9 @@ static void roleUpdateAI(Role *role, double t) {
 	switch (role->type) {
 	case RoleType_Mouse:
 		aiMouseUpdate(ai, t);
+		break;
+	case RoleType_Wolf:
+		aiWolfUpdate(ai, t);
 		break;
 	default:
 		break;
@@ -131,7 +142,7 @@ static void roleGotoRoom(Role *role, Room *room) {
 }
 
 void roleUpdate(Role *role, double t) {
-	if (role->hp < 0) {
+	if (role->hp <= 0) {
 		return;
 	}
 	RoleData *data = role->data;
@@ -163,6 +174,9 @@ void roleUpdate(Role *role, double t) {
 			switch (tile->type) {
 			case RoomTile_Door:
 				// 切换房间
+				if (role != game.mainRole) {
+					break;	// 非主角，不能切换房间。
+				}
 				switch (tile->doorDirection) {
 				case 2:
 					role->y = room->roomH + room->wallD - data->r - 10;
@@ -201,6 +215,9 @@ void roleUpdate(Role *role, double t) {
 	if (yStopped) {
 		role->y -= sy;
 	}
+}
+
+void roleUpdateAddition(Role *role, double t) {
 	// 子弹检测
 	bollUpdate(role->boll, t);
 }

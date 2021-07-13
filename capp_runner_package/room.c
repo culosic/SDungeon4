@@ -1,9 +1,10 @@
 #include "room.h"
 
-#include "base.h"
+#include <base.h>
+#include <graphics.h>
+
 #include "data.h"
 #include "global.h"
-#include "graphics.h"
 #include "map.h"
 
 RoomTile *roomTileCreate(int x, int y, int w, int h, enum RoomTileType type) {
@@ -139,6 +140,7 @@ void roomDraw(Room *room, double t) {
 void roomUpdate(Room *room, double t) {
 	for (int i = 0; i < room->roleCount; i++) {
 		roleUpdate(room->roles[i], t);
+		roleUpdateAddition(room->roles[i], t);
 	}
 }
 

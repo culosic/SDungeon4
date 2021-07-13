@@ -1,7 +1,8 @@
 #ifndef _DATA_H_
 #define _DATA_H_
 
-#include "base.h"
+#include <base.h>
+
 #include "role.h"
 #include "room.h"
 
@@ -145,7 +146,7 @@ struct _RoleData role_mouse = {
 struct _RoleData role_wolf = {
 	"柴狼",
 	"狼",
-	"敏捷、凶悍，一般来自森林，到此地牢寻找猎物，特别是来探索地牢的、可口的人类和精灵",
+	"敏捷、凶悍，一般来自森林，到此地牢寻找猎物，那些来探索地牢的人类和精灵是他的最爱",
 	25,
 	0xff666666,
 	0xff333333,
@@ -153,7 +154,7 @@ struct _RoleData role_wolf = {
 	8,
 	0,
 	3,
-	300,
+	200,
 	10,
 
 	0,
@@ -183,7 +184,7 @@ struct _RoleData role_scorpion = {
 struct _RoleData role_ghost = {
 	"幽鬼",
 	"鬼",
-	"日积月累...不断吞噬...最后，它成为了一个怪物！一团巨大的恶鬼。是消灭它，还是和它融为一体，全靠本事了。",
+	"日积月累...不断吞噬...最后，它成为了一个怪物！一团巨大的恶鬼。恐怖、诡异的身影，成为了每个探索者的噩梦。",
 	60,
 	0xff444444,
 	0xff000000,

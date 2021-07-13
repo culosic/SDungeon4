@@ -1,7 +1,7 @@
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
 
-#include "base.h"
+#include <base.h>
 
 #ifndef true
 #define true 1
@@ -59,6 +59,11 @@ void drawText(char* c, int x, int y, int r, int g, int b, int textSize);
 void drawTextC(char* c, int x, int y, int w, int h, int r, int g, int b, int textSize);
 
 /**
+ * @brief 改变透明度并返回颜色
+ */
+int32 getAlphaColor(int32 color, float alpha);
+
+/**
  * @brief 计算向量角度
  * 
  * @param x0 起始x位置
@@ -75,6 +80,13 @@ float getAngle(float x0, float y0, float x1, float y1);
  * @return 弧度制，值域[0，2π]
  */
 float getRandAngle();
+
+/**
+ * @brief 获得一个随机的偏角
+ * 
+ * @return 弧度制，值域[-angle，angle]
+ */
+float getRandScatter(float angle);
 
 /**
  * @brief 返回一个随机小数

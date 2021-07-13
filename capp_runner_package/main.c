@@ -6,8 +6,11 @@
  * 时间：2021年6月18日
  */
 
-#include "ai.c"
-#include "base.h"
+#include <base.h>
+
+#include "ai/ai.c"
+#include "ai/floor1/mouse.c"
+#include "ai/floor1/wolf.c"
 #include "boll.c"
 #include "cirpad.c"
 #include "game.c"

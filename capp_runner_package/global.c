@@ -1,10 +1,9 @@
 #include "global.h"
 
+#include <base.h>
+#include <exb.h>
+#include <graphics.h>
 #include <math.h>
-
-#include "base.h"
-#include "exb.h"
-#include "graphics.h"
 
 void* create(int32 size) {
 	create_times++;
@@ -35,6 +34,17 @@ void drawTextC(char* c, int x, int y, int w, int h, int r, int g, int b, int tex
 	dtext(c, x + (w - fw) / 2, y + (h - fh) / 2 - textSize / 8, r, g, b, 0, 1);
 }
 
+int32 getAlphaColor(int32 color, float alpha) {
+	if (alpha == 0) {
+		return 0x000000;
+	}
+	if (alpha == 1) {
+		return color;
+	}
+	int32 a = ((int)(255 * alpha)) << 24;
+	return (color & a) + (color ^ 0xff000000);
+}
+
 float getAngle(float x0, float y0, float x1, float y1) {
 	float dx = x1 - x0, dy = y1 - y0;
 	float r = 0;
@@ -58,19 +68,15 @@ float getAngle(float x0, float y0, float x1, float y1) {
 	return r;
 }
 
-int32 getAlphaColor(int32 color, float alpha) {
-	if (alpha == 0) {
-		return 0x000000;
-	}
-	if (alpha == 1) {
-		return color;
-	}
-	int32 a = ((int)(255 * alpha)) << 24;
-	return (color & a) + (color ^ 0xff000000);
-}
-
 float getRandAngle() {
 	return rand() % (int)(M_PI * 2000000) / 1000000.0;
+}
+
+float getRandScatter(float angle) {
+	if (!angle) {
+		return 0;
+	}
+	return (rand() % 2 ? 1 : -1) * rand() % (int)(angle * 1000000) / 1000000.0;
 }
 
 float getRandFloat(float from, float to) {

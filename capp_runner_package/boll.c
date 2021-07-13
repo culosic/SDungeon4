@@ -1,11 +1,11 @@
 #include "boll.h"
 
+#include <base.h>
+#include <ex_math.h>
+#include <graphics.h>
 #include <math.h>
 
-#include "base.h"
-#include "ex_math.h"
 #include "global.h"
-#include "graphics.h"
 #include "room.h"
 
 Boll *bollsCreate(float r, int32 color, double v, float range) {
@@ -26,17 +26,16 @@ void bollsDispose(Boll *head) {
 		Boll *prev = boll;
 		boll = boll->next;
 		dispose(prev);
-	} while(boll);
+	} while (boll);
 }
 
 void bollAdd(Boll *head, Role *role, float x, float y, double angle) {
-	// BollData *data = head->data;
-	double v0 = 600;  // TODO 速度放入data。
+	BollData *data = head->data;
 	Boll *boll = create(sizeof(Boll));
 	boll->role = role;
 	boll->room = role->room;
-	boll->vx = v0 * cos(angle);
-	boll->vy = v0 * sin(angle);
+	boll->vx = data->v * cos(angle);
+	boll->vy = data->v * sin(angle);
 	boll->x = x;
 	boll->y = y;
 	Boll *t = head;

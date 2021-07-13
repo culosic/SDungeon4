@@ -1,7 +1,8 @@
 #ifndef _BOLL_H_
 #define _BOLL_H_
 
-#include "base.h"
+#include <base.h>
+
 #include "role.h"
 #include "room.h"
 

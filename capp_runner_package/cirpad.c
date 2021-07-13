@@ -1,12 +1,12 @@
 #include "cirpad.h"
 
+#include <base.h>
+#include <ex_math.h>
+#include <exb.h>
+#include <graphics.h>
 #include <math.h>
 
-#include "base.h"
-#include "ex_math.h"
-#include "exb.h"
 #include "global.h"
-#include "graphics.h"
 
 Cirpad *cirpadCreate(float x, float y, float r, float barR, int justTouch) {
 	Cirpad *pad = create(sizeof(struct _Cirpad));
