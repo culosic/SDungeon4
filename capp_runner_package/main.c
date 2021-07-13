@@ -10,6 +10,7 @@
 
 #include "ai/ai.c"
 #include "ai/floor1/mouse.c"
+#include "ai/floor1/scorpion.c"
 #include "ai/floor1/wolf.c"
 #include "boll.c"
 #include "cirpad.c"

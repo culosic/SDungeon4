@@ -6,6 +6,7 @@
 #include <math.h>
 
 #include "ai/floor1/mouse.h"
+#include "ai/floor1/scorpion.h"
 #include "ai/floor1/wolf.h"
 #include "boll.h"
 #include "data.h"
@@ -62,6 +63,9 @@ static void *roleCreateAI(Role *role) {
 	case RoleType_Wolf:
 		ai = aiWolfCreate(role);
 		break;
+	case RoleType_Scorpion:
+		ai = aiScorpionCreate(role);
+		break;
 	default:
 		break;
 	}
@@ -80,6 +84,9 @@ static void roleDisposeAI(Role *role) {
 	case RoleType_Wolf:
 		aiWolfDispose(ai);
 		break;
+	case RoleType_Scorpion:
+		aiScorpionDispose(ai);
+		break;
 	default:
 		break;
 	}
@@ -96,6 +103,9 @@ static void roleUpdateAI(Role *role, double t) {
 		break;
 	case RoleType_Wolf:
 		aiWolfUpdate(ai, t);
+		break;
+	case RoleType_Scorpion:
+		aiScorpionUpdate(ai, t);
 		break;
 	default:
 		break;
