@@ -1,0 +1,52 @@
+===============================================================================
+EXTENSION NAME : linecount
+EXTENSION VERSION : 0.1.7
+-------------------------------------------------------------------------------
+count time : 2021-07-15 01:16:10
+count workspace : d:\pengwen\Desktop\S地牢0.4_火烧云
+total files : 40
+total code lines : 2306
+total comment lines : 471
+total blank lines : 327
+
+.gitignore, code is 2, comment is 0, blank is 0.
+capp_run.exe, it is a binary file.
+capp_runner_package\ai\ai.c, code is 9, comment is 0, blank is 3.
+capp_runner_package\ai\ai.h, code is 6, comment is 6, blank is 4.
+capp_runner_package\ai\floor1\ghost.c, code is 214, comment is 30, blank is 17.
+capp_runner_package\ai\floor1\ghost.h, code is 49, comment is 28, blank is 17.
+capp_runner_package\ai\floor1\mouse.c, code is 71, comment is 6, blank is 6.
+capp_runner_package\ai\floor1\mouse.h, code is 19, comment is 8, blank is 7.
+capp_runner_package\ai\floor1\scorpion.c, code is 74, comment is 6, blank is 6.
+capp_runner_package\ai\floor1\scorpion.h, code is 19, comment is 8, blank is 7.
+capp_runner_package\ai\floor1\wolf.c, code is 91, comment is 13, blank is 6.
+capp_runner_package\ai\floor1\wolf.h, code is 22, comment is 11, blank is 7.
+capp_runner_package\boll.c, code is 75, comment is 3, blank is 7.
+capp_runner_package\boll.h, code is 28, comment is 22, blank is 8.
+capp_runner_package\cirpad.c, code is 73, comment is 4, blank is 7.
+capp_runner_package\cirpad.h, code is 25, comment is 8, blank is 7.
+capp_runner_package\data.h, code is 202, comment is 3, blank is 42.
+capp_runner_package\game.c, code is 83, comment is 11, blank is 10.
+capp_runner_package\game.h, code is 24, comment is 0, blank is 8.
+capp_runner_package\global.c, code is 73, comment is 4, blank is 11.
+capp_runner_package\global.h, code is 22, comment is 58, blank is 16.
+capp_runner_package\libcapp.so, it is a binary file.
+capp_runner_package\main.c, code is 40, comment is 7, blank is 9.
+capp_runner_package\map.c, code is 225, comment is 21, blank is 14.
+capp_runner_package\map.h, code is 16, comment is 44, blank is 7.
+capp_runner_package\role.c, code is 301, comment is 21, blank is 20.
+capp_runner_package\role.h, code is 75, comment is 72, blank is 16.
+capp_runner_package\room.c, code is 205, comment is 7, blank is 13.
+capp_runner_package\room.h, code is 71, comment is 40, blank is 13.
+capp_runner_package\run.zip, it is a binary file.
+README.md, code is 39, comment is 1, blank is 15.
+run.cmd, code is 1, comment is 0, blank is 0.
+S地牢0.4-传承.xmind, it is a binary file.
+test\main.c, code is 10, comment is 0, blank is 2.
+test\tempCodeRunnerFile.exe, it is a binary file.
+test\test_global.c, code is 56, comment is 29, blank is 9.
+test\test_global.exe, it is a binary file.
+test\tester.c, code is 72, comment is 0, blank is 9.
+test\tester.exe, it is a binary file.
+test\tester.h, code is 14, comment is 0, blank is 4.
+===============================================================================

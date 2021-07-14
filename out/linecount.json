@@ -1,0 +1,264 @@
+{
+    "extension": "linecount",
+    "version": "0.1.7",
+    "workspace": "d:\\pengwen\\Desktop\\S地牢0.4_火烧云",
+    "linecount": [
+        {
+            "version": "0.1.7",
+            "counttime": "2021-07-15 01:16:10",
+            "filesum": 40,
+            "codesum": 2306,
+            "commentsum": 471,
+            "blanksum": 327,
+            "filelist": [
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": ".gitignore"
+                },
+                {
+                    "filename": "capp_run.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 3,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "capp_runner_package\\ai\\ai.c"
+                },
+                {
+                    "blank": 4,
+                    "code": 6,
+                    "comment": 6,
+                    "filename": "capp_runner_package\\ai\\ai.h"
+                },
+                {
+                    "blank": 17,
+                    "code": 214,
+                    "comment": 30,
+                    "filename": "capp_runner_package\\ai\\floor1\\ghost.c"
+                },
+                {
+                    "blank": 17,
+                    "code": 49,
+                    "comment": 28,
+                    "filename": "capp_runner_package\\ai\\floor1\\ghost.h"
+                },
+                {
+                    "blank": 6,
+                    "code": 71,
+                    "comment": 6,
+                    "filename": "capp_runner_package\\ai\\floor1\\mouse.c"
+                },
+                {
+                    "blank": 7,
+                    "code": 19,
+                    "comment": 8,
+                    "filename": "capp_runner_package\\ai\\floor1\\mouse.h"
+                },
+                {
+                    "blank": 6,
+                    "code": 74,
+                    "comment": 6,
+                    "filename": "capp_runner_package\\ai\\floor1\\scorpion.c"
+                },
+                {
+                    "blank": 7,
+                    "code": 19,
+                    "comment": 8,
+                    "filename": "capp_runner_package\\ai\\floor1\\scorpion.h"
+                },
+                {
+                    "blank": 6,
+                    "code": 91,
+                    "comment": 13,
+                    "filename": "capp_runner_package\\ai\\floor1\\wolf.c"
+                },
+                {
+                    "blank": 7,
+                    "code": 22,
+                    "comment": 11,
+                    "filename": "capp_runner_package\\ai\\floor1\\wolf.h"
+                },
+                {
+                    "blank": 7,
+                    "code": 75,
+                    "comment": 3,
+                    "filename": "capp_runner_package\\boll.c"
+                },
+                {
+                    "blank": 8,
+                    "code": 28,
+                    "comment": 22,
+                    "filename": "capp_runner_package\\boll.h"
+                },
+                {
+                    "blank": 7,
+                    "code": 73,
+                    "comment": 4,
+                    "filename": "capp_runner_package\\cirpad.c"
+                },
+                {
+                    "blank": 7,
+                    "code": 25,
+                    "comment": 8,
+                    "filename": "capp_runner_package\\cirpad.h"
+                },
+                {
+                    "blank": 42,
+                    "code": 202,
+                    "comment": 3,
+                    "filename": "capp_runner_package\\data.h"
+                },
+                {
+                    "blank": 10,
+                    "code": 83,
+                    "comment": 11,
+                    "filename": "capp_runner_package\\game.c"
+                },
+                {
+                    "blank": 8,
+                    "code": 24,
+                    "comment": 0,
+                    "filename": "capp_runner_package\\game.h"
+                },
+                {
+                    "blank": 11,
+                    "code": 73,
+                    "comment": 4,
+                    "filename": "capp_runner_package\\global.c"
+                },
+                {
+                    "blank": 16,
+                    "code": 22,
+                    "comment": 58,
+                    "filename": "capp_runner_package\\global.h"
+                },
+                {
+                    "filename": "capp_runner_package\\libcapp.so",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 9,
+                    "code": 40,
+                    "comment": 7,
+                    "filename": "capp_runner_package\\main.c"
+                },
+                {
+                    "blank": 14,
+                    "code": 225,
+                    "comment": 21,
+                    "filename": "capp_runner_package\\map.c"
+                },
+                {
+                    "blank": 7,
+                    "code": 16,
+                    "comment": 44,
+                    "filename": "capp_runner_package\\map.h"
+                },
+                {
+                    "blank": 20,
+                    "code": 301,
+                    "comment": 21,
+                    "filename": "capp_runner_package\\role.c"
+                },
+                {
+                    "blank": 16,
+                    "code": 75,
+                    "comment": 72,
+                    "filename": "capp_runner_package\\role.h"
+                },
+                {
+                    "blank": 13,
+                    "code": 205,
+                    "comment": 7,
+                    "filename": "capp_runner_package\\room.c"
+                },
+                {
+                    "blank": 13,
+                    "code": 71,
+                    "comment": 40,
+                    "filename": "capp_runner_package\\room.h"
+                },
+                {
+                    "filename": "capp_runner_package\\run.zip",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 15,
+                    "code": 39,
+                    "comment": 1,
+                    "filename": "README.md"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "run.cmd"
+                },
+                {
+                    "filename": "S地牢0.4-传承.xmind",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 2,
+                    "code": 10,
+                    "comment": 0,
+                    "filename": "test\\main.c"
+                },
+                {
+                    "filename": "test\\tempCodeRunnerFile.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 9,
+                    "code": 56,
+                    "comment": 29,
+                    "filename": "test\\test_global.c"
+                },
+                {
+                    "filename": "test\\test_global.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 9,
+                    "code": 72,
+                    "comment": 0,
+                    "filename": "test\\tester.c"
+                },
+                {
+                    "filename": "test\\tester.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 4,
+                    "code": 14,
+                    "comment": 0,
+                    "filename": "test\\tester.h"
+                }
+            ]
+        }
+    ]
+}

@@ -49,4 +49,10 @@
   },
   "files.encoding": "utf8",
   "files.autoGuessEncoding": true,
+  "LineCount.excludes": [
+    "**/capp/**",
+    "**/Android.mk",
+    "**/.vscode/**",
+    "**/node_modules/**"
+  ],
 }
