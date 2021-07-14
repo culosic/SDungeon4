@@ -25,6 +25,12 @@ struct _RoomGenerateData room_gene_data[5] = {
 	{Room_Elite, 40, 1.5},
 };
 
+enum RoomType room_gene_data_static[3] = {
+	2,
+	3,
+	4,
+};
+
 ////////////////// 玩家人物属性相关 ////////////////////////
 
 struct _RoleData role_longxin = {
@@ -54,7 +60,7 @@ struct _RoleData role_jingyu = {
 	0xff009688,
 	0xff009688,
 
-	6,
+	8,
 	2,
 	3,
 	350,
@@ -92,7 +98,7 @@ struct _RoleData role_ne_giles = {
 	0xff009688,
 	0xff009688,
 
-	6,
+	8,
 	1,
 	3,
 	300,
@@ -191,8 +197,46 @@ struct _RoleData role_ghost = {
 
 	60,
 	0,
-	8,
-	250,
+	3,
+	100,
+	10,
+
+	0,
+	0,
+	0,
+};
+
+struct _RoleData role_ghost_main = {
+	"魂魄",
+	"魄",
+	"幽鬼头领",
+	40,
+	0xff444444,
+	0xff000000,
+
+	60,
+	0,
+	3,
+	200,
+	10,
+
+	0,
+	0,
+	0,
+};
+
+struct _RoleData role_ghost_child = {
+	"鬾鬼",
+	"鬾",
+	"幽鬼附属",
+	20,
+	0xff444444,
+	0xff000000,
+
+	4,
+	0,
+	1,
+	300,
 	10,
 
 	0,

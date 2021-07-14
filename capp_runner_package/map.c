@@ -113,8 +113,9 @@ Map *mapCreate(int luck) {
 	// printf("总共：%d\n", ratioSum);
 	// mapPrint(map);
 
-	// 生成次级房间。
+	// 生成固定、随机次级房间。
 	float remainRoomCount = 4;
+	int staticIndex = 0;
 	for (int i = 0; i < slotCount; i++) {
 		if (remainRoomCount <= 0) {
 			break;	// 次级房间数量已足够。
@@ -128,13 +129,18 @@ Map *mapCreate(int luck) {
 		int ratioRand = rand() % ratioSum;
 		int ratioStart = 0;
 		int roomGeneIndex = -1;
-		for (int j = 0; j < 5; j++) {
-			int range = ratioRanges[j];
-			if (ratioRand >= ratioStart && ratioRand < ratioStart + range) {
-				roomGeneIndex = j;
-				break;
+		if (staticIndex < 3) {
+			staticIndex++;
+			roomGeneIndex = room_gene_data_static[i];
+		} else {
+			for (int j = 0; j < 5; j++) {
+				int range = ratioRanges[j];
+				if (ratioRand >= ratioStart && ratioRand < ratioStart + range) {
+					roomGeneIndex = j;
+					break;
+				}
+				ratioStart += range;
 			}
-			ratioStart += range;
 		}
 		if (roomGeneIndex > -1) {
 			Room *room = map->roomList[map->roomCount++] = map->rooms[y][x] = roomCreate(map, x, y, room_gene_data[roomGeneIndex].type);

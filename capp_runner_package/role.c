@@ -5,6 +5,7 @@
 #include <graphics.h>
 #include <math.h>
 
+#include "ai/floor1/ghost.h"
 #include "ai/floor1/mouse.h"
 #include "ai/floor1/scorpion.h"
 #include "ai/floor1/wolf.h"
@@ -43,10 +44,16 @@ static RoleData *roleGetData(enum RoleType type) {
 	case RoleType_Scorpion:
 		data = &role_scorpion;
 		break;
-
 	case RoleType_Ghost:
 		data = &role_ghost;
 		break;
+	case RoleType_Ghost_Main:
+		data = &role_ghost_main;
+		break;
+	case RoleType_Ghost_Child:
+		data = &role_ghost_child;
+		break;
+
 	default:
 		data = &role_mouse;
 		break;
@@ -65,6 +72,15 @@ static void *roleCreateAI(Role *role) {
 		break;
 	case RoleType_Scorpion:
 		ai = aiScorpionCreate(role);
+		break;
+	case RoleType_Ghost:
+		ai = aiGhostCreate(role);
+		break;
+	case RoleType_Ghost_Main:
+		ai = aiGhostMainCreate(role);
+		break;
+	case RoleType_Ghost_Child:
+		ai = aiGhostChildCreate(role);
 		break;
 	default:
 		break;
@@ -87,6 +103,15 @@ static void roleDisposeAI(Role *role) {
 	case RoleType_Scorpion:
 		aiScorpionDispose(ai);
 		break;
+	case RoleType_Ghost:
+		aiGhostDispose(ai);
+		break;
+	case RoleType_Ghost_Main:
+		aiGhostMainDispose(ai);
+		break;
+	case RoleType_Ghost_Child:
+		aiGhostChildDispose(ai);
+		break;
 	default:
 		break;
 	}
@@ -106,6 +131,15 @@ static void roleUpdateAI(Role *role, double t) {
 		break;
 	case RoleType_Scorpion:
 		aiScorpionUpdate(ai, t);
+		break;
+	case RoleType_Ghost:
+		aiGhostUpdate(ai, t);
+		break;
+	case RoleType_Ghost_Main:
+		aiGhostMainUpdate(ai, t);
+		break;
+	case RoleType_Ghost_Child:
+		aiGhostChildUpdate(ai, t);
 		break;
 	default:
 		break;
@@ -280,7 +314,6 @@ void roleDraw(Role *role, double t) {
 }
 
 void roleMove(Role *role, double angle) {
-	RoleData *data = role->data;
 	role->moving = true;
 	// if (!role->attacking) {	 // 仅移动时，攻击方向跟攻击方向保持一直。
 	role->faceAngle = angle;

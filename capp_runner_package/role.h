@@ -27,6 +27,8 @@ enum RoleType {
 
 	// 第一层boss
 	RoleType_Ghost = 0x01ff01,
+	RoleType_Ghost_Main = 0x01ff02,
+	RoleType_Ghost_Child = 0x01ff03,
 };
 
 typedef struct _RoleData {

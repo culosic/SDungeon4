@@ -53,7 +53,7 @@ void aiScorpionUpdate(AIScorpion *ai, double t) {
 	case AIScorpion_Attack:
 		if (ai->attackCount > 0) {
 			if (role->attackingT == 0) {
-				roleAttack(role, aiGetAngleToEnemy(role, 0));
+				roleAttack(role, aiGetAngleToEnemy(role, M_PI / 12));
 				ai->attackCount--;
 			} else {
 				roleStopAttack(role);
