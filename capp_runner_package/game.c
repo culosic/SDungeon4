@@ -51,8 +51,8 @@ void gameUpdate(long data) {
 
 	// 绘图
 	cls(40, 50, 60);
-	// mapDrawMiniMap(game.map, t);
 	mapDraw(game.map, t);
+	mapDrawMiniMap(game.map, t);
 	cirpadDraw(game.dpad, t);
 	cirpadDraw(game.apad, t);
 	gameDrawFPS(t);
@@ -75,17 +75,33 @@ void gameInit() {
 	} else {  // 竖屏
 		setscrsize(STAGEH, STAGEH * SCRH / SCRW);
 	}
-	Map *map = game.map = mapCreate(60);
+	Map *map = game.map = mapCreate();
 	Role *mainRole = game.mainRole = roleCreate(RoleType_LongXin, false, false);
 	Room *initRoom = map->currentRoom;
+	Room *lastRoom = map->roomList[1];
 	roomAddRole(initRoom, mainRole, 100, 400);
+
+	// // 第一层敌人测试
 	// roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 100);
-	// roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 200);
-	// roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 300);
-	// roomAddRole(initRoom, roleCreate(RoleType_Mouse, true, true), 300, 400);
 	// roomAddRole(initRoom, roleCreate(RoleType_Wolf, true, true), 400, 200);
 	// roomAddRole(initRoom, roleCreate(RoleType_Scorpion, true, true), 400, 300);
-	roomAddRole(initRoom, roleCreate(RoleType_Ghost, true, true), 400, 400);
+	// // 第一层boss测试
+	// roomAddRole(lastRoom, roleCreate(RoleType_Ghost, true, true), 400, 400);
+
+	// 第二层敌人测试
+	roomAddRole(initRoom, roleCreate(RoleType_Ant, true, true), 300, 100);
+	roomAddRole(initRoom, roleCreate(RoleType_Frog, true, true), 400, 200);
+	roomAddRole(initRoom, roleCreate(RoleType_Snake, true, true), 400, 300);
+	// 第二层boss测试
+	roomAddRole(lastRoom, roleCreate(RoleType_FlameM, true, true), 400, 400);
+
+	// // 第三层敌人测试
+	// roomAddRole(initRoom, roleCreate(RoleType_Bee, true, true), 300, 100);
+	// roomAddRole(initRoom, roleCreate(RoleType_Tiger, true, true), 400, 200);
+	// roomAddRole(initRoom, roleCreate(RoleType_Tortoise, true, true), 400, 300);
+	// // 第三层boss测试
+	// roomAddRole(lastRoom, roleCreate(RoleType_EDragon, true, true), 400, 400);
+
 	game.dpad = cirpadCreate(200, SCRH - 200, 120, 40, false);
 	game.apad = cirpadCreate(SCRW - 200, SCRH - 200, 120, 40, true);
 	game.drawTimer = timercreate();

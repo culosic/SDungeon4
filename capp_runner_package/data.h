@@ -10,25 +10,13 @@
 
 char *room_init_caption = "初";
 char *room_battle_caption = "战";
-char *room_trap_caption = "阵";
-char *room_potions_caption = "釜";
+char *room_potions_caption = "药";
 char *room_treasure_caption = "箱";
-char *room_elite_caption = "魂";
-char *room_shop_caption = "店";
 char *room_boss_caption = "狱";
 
-struct _RoomGenerateData room_gene_data[5] = {
-	{Room_Trap, -20, 0.8},
-	{Room_Battle, 10, 1},
-	{Room_Potions, 10, 0.6},
-	{Room_Treasure, 20, 0.8},
-	{Room_Elite, 40, 1.5},
-};
-
-enum RoomType room_gene_data_static[3] = {
-	2,
-	3,
-	4,
+enum RoomType room_gene_data_static[2] = {
+	Room_Potions,
+	Room_Treasure,
 };
 
 ////////////////// 玩家人物属性相关 ////////////////////////
@@ -41,91 +29,9 @@ struct _RoleData role_longxin = {
 	0xff009688,
 	0xff005737,
 
-	10,
-	10,
+	100,// 10,
 	2,
 	300,
-	10,
-
-	10,
-	2,
-	1,
-};
-
-struct _RoleData role_jingyu = {
-	"惊羽",
-	"羽",
-	"一个身着奇装异服的小伙子，他看起来并不来自这个世界。但是他有必须来这里的原因，那就是————变强！他说过，压迫的力量越强，反抗就会更加猛烈！",
-	30,
-	0xff009688,
-	0xff009688,
-
-	8,
-	2,
-	3,
-	350,
-	10,
-
-	10,
-	4,
-	1,
-};
-
-struct _RoleData role_wu_jingyu = {
-	"舞·静雨",
-	"雨",
-	"精灵少女，银发、皮肤白皙。擅长光魔法。由于一些原因，她和名字同音的好友惊羽一起踏上了征程，一路上经历了很多，即时她遇到了难以摆平的困难，也不会放弃同伴和自己。",
-	20,
-	0xff009688,
-	0xff009688,
-
-	12,
-	12,
-	1,
-	250,
-	10,
-
-	10,
-	1.5,
-	1,
-};
-
-struct _RoleData role_ne_giles = {
-	"烈贾尔斯",
-	"贾",
-	"烈族之人。精通枪械。长辈们把他逼到了绝境，于是他跑出了部落，流亡在外国他乡。前方或许没有路，但是他也一路走着。他觉得一定有什么东西在等待着他，那个东西在“发光”，光芒是如此令人向往。",
-	40,
-	0xff009688,
-	0xff009688,
-
-	8,
-	1,
-	3,
-	300,
-	10,
-
-	10,
-	2,
-	1.5,
-};
-
-struct _RoleData role_clark = {
-	"克拉克",
-	"克",
-	"男精灵。掌握雷电魔法。他脾气火爆、作恶多端。或许只因旁人说了一句他不满意的话，他也要大打出手。",
-	20,
-	0xff009688,
-	0xff009688,
-
-	12,
-	8,
-	2,
-	400,
-	10,
-
-	10,
-	3,
-	1,
 };
 
 ////////////////// 第一层怪物 ////////////////////////
@@ -139,14 +45,8 @@ struct _RoleData role_mouse = {
 	0xff663300,
 
 	6,
-	0,
 	1,
 	150,
-	10,
-
-	0,
-	0,
-	0,
 };
 
 struct _RoleData role_wolf = {
@@ -157,15 +57,9 @@ struct _RoleData role_wolf = {
 	0xff666666,
 	0xff333333,
 
-	8,
-	0,
+	10,
 	3,
 	200,
-	10,
-
-	0,
-	0,
-	0,
 };
 
 struct _RoleData role_scorpion = {
@@ -177,15 +71,11 @@ struct _RoleData role_scorpion = {
 	0xff6633aa,
 
 	15,
-	0,
 	3,
-	250,
-	10,
-
-	0,
-	0,
-	0,
+	100,
 };
+
+////////////////// 第一层boss ////////////////////////
 
 struct _RoleData role_ghost = {
 	"幽鬼",
@@ -196,14 +86,8 @@ struct _RoleData role_ghost = {
 	0xff000000,
 
 	60,
-	0,
 	3,
 	100,
-	10,
-
-	0,
-	0,
-	0,
 };
 
 struct _RoleData role_ghost_main = {
@@ -215,14 +99,8 @@ struct _RoleData role_ghost_main = {
 	0xff000000,
 
 	60,
-	0,
 	3,
 	200,
-	10,
-
-	0,
-	0,
-	0,
 };
 
 struct _RoleData role_ghost_child = {
@@ -234,14 +112,120 @@ struct _RoleData role_ghost_child = {
 	0xff000000,
 
 	4,
-	0,
 	1,
 	300,
-	10,
+};
 
+////////////////// 第二层怪物 ////////////////////////
+
+struct _RoleData role_ant = {
+	"酸蚀蚁",
+	"蚁",
+	"成群出没，靠口中分泌的强烈酸液捕食猎物。",
+	12,
+	0xff332200,
+	0xff332200,
+
+	8,
+	2,
+	100,
+};
+
+struct _RoleData role_frog = {
+	"毒蛙",
+	"蛙",
+	"毒性较强，同时擅长跃击。",
+	25,
+	0xff22aa37,
+	0xff008837,
+
+	20,
+	8,
+	150,
+};
+
+struct _RoleData role_snake = {
+	"毒蛇",
+	"蛇",
+	"毒液有剧毒，喷射毒液杀死猎物后吞掉猎物。",
+	20,
+	0xff800000,
+	0xff610000,
+
+	12,
+	5,
 	0,
+};
+
+////////////////// 第二层boss ////////////////////////
+
+struct _RoleData role_flamem = {
+	"炎兽",
+	"炎",
+	"元素精灵，可以聚集周围的火元素，胆敢靠近者会被慢慢烧成灰烬。",
+	70,
+	0xffff7700,
+	0xff663300,
+
+	220,
+	3,
+	100,
+};
+
+////////////////// 第三层怪物 ////////////////////////
+
+struct _RoleData role_bee = {
+	"杀人蜂",
+	"蜂",
+	"成群出没，具有强烈的毒性，牙齿可以咬穿皮革。",
+	20,
+	0xffffaa1f,
+	0xffaa8800,
+
+	10,
+	8,
+	150,
+};
+
+struct _RoleData role_tiger = {
+	"虎拳",
+	"虎",
+	"高阶妖兽，半人半虎，擅长拳击。",
+	30,
+	0xffffffff,
+	0xff999999,
+
+	30,
+	16,
+	200,
+};
+
+struct _RoleData role_tortoise = {
+	"玄龟",
+	"龟",
+	"高阶妖兽，龟甲坚硬无比",
+	60,
+	0xff99aacc,
+	0xff607d8b,
+
+	100,
 	0,
-	0,
+	50,
+};
+
+////////////////// 第三层boss ////////////////////////
+
+struct _RoleData role_edragon = {
+	"纯阴·地龙",
+	"阴",
+	"龙族的一员，日夜守在传承附近，可是怎么也得不到传承。",
+	80,
+	0xff000000,
+	0xff000000,
+
+	300,
+	4,
+	200,
 };
 
 #endif

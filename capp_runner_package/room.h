@@ -28,12 +28,9 @@ typedef struct _RoomTile {
 // 房间类型
 enum RoomType {
 	Room_Init,
-	Room_Trap,
 	Room_Battle,
 	Room_Potions,
 	Room_Treasure,
-	Room_Elite,
-	Room_Shop,
 	Room_Boss,
 };
 

@@ -7,7 +7,7 @@
 #include "global.h"
 #include "room.h"
 
-Map *mapCreate(int luck) {
+Map *mapCreate() {
 	// 初始化变量
 	Map *map = create(sizeof(Map));
 
@@ -16,16 +16,14 @@ Map *mapCreate(int luck) {
 	int downOrRight = rand() % 2;
 	int turnIndex = rand() % 5;
 	map->roomList[map->roomCount++] = map->rooms[roomY][roomX] = roomCreate(map, roomX, roomY, Room_Init);
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 4; i++) {
 		if (i == turnIndex) {
 			downOrRight = downOrRight == true ? false : true;
 		}
 		downOrRight ? roomY++ : roomX++;
 		enum RoomType type;
-		if (i == 5) {
+		if (i == 3) {
 			type = Room_Boss;
-		} else if (i == 4) {
-			type = Room_Shop;
 		} else {
 			type = Room_Battle;
 		}
@@ -43,7 +41,7 @@ Map *mapCreate(int luck) {
 		Room *room = map->roomList[i];
 		int type = room->type;
 		// printf("%s\n", room->caption);
-		if (type == Room_Init || type == Room_Boss || type == Room_Shop) {
+		if (type == Room_Init || type == Room_Boss) {
 			continue;  // 终点的boss房间和商店房间，不连接次级房间。
 		}
 		int x = room->x;
@@ -92,63 +90,21 @@ Map *mapCreate(int luck) {
 		slotsSuper[index] = tmpSuper;
 	}
 
-	// 计算次级房间生成概率比。
-	int ratioRanges[5];
-	int ratioSum = 0;
-	// printf("概率比：");
-	for (int i = 0; i < 5; i++) {
-		int room_luck = room_gene_data[i].luck;
-		if (room_luck >= 0) {
-			ratioRanges[i] = luck - room_luck;
-		} else {
-			ratioRanges[i] = -room_luck;
-		}
-		if (ratioRanges[i] <= 4) {
-			ratioRanges[i] = 4;	 // 最低概率比
-		}
-		ratioSum += ratioRanges[i];
-		// printf("%d ", ratioRanges[i]);
-	}
-	// printf("\n");
-	// printf("总共：%d\n", ratioSum);
-	// mapPrint(map);
-
-	// 生成固定、随机次级房间。
-	float remainRoomCount = 4;
+	// 添加固定的次级房间。
 	int staticIndex = 0;
-	for (int i = 0; i < slotCount; i++) {
-		if (remainRoomCount <= 0) {
-			break;	// 次级房间数量已足够。
-		}
+	for (int i = 0; i < slotCount && staticIndex < 2; i++) {
 		int x = slots[i] % 10;
 		int y = slots[i] / 10;
 		Room *slot = map->rooms[y][x];
 		if (slot != NULL) {
 			continue;  // 主房间的次级房间的位置可能有重叠，如果已创建房间，那么忽略重复位置。
 		}
-		int ratioRand = rand() % ratioSum;
-		int ratioStart = 0;
-		int roomGeneIndex = -1;
-		if (staticIndex < 3) {
-			staticIndex++;
-			roomGeneIndex = room_gene_data_static[i];
-		} else {
-			for (int j = 0; j < 5; j++) {
-				int range = ratioRanges[j];
-				if (ratioRand >= ratioStart && ratioRand < ratioStart + range) {
-					roomGeneIndex = j;
-					break;
-				}
-				ratioStart += range;
-			}
-		}
-		if (roomGeneIndex > -1) {
-			Room *room = map->roomList[map->roomCount++] = map->rooms[y][x] = roomCreate(map, x, y, room_gene_data[roomGeneIndex].type);
-			Room *super = room->superRoom = map->roomList[slotsSuper[i]];
-			room->linkRooms[room->linkRoomCount++] = super;
-			super->linkRooms[super->linkRoomCount++] = room;
-			remainRoomCount -= room_gene_data[roomGeneIndex].cost;
-		}
+		enum RoomType type = room_gene_data_static[staticIndex];
+		Room *room = map->roomList[map->roomCount++] = map->rooms[y][x] = roomCreate(map, x, y, type);
+		Room *super = room->superRoom = map->roomList[slotsSuper[i]];
+		room->linkRooms[room->linkRoomCount++] = super;
+		super->linkRooms[super->linkRoomCount++] = room;
+		staticIndex++;
 	}
 
 	map->currentRoom = map->roomList[0];

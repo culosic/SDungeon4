@@ -9,6 +9,14 @@
 #include "ai/floor1/mouse.h"
 #include "ai/floor1/scorpion.h"
 #include "ai/floor1/wolf.h"
+#include "ai/floor2/ant.h"
+#include "ai/floor2/flamem.h"
+#include "ai/floor2/frog.h"
+#include "ai/floor2/snake.h"
+#include "ai/floor3/bee.h"
+#include "ai/floor3/edragon.h"
+#include "ai/floor3/tiger.h"
+#include "ai/floor3/tortoise.h"
 #include "boll.h"
 #include "data.h"
 #include "game.h"
@@ -22,18 +30,6 @@ static RoleData *roleGetData(enum RoleType type) {
 	case RoleType_LongXin:
 		data = &role_longxin;
 		break;
-	case RoleType_JingYu:
-		data = &role_jingyu;
-		break;
-	case RoleType_Wu_JingYu:
-		data = &role_wu_jingyu;
-		break;
-	case RoleType_Ne_Giles:
-		data = &role_ne_giles;
-		break;
-	case RoleType_Clark:
-		data = &role_clark;
-		break;
 
 	case RoleType_Mouse:
 		data = &role_mouse;
@@ -44,6 +40,7 @@ static RoleData *roleGetData(enum RoleType type) {
 	case RoleType_Scorpion:
 		data = &role_scorpion;
 		break;
+
 	case RoleType_Ghost:
 		data = &role_ghost;
 		break;
@@ -52,6 +49,34 @@ static RoleData *roleGetData(enum RoleType type) {
 		break;
 	case RoleType_Ghost_Child:
 		data = &role_ghost_child;
+		break;
+
+	case RoleType_Ant:
+		data = &role_ant;
+		break;
+	case RoleType_Frog:
+		data = &role_frog;
+		break;
+	case RoleType_Snake:
+		data = &role_snake;
+		break;
+
+	case RoleType_FlameM:
+		data = &role_flamem;
+		break;
+
+	case RoleType_Bee:
+		data = &role_bee;
+		break;
+	case RoleType_Tiger:
+		data = &role_tiger;
+		break;
+	case RoleType_Tortoise:
+		data = &role_tortoise;
+		break;
+
+	case RoleType_EDragon:
+		data = &role_edragon;
 		break;
 
 	default:
@@ -73,6 +98,7 @@ static void *roleCreateAI(Role *role) {
 	case RoleType_Scorpion:
 		ai = aiScorpionCreate(role);
 		break;
+
 	case RoleType_Ghost:
 		ai = aiGhostCreate(role);
 		break;
@@ -82,6 +108,35 @@ static void *roleCreateAI(Role *role) {
 	case RoleType_Ghost_Child:
 		ai = aiGhostChildCreate(role);
 		break;
+
+	case RoleType_Ant:
+		ai = aiAntCreate(role);
+		break;
+	case RoleType_Frog:
+		ai = aiFrogCreate(role);
+		break;
+	case RoleType_Snake:
+		ai = aiSnakeCreate(role);
+		break;
+
+	case RoleType_FlameM:
+		ai = aiFlameMCreate(role);
+		break;
+
+	case RoleType_Bee:
+		ai = aiBeeCreate(role);
+		break;
+	case RoleType_Tiger:
+		ai = aiTigerCreate(role);
+		break;
+	case RoleType_Tortoise:
+		ai = aiTortoiseCreate(role);
+		break;
+
+	case RoleType_EDragon:
+		ai = aiEdragonCreate(role);
+		break;
+
 	default:
 		break;
 	}
@@ -103,6 +158,7 @@ static void roleDisposeAI(Role *role) {
 	case RoleType_Scorpion:
 		aiScorpionDispose(ai);
 		break;
+
 	case RoleType_Ghost:
 		aiGhostDispose(ai);
 		break;
@@ -112,16 +168,45 @@ static void roleDisposeAI(Role *role) {
 	case RoleType_Ghost_Child:
 		aiGhostChildDispose(ai);
 		break;
+
+	case RoleType_Ant:
+		aiAntDispose(ai);
+		break;
+	case RoleType_Frog:
+		aiFrogDispose(ai);
+		break;
+	case RoleType_Snake:
+		aiSnakeDispose(ai);
+		break;
+
+	case RoleType_FlameM:
+		aiFlameMDispose(ai);
+		break;
+
+	case RoleType_Bee:
+		aiBeeDispose(ai);
+		break;
+	case RoleType_Tiger:
+		aiTigerDispose(ai);
+		break;
+	case RoleType_Tortoise:
+		aiTortoiseDispose(ai);
+		break;
+
+	case RoleType_EDragon:
+		aiEdragonDispose(ai);
+		break;
+
 	default:
 		break;
 	}
 }
 
 static void roleUpdateAI(Role *role, double t) {
-	if (!role->ai) {
+	void *ai = role->ai;
+	if (!ai) {
 		return;
 	}
-	void *ai = role->ai;
 	switch (role->type) {
 	case RoleType_Mouse:
 		aiMouseUpdate(ai, t);
@@ -132,6 +217,7 @@ static void roleUpdateAI(Role *role, double t) {
 	case RoleType_Scorpion:
 		aiScorpionUpdate(ai, t);
 		break;
+
 	case RoleType_Ghost:
 		aiGhostUpdate(ai, t);
 		break;
@@ -141,6 +227,35 @@ static void roleUpdateAI(Role *role, double t) {
 	case RoleType_Ghost_Child:
 		aiGhostChildUpdate(ai, t);
 		break;
+
+	case RoleType_Ant:
+		aiAntUpdate(ai, t);
+		break;
+	case RoleType_Frog:
+		aiFrogUpdate(ai, t);
+		break;
+	case RoleType_Snake:
+		aiSnakeUpdate(ai, t);
+		break;
+
+	case RoleType_FlameM:
+		aiFlameMUpdate(ai, t);
+		break;
+
+	case RoleType_Bee:
+		aiBeeUpdate(ai, t);
+		break;
+	case RoleType_Tiger:
+		aiTigerUpdate(ai, t);
+		break;
+	case RoleType_Tortoise:
+		aiTortoiseUpdate(ai, t);
+		break;
+
+	case RoleType_EDragon:
+		aiEdragonUpdate(ai, t);
+		break;
+
 	default:
 		break;
 	}
@@ -153,8 +268,6 @@ Role *roleCreate(enum RoleType type, int enemy, int ai) {
 	role->fw = data->r * 2 > 20 / 0.5 ? data->r * 2 > 70 / 0.5 ? 70 : data->r * 2 * 0.5 : 20;
 	role->hp = data->hp;
 	role->hps = data->hp;
-	role->mp = data->mp;
-	role->mps = data->mp;
 	role->v = data->v0;
 	role->enemy = enemy;
 

@@ -15,10 +15,6 @@ enum RoleType {
 
 	// 人物角色
 	RoleType_LongXin = 0x000001,	// 龙辛
-	RoleType_JingYu = 0x000002,		// 惊羽
-	RoleType_Wu_JingYu = 0x000003,	// 舞·静雨
-	RoleType_Ne_Giles = 0x000004,	// 烈贾尔斯
-	RoleType_Clark = 0x000005,		// 克拉克
 
 	// 第一层小怪
 	RoleType_Mouse = 0x010001,
@@ -29,6 +25,22 @@ enum RoleType {
 	RoleType_Ghost = 0x01ff01,
 	RoleType_Ghost_Main = 0x01ff02,
 	RoleType_Ghost_Child = 0x01ff03,
+
+	// 第二层小怪
+	RoleType_Ant = 0x020001,
+	RoleType_Frog = 0x020002,
+	RoleType_Snake = 0x020003,
+
+	// 第二层boss
+	RoleType_FlameM = 0x02ff01,
+
+	// 第三层小怪
+	RoleType_Bee = 0x030001,
+	RoleType_Tiger = 0x030002,
+	RoleType_Tortoise = 0x030003,
+
+	// 第三层boss
+	RoleType_EDragon = 0x03ff01,
 };
 
 typedef struct _RoleData {
@@ -41,14 +53,8 @@ typedef struct _RoleData {
 	int innerColor;	 // 地图人物内部颜色
 	// 战斗属性
 	float hp;	// 基础生命值
-	float mp;	// 基础蓝量
 	float atk;	// 基础攻击力
 	float v0;	// 基础移动速度
-	float pow;	// 基础力量
-	// 成长属性，实际效果 = level/5*level_hp
-	float level_hp;	  // 成长生命
-	float level_mp;	  // 成长蓝量
-	float level_atk;  // 成长攻击
 } RoleData;
 
 // 角色数据定义
@@ -59,13 +65,6 @@ typedef struct _Role {
 	int enemy;
 	float hps;
 	float hp;
-	float mps;
-	float mp;
-	float headEquip;	// 头部装备
-	float bodyEquip;	// 上装
-	float footEquip;	// 下装
-	float extraEquip1;	// 配饰1
-	float extraEquip2;	// 配饰2
 
 	struct _Room *room;	 // 当前所在房间
 	float x;

@@ -94,7 +94,6 @@ void aiGhostUpdate(AIGhost *ai, double t) {
 			ai->childT -= t;
 		} else {
 			ai->childT = ai->childCDT;
-			float direction0 = getRandAngle(), direction1 = getRandAngle();
 			roomAddRole(room, roleCreate(RoleType_Ghost_Child, role->enemy, true), role->x, role->y);
 			roomAddRole(room, roleCreate(RoleType_Ghost_Child, role->enemy, true), role->x, role->y);
 		}

@@ -32,20 +32,11 @@ Room *roomCreate(Map *map, int x, int y, enum RoomType type) {
 	case Room_Battle:
 		room->caption = room_battle_caption;
 		break;
-	case Room_Trap:
-		room->caption = room_trap_caption;
-		break;
 	case Room_Potions:
 		room->caption = room_potions_caption;
 		break;
 	case Room_Treasure:
 		room->caption = room_treasure_caption;
-		break;
-	case Room_Elite:
-		room->caption = room_elite_caption;
-		break;
-	case Room_Shop:
-		room->caption = room_shop_caption;
 		break;
 	case Room_Boss:
 		room->caption = room_boss_caption;
