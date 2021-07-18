@@ -21,7 +21,7 @@ Boll *bollsCreate(float r, int32 color, double v, float range) {
 
 void bollsDispose(Boll *head) {
 	Boll *boll = (Boll *)head;
-	dispose(head->data);  // TODO 这个data应该游戏结束后销毁
+	dispose(head->data);
 	do {
 		Boll *prev = boll;
 		boll = boll->next;
@@ -51,6 +51,9 @@ void bollUpdate(Boll *head, double t) {
 	Boll *prev;
 	while (prev = boll, boll = boll->next) {
 		Room *room = boll->room;
+		if (room != room->map->currentRoom) {
+			continue;
+		}
 		Role *enemy = NULL;
 		RoomTile *tile = NULL;
 		int dispear = false;
@@ -77,8 +80,11 @@ void bollDraw(Boll *head, double t) {
 	Boll *boll = head;
 	while ((boll = boll->next)) {
 		Room *room = boll->room;
-		float x = room->px + room->wallD + boll->x;
-		float y = room->py + room->wallD + boll->y;
+		if (room != room->map->currentRoom) {
+			continue;
+		}
+		float x = room->px + boll->x;
+		float y = room->py + boll->y;
 		drawCir(x, y, data->r, data->color);
 	}
 }

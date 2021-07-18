@@ -61,7 +61,7 @@ static void downFloor() {
 			break;
 		}
 		Room *room = map->roomList[fr->roomIndex];
-		roomAddRole(room, roleCreate(fr->type, true, false), fr->x, fr->y);
+		roomAddRole(room, roleCreate(fr->type, true, true), fr->x, fr->y);
 	}
 }
 

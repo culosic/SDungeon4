@@ -16,13 +16,14 @@ enum RoomTileType {
 // 房间图块，主要是墙壁和门
 typedef struct _RoomTile {
 	enum RoomTileType type;
+	int direction;
 	int x;
 	int y;
 	int w;
 	int h;
 	char *caption;
 	struct _Room *linkRoom;
-	int doorDirection;
+	int doorClosed;
 } RoomTile;
 
 // 房间类型
@@ -57,7 +58,7 @@ typedef struct _Room {
 	int h;				 // 房间纵向格子数
 	enum RoomType type;	 // 房间类型
 	char *caption;		 // 房间大字标题
-	int visible;		 // 房间是否已被发现
+	int passed;			 // 房间玩家是否已通过
 
 	float px;	  // 房间x坐标
 	float py;	  // 房间y坐标
@@ -70,7 +71,7 @@ typedef struct _Room {
 	int roleCount;
 } Room;
 
-RoomTile *roomTileCreate(int x, int y, int w, int h, enum RoomTileType type);
+RoomTile *roomTileCreate(int x, int y, int w, int h, enum RoomTileType type, int direction);
 Room *roomCreate(struct _Map *map, int x, int y, enum RoomType type);
 void roomDispose(Room *room);
 void roomInitTile(Room *room);

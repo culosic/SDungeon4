@@ -115,7 +115,7 @@ static void aiGhostMainInit(AIGhostMain *ai) {
 	role->v = role->data->v0;
 	ai->state = AIGhostMain_Move;
 	ai->attackT = 0.5;
-	ai->attackAIT = 0.5;
+	ai->attackAIT = 0.3;
 	roleStopAttack(role);
 	roleMove(role, getRandAngle());
 }

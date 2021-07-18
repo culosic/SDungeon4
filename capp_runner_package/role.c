@@ -298,17 +298,6 @@ void roleDispose(Role *role) {
 	dispose(role);
 }
 
-/**
- * @brief 跳转房间
- */
-static void roleGotoRoom(Role *role, Room *room) {
-	Room *originRoom = role->room;
-	Map *map = originRoom->map;
-	// TODO 应该由房间的门来让角色跳转房间。
-	roomRoleGoto(originRoom, role, room);
-	map->currentRoom = room;  // TODO 仅主角。
-}
-
 void roleUpdate(Role *role, double t) {
 	if (role->hp <= 0) {
 		return;
@@ -332,57 +321,6 @@ void roleUpdate(Role *role, double t) {
 			role->attackingT = 0;
 		}
 	}
-	// 碰撞检测
-	int xStopped = false;
-	int yStopped = false;
-	if (role->vx != 0 && role->vy != 0) {
-		Room *room = role->room;
-		RoomTile *tile = roomColl(room, role->x, role->y, data->r);
-		if (tile && tile->type) {
-			switch (tile->type) {
-			case RoomTile_Door:
-				// 切换房间
-				if (role != game.mainRole) {
-					break;	// 非主角，不能切换房间。
-				}
-				switch (tile->doorDirection) {
-				case 2:
-					role->y = room->roomH + room->wallD - data->r - 10;
-					break;
-				case 6:
-					role->x = room->wallD + data->r + 10;
-					break;
-				case 8:
-					role->y = room->wallD + data->r + 10;
-					break;
-				case 4:
-					role->x = room->roomW + room->wallD - data->r - 10;
-					break;
-				default:
-					break;
-				}
-				roleGotoRoom(role, tile->linkRoom);
-				break;
-			case RoomTile_Wall:
-				// 墙壁碰撞
-				if (isCirCollRect(role->x, role->y - sy, data->r, tile->x, tile->y, tile->w, tile->h)) {
-					xStopped = true;
-				}
-				if (isCirCollRect(role->x - sx, role->y, data->r, tile->x, tile->y, tile->w, tile->h)) {
-					yStopped = true;
-				}
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	if (xStopped) {
-		role->x -= sx;
-	}
-	if (yStopped) {
-		role->y -= sy;
-	}
 }
 
 void roleUpdateAddition(Role *role, double t) {
@@ -394,8 +332,8 @@ void roleDraw(Role *role, double t) {
 	RoleData *data = role->data;
 	Room *room = role->room;
 	int alive = role->hp > 0;
-	float x = room->px + room->wallD + role->x;
-	float y = room->py + room->wallD + role->y;
+	float x = room->px + role->x;
+	float y = room->py + role->y;
 	// 绘制子弹
 	bollDraw(role->boll, t);
 	// 绘制人物
