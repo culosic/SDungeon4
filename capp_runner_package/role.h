@@ -49,8 +49,8 @@ typedef struct _RoleData {
 	char *caption;	 // 地图大字
 	char *info;		 // 人物描述
 	int r;			 // 地图人物半径
-	int color;		 // 地图人物颜色
-	int innerColor;	 // 地图人物内部颜色
+	int32 color;		 // 地图人物颜色
+	int32 innerColor;	 // 地图人物内部颜色
 	// 战斗属性
 	float hp;	// 基础生命值
 	float atk;	// 基础攻击力

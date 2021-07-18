@@ -4,6 +4,7 @@
 #include <graphics.h>
 
 #include "data.h"
+#include "game.h"
 #include "global.h"
 #include "map.h"
 
@@ -28,25 +29,35 @@ Room *roomCreate(Map *map, int x, int y, enum RoomType type) {
 	switch (type) {
 	case Room_Init:
 		room->caption = room_init_caption;
+		room->roomW = 300;
+		room->roomH = 300;
 		break;
 	case Room_Battle:
 		room->caption = room_battle_caption;
+		room->roomW = 700;
+		room->roomH = 500;
 		break;
 	case Room_Potions:
 		room->caption = room_potions_caption;
+		room->roomW = 400;
+		room->roomH = 400;
 		break;
 	case Room_Treasure:
 		room->caption = room_treasure_caption;
+		room->roomW = 400;
+		room->roomH = 400;
 		break;
 	case Room_Boss:
 		room->caption = room_boss_caption;
+		room->roomW = 900;
+		room->roomH = 700;
 		break;
 	default:
 		room->caption = "";
+		room->roomW = 100;
+		room->roomH = 100;
 		break;
 	}
-	room->roomW = 1000;
-	room->roomH = 700;
 	room->wallD = 30;
 	room->doorW = 100;
 	room->px = (SCRW - room->roomW) / 2 - room->wallD;
@@ -92,6 +103,9 @@ void roomInitTile(Room *room) {
 
 void roomDispose(Room *room) {
 	for (int i = 0; i < room->roleCount; i++) {
+		if (room->roles[i] == game.mainRole) {
+			continue; // TODO 暂时不销毁主角，交给game去销毁。
+		}
 		roleDispose(room->roles[i]);
 	}
 	for (int i = 0; i < room->tileCount; i++) {

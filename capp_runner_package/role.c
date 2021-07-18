@@ -17,6 +17,7 @@
 #include "ai/floor3/edragon.h"
 #include "ai/floor3/tiger.h"
 #include "ai/floor3/tortoise.h"
+#include "ai/player/longxin.h"
 #include "boll.h"
 #include "data.h"
 #include "game.h"
@@ -89,6 +90,10 @@ static RoleData *roleGetData(enum RoleType type) {
 static void *roleCreateAI(Role *role) {
 	void *ai = NULL;
 	switch (role->type) {
+	case RoleType_LongXin:
+		ai = aiLongxinCreate(role);
+		break;
+
 	case RoleType_Mouse:
 		ai = aiMouseCreate(role);
 		break;
@@ -149,6 +154,9 @@ static void roleDisposeAI(Role *role) {
 	}
 	void *ai = role->ai;
 	switch (role->type) {
+	case RoleType_LongXin:
+		aiLongxinDispose(ai);
+		break;
 	case RoleType_Mouse:
 		aiMouseDispose(ai);
 		break;
@@ -208,6 +216,9 @@ static void roleUpdateAI(Role *role, double t) {
 		return;
 	}
 	switch (role->type) {
+	case RoleType_LongXin:
+		aiLongxinUpdate(ai, t);
+		break;
 	case RoleType_Mouse:
 		aiMouseUpdate(ai, t);
 		break;
@@ -383,8 +394,8 @@ void roleDraw(Role *role, double t) {
 	RoleData *data = role->data;
 	Room *room = role->room;
 	int alive = role->hp > 0;
-	float x = room->px + role->x;
-	float y = room->py + role->y;
+	float x = room->px + room->wallD + role->x;
+	float y = room->py + room->wallD + role->y;
 	// 绘制子弹
 	bollDraw(role->boll, t);
 	// 绘制人物
@@ -392,7 +403,7 @@ void roleDraw(Role *role, double t) {
 		int fontSize = role->fw;
 		drawCir(x, y, data->r + 3, data->color);
 		drawCir(x, y, data->r, data->innerColor);
-		drawText(data->caption, x - fontSize / 2, y - fontSize / 2 - fontSize / 8, 225, 225, 245, fontSize);
+		drawText(data->caption, x - fontSize / 2, y - fontSize / 2 - fontSize / 8, 0xffE1E1F5, fontSize);
 	} else {
 		if (role->dyingAlphaT > 0) {  // 死亡渐隐
 			role->dyingAlphaT = fmax(role->dyingAlphaT - 1.25 * t, 0);

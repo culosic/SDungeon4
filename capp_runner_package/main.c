@@ -21,6 +21,7 @@
 #include "ai/floor3/edragon.c"
 #include "ai/floor3/tiger.c"
 #include "ai/floor3/tortoise.c"
+#include "ai/player/longxin.c"
 #include "boll.c"
 #include "cirpad.c"
 #include "game.c"
@@ -39,7 +40,7 @@ int event(int type, int p1, int p2) {
 	if (KY_UP == type) {
 		switch (p1) {
 		case _BACK:
-			exit();
+			// exit();
 			break;
 
 		case _MENU:

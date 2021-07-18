@@ -36,12 +36,10 @@ char* utf8_c(char* c);
  * @param c 文本内容
  * @param x 文字显示x位置
  * @param y 文字显示y位置
- * @param r 颜色r
- * @param g 颜色g
- * @param b 颜色b
+ * @param color 颜色
  * @param textSize 字体大小
  */
-void drawText(char* c, int x, int y, int r, int g, int b, int textSize);
+void drawText(char *c, int x, int y, int32 color, int textSize);
 
 /**
  * @brief 绘制文本。文本会居中显示到制定矩形区域里。
@@ -92,5 +90,16 @@ float getRandScatter(float angle);
  * @brief 返回一个随机小数
  */
 float getRandFloat(float from, float to);
+
+/**
+ * @brief 获取一个随时间变化的闪烁的颜色，暂不支持透明度变化
+ * 
+ * @param color1 初始颜色
+ * @param color2 半周期后的颜色
+ * @param t 闪烁计时
+ * @param duration 闪烁变化半周期
+ * @return 颜色，在时间[0, duration]里由color1变为color2，[duration, duration * 2]里再变为color1，如此往复。
+ */
+int32 getShiningColor(int32 color1, int32 color2, double t, double duration);
 
 #endif

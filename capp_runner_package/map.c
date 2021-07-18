@@ -32,6 +32,7 @@ Map *mapCreate() {
 		room->linkRooms[room->linkRoomCount++] = prev;
 		prev->linkRooms[prev->linkRoomCount++] = room;
 	}
+	map->bossRoom = map->roomList[4];
 
 	// 查找次级房间的位置。
 	int slots[100];
@@ -209,4 +210,20 @@ void mapDrawMiniMap(Map *map, double t) {
 			}
 		}
 	}
+}
+
+int mapIsPassed(Map *map) {
+	Room *room = map->bossRoom;
+	if (!room->roleCount) {
+		return false;
+	}
+	int passed = true;
+	for (int i = 0; i < room->roleCount; i++) {
+		Role *role = room->roles[i];
+		if (role->enemy && role->hp > 0) {
+			passed = false;
+			break;
+		}
+	}
+	return passed;
 }

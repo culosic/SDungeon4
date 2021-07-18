@@ -6,6 +6,46 @@
 #include "role.h"
 #include "room.h"
 
+/////////////////// 场景数据 ////////////////////////
+
+char *init_screen_caption = "S地牢";
+char *init_screen_text1 = "传承";
+char *init_screen_start = "开始游戏";
+char *init_screen_exit = "退出";
+
+char *down_screen_ing = "下楼中...";
+
+char *passed_screen_caption = "已通关！感谢游玩";  // TODO 完成通关演出后删除。
+
+char *passed_screen_story[10] = {
+	"【你已经历考验、被成为下一代传承者】",
+	"【愿你能坚守本心】",
+};
+
+char *passed_screen_fly[10] = {
+	"地牢已经坍塌，只能靠旁边一个很深的洞穴逃生",
+	"不用担心，传承赋予了你飞行的能力",
+	"试炼已经结束，去寻找属于自己的路吧",
+};
+
+char *passed_screen_thanks = "恭喜通关 感谢游玩";
+
+char *passed_screen_info[10] = {
+	"程序   火烧云",
+	"美术   无",
+	"音乐   无",
+};
+
+char *passed_screen_ps[10] = {
+	"真的真的非常感谢你能玩到最后",
+	"这个游戏虽然非常抽象",
+	"也没有美术、音乐",
+	"我耗费了许多精力",
+	"但愿能给玩游戏的你带来一点点快乐",
+};
+
+char *passed_screen_back = "触摸屏幕返回主菜单";
+
 ////////////////// 地图数据 /////////////////////////
 
 char *room_init_caption = "初";
@@ -19,6 +59,71 @@ enum RoomType room_gene_data_static[2] = {
 	Room_Treasure,
 };
 
+typedef struct _FloorEnemy {
+	int roomIndex;
+	enum RoleType type;
+	int x;
+	int y;
+} FloorRole;
+
+// 所有楼层怪物数据
+FloorRole floor_enemies[4][100] = {
+	{
+		{1, RoleType_Mouse, 100, 100},
+		{1, RoleType_Mouse, 600, 100},
+		{1, RoleType_Mouse, 600, 400},
+		{1, RoleType_Mouse, 100, 400},
+		{1, RoleType_Mouse, 350, 250},
+
+		{2, RoleType_Mouse, 300, 200},
+		{2, RoleType_Mouse, 400, 300},
+		{2, RoleType_Wolf, 350, 250},
+
+		{3, RoleType_Wolf, 300, 200},
+		{3, RoleType_Wolf, 400, 300},
+		{3, RoleType_Scorpion, 300, 300},
+		{3, RoleType_Scorpion, 400, 200},
+
+		{4, RoleType_Ghost, 450, 350},
+	},
+	{
+		{1, RoleType_Ant, 100, 100},
+		{1, RoleType_Ant, 600, 100},
+		{1, RoleType_Ant, 600, 400},
+		{1, RoleType_Ant, 100, 400},
+		{1, RoleType_Ant, 350, 250},
+
+		{2, RoleType_Ant, 300, 200},
+		{2, RoleType_Ant, 400, 300},
+		{2, RoleType_Frog, 350, 250},
+
+		{3, RoleType_Frog, 300, 200},
+		{3, RoleType_Frog, 400, 300},
+		{3, RoleType_Snake, 300, 300},
+		{3, RoleType_Snake, 400, 200},
+
+		{4, RoleType_FlameM, 450, 350},
+	},
+	{
+		{1, RoleType_Bee, 100, 100},
+		{1, RoleType_Bee, 600, 100},
+		{1, RoleType_Bee, 600, 400},
+		{1, RoleType_Bee, 100, 400},
+		{1, RoleType_Bee, 350, 250},
+
+		{2, RoleType_Bee, 300, 200},
+		{2, RoleType_Bee, 400, 300},
+		{2, RoleType_Tiger, 350, 250},
+
+		{3, RoleType_Tiger, 300, 200},
+		{3, RoleType_Tiger, 400, 300},
+		{3, RoleType_Tortoise, 300, 300},
+		{3, RoleType_Tortoise, 400, 200},
+
+		{4, RoleType_EDragon, 450, 350},
+	},
+};
+
 ////////////////// 玩家人物属性相关 ////////////////////////
 
 struct _RoleData role_longxin = {
@@ -26,12 +131,12 @@ struct _RoleData role_longxin = {
 	"龙",
 	"男，一个勇敢的探险家，四处冒险，写下了很多故事。但是如此诡秘的地牢，他还从来没有见过。虽然此处凶险，但也伴随机遇，他怎么可能放过呢？",
 	30,
-	0xff009688,
-	0xff005737,
+	0xff0288d1,
+	0xff01579b,
 
-	100,// 10,
-	2,
-	300,
+	100,  // 10,
+	20,	  // 2,
+	600,  // 300,
 };
 
 ////////////////// 第一层怪物 ////////////////////////

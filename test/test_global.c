@@ -59,7 +59,7 @@ typedef struct _TestMemset {
 
 // malloc后memset数组
 void testMallocaAndMemset() {
-	TestMemset *obj = malloc(sizeof(TestMemset));
+	TestMemset* obj = malloc(sizeof(TestMemset));
 	void* oldB = obj->b;
 	memset(obj, 0, sizeof(obj));
 	equal(sizeof(TestMemset), 40, "结构体的大小包含数组大小");
@@ -87,4 +87,7 @@ void test_global() {
 	testMallocaAndMemset();
 
 	floatEqual(getAlphaColor(0xff112233, 0.1), 0x19000000 + 0x00112233, FLOAT_MIN_DT, "测试alpha0.1的颜色");
+
+	floatEqual(2.992 / 3, 1, 0.1, "2.992/3");
+	printf("%.2f\n", 2.992 / 3);
 }

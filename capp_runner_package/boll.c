@@ -77,8 +77,8 @@ void bollDraw(Boll *head, double t) {
 	Boll *boll = head;
 	while ((boll = boll->next)) {
 		Room *room = boll->room;
-		float x = room->px + boll->x;
-		float y = room->py + boll->y;
+		float x = room->px + room->wallD + boll->x;
+		float y = room->py + room->wallD + boll->y;
 		drawCir(x, y, data->r, data->color);
 	}
 }
