@@ -25,7 +25,7 @@ AIScorpion *aiScorpionCreate(Role *role) {
 	// TODO 临时处理，设置子弹颜色，实际子弹颜色应该由武器决定。
 	boll->color = 0xff6633aa;
 	boll->r = 10;
-	boll->v = 200;
+	boll->v = 100;
 	aiScorpionInit(ai);
 	return ai;
 }

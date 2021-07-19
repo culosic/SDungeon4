@@ -35,8 +35,8 @@ Room *roomCreate(Map *map, int x, int y, enum RoomType type) {
 		break;
 	case Room_Battle:
 		room->caption = room_battle_caption;
-		room->roomW = 700;
-		room->roomH = 500;
+		room->roomW = 800;
+		room->roomH = 600;
 		break;
 	case Room_Potions:
 		room->caption = room_potions_caption;
@@ -70,9 +70,18 @@ Room *roomCreate(Map *map, int x, int y, enum RoomType type) {
 
 void roomInitTile(Room *room) {
 	// 地板
-	RoomTile *floor = roomTileCreate(room->wallD, room->wallD, room->roomW, room->roomH, RoomTile_Floor, 0);
-	floor->caption = room->caption;
-	room->tiles[room->tileCount++] = floor;
+	room->tiles[room->tileCount++] = roomTileCreate(room->wallD, room->wallD, room->roomW, room->roomH, RoomTile_Floor, 0);
+	// 特殊图块
+	switch (room->type) {
+	case Room_Potions:
+		room->tiles[room->tileCount++] = roomTileCreate(room->roomW / 3 + room->wallD, room->roomH / 3 + room->wallD, room->roomW / 3, room->roomH / 3, RoomTile_Potions, 0);
+		break;
+	case Room_Treasure:
+		room->tiles[room->tileCount++] = roomTileCreate(room->roomW / 3 + room->wallD, room->roomH / 3 + room->wallD, room->roomW / 3, room->roomH / 3, RoomTile_Treasure, 0);
+		break;
+	default:
+		break;
+	}
 	// 墙壁
 	room->tiles[room->tileCount++] = roomTileCreate(0, 0, room->roomW + room->wallD * 2, room->wallD, RoomTile_Wall, 2);
 	room->tiles[room->tileCount++] = roomTileCreate(room->roomW + room->wallD, 0, room->wallD, room->roomH + room->wallD * 2, RoomTile_Wall, 6);
@@ -121,7 +130,14 @@ void roomDraw(Room *room, double t) {
 		switch (tile->type) {
 		case RoomTile_Floor:
 			drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xff696969);
-			drawTextC(tile->caption, x + tile->x, y + tile->y, tile->w, tile->h, 90, 90, 90, 120);
+			break;
+		case RoomTile_Potions:
+			drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xff1b5e20);
+			drawTextC(room->caption, x + tile->x, y + tile->y, tile->w, tile->h, 165, 214, 167, 50);
+			break;
+		case RoomTile_Treasure:
+			drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xff773300);
+			drawTextC(room->caption, x + tile->x, y + tile->y, tile->w, tile->h, 255, 213, 79, 50);
 			break;
 		case RoomTile_Wall:
 			drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xffa9a9a9);
@@ -154,12 +170,14 @@ static void roomToggleDoor(Room *room, int direction) {
 RoomTile *room_colls_tiles[10];
 int room_colls_count = 0;
 
-static void roomColls(Room *room, float x, float y, float r) {
+static void roomColls(Room *room, float x, float y, float r, int isMainRole) {
 	room_colls_count = 0;
 	for (int i = room->tileCount - 1; i >= 0; i--) {
 		RoomTile *tile = room->tiles[i];
 		if (isCirCollRect(x, y, r, tile->x, tile->y, tile->w, tile->h)) {
-			if (tile->type == RoomTile_Door && !tile->doorClosed) {
+			// patch 治疗房间
+			// patch 非主角暂时不切换房间。
+			if (isMainRole && tile->type == RoomTile_Door && !tile->doorClosed) {
 				room_colls_tiles[room_colls_count++] = tile;
 				break;
 			} else if (tile->type == RoomTile_Wall) {
@@ -179,40 +197,38 @@ static void roomUpdateColl(Room *room, Role *role) {
 	Map *map = room->map;
 	RoleData *data = role->data;
 	if (role->vx != 0 && role->vy != 0) {
-		roomColls(room, role->x, role->y, data->r);
+		roomColls(room, role->x, role->y, data->r, role == game.mainRole);
 		for (int i = 0; i < room_colls_count; i++) {
 			RoomTile *tile = room_colls_tiles[i];
 			Room *linkRoom = tile->linkRoom;
 			switch (tile->type) {
 			case RoomTile_Door:
 				// 切换房间
-				if (role == game.mainRole) {  // TODO 非主角，暂时不能切换房间。
-					switch (tile->direction) {
-					case 2:
-						role->x = linkRoom->roomW / 2.0 + linkRoom->wallD;
-						role->y = linkRoom->roomH + linkRoom->wallD - data->r - 10;
-						break;
-					case 6:
-						role->x = linkRoom->wallD + data->r + 10;
-						role->y = linkRoom->roomH / 2.0 + linkRoom->wallD;
-						break;
-					case 8:
-						role->x = linkRoom->roomW / 2.0 + linkRoom->wallD;
-						role->y = linkRoom->wallD + data->r + 10;
-						break;
-					case 4:
-						role->x = linkRoom->roomW + linkRoom->wallD - data->r - 10;
-						role->y = linkRoom->roomH / 2.0 + linkRoom->wallD;
-						break;
-					default:
-						break;
-					}
-					if (!linkRoom->passed) {
-						roomToggleDoor(linkRoom, 10 - tile->direction);
-					}
-					roomRoleGoto(room, role, linkRoom);
-					map->currentRoom = linkRoom;
+				switch (tile->direction) {
+				case 2:
+					role->x = linkRoom->roomW / 2.0 + linkRoom->wallD;
+					role->y = linkRoom->roomH + linkRoom->wallD - data->r - 10;
+					break;
+				case 6:
+					role->x = linkRoom->wallD + data->r + 10;
+					role->y = linkRoom->roomH / 2.0 + linkRoom->wallD;
+					break;
+				case 8:
+					role->x = linkRoom->roomW / 2.0 + linkRoom->wallD;
+					role->y = linkRoom->wallD + data->r + 10;
+					break;
+				case 4:
+					role->x = linkRoom->roomW + linkRoom->wallD - data->r - 10;
+					role->y = linkRoom->roomH / 2.0 + linkRoom->wallD;
+					break;
+				default:
+					break;
 				}
+				if (!linkRoom->passed) {
+					roomToggleDoor(linkRoom, 10 - tile->direction);
+				}
+				roomRoleGoto(room, role, linkRoom);
+				map->currentRoom = linkRoom;
 				break;
 			case RoomTile_Wall:
 				// 碰撞墙壁

@@ -12,8 +12,8 @@
 static void aiMouseInit(AIMouse *ai) {
 	Role *role = ai->role;
 	ai->state = AIMouse_Move;
-	ai->attackAIT = getRandFloat(1, 2);
-	ai->attackCount = 3;
+	ai->attackAIT = getRandFloat(1.5, 2);
+	ai->attackCount = 2;
 	roleStopAttack(role);
 	roleMove(role, getRandAngle());
 }
@@ -26,6 +26,7 @@ AIMouse *aiMouseCreate(Role *role) {
 	boll->color = 0xff663300;
 	boll->r = 6;
 	boll->v = 300;
+	boll->atkv = 0.1;
 	aiMouseInit(ai);
 	return ai;
 }

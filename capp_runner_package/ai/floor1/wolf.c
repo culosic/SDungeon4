@@ -15,7 +15,7 @@ static void aiWolfInit(AIWolf *ai) {
 	ai->state = AIWolf_Move;
 	ai->chargeT = 0.3;
 	ai->attackT = 0.6;
-	ai->attackAIT = getRandFloat(1, 2);
+	ai->attackAIT = 0.3;
 	ai->turnAIT = 0;
 	roleStopAttack(role);
 	roleMove(role, getRandAngle());

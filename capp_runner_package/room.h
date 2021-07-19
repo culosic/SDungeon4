@@ -8,9 +8,11 @@
 
 // 房间图块类型
 enum RoomTileType {
-	RoomTile_Floor,	 // 地板
-	RoomTile_Wall,	 // 墙体
-	RoomTile_Door,	 // 门
+	RoomTile_Floor,		// 地板
+	RoomTile_Wall,		// 墙体
+	RoomTile_Door,		// 门
+	RoomTile_Potions,		// 治疗草药
+	RoomTile_Treasure,	// 宝箱
 };
 
 // 房间图块，主要是墙壁和门
@@ -21,7 +23,6 @@ typedef struct _RoomTile {
 	int y;
 	int w;
 	int h;
-	char *caption;
 	struct _Room *linkRoom;
 	int doorClosed;
 } RoomTile;

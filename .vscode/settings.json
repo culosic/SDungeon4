@@ -41,7 +41,8 @@
     "iostream": "c",
     "new": "c",
     "queue": "c",
-    "typeinfo": "c"
+    "typeinfo": "c",
+    "stdexcept": "c"
   },
   "code-runner.executorMap": {
     // 让RunCode总是运行当前目录的main.c

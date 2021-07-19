@@ -8,14 +8,14 @@
 #include "global.h"
 #include "room.h"
 
-Boll *bollsCreate(float r, int32 color, double v, float range) {
+Boll *bollsCreate(float r, int32 color, double v, double atkv) {
 	Boll *head = create(sizeof(Boll));
 	BollData *data = create(sizeof(BollData));
 	head->data = data;
 	data->r = r;
 	data->color = color;
 	data->v = v;
-	data->range = range;
+	data->atkv = atkv;
 	return head;
 }
 

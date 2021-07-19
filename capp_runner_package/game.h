@@ -45,6 +45,9 @@ typedef struct _Game {
 	double downT;
 	int floor;
 
+	// 游戏界面相关
+	double nextFloorT;
+
 	// 结束演出界面
 	enum PassedScreenType passedScreenType;
 	float passedFontAlphaT;

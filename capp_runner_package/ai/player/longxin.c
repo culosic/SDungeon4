@@ -20,6 +20,7 @@ AILongxin *aiLongxinCreate(Role *role) {
 	boll->color = 0xffb3e5fc;
 	boll->r = 6;
 	boll->v = 500;
+	boll->atkv = 0.3;
 	aiLongxinInit(ai);
 	return ai;
 }

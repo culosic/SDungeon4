@@ -8,11 +8,10 @@
 
 // 存放子弹信息。
 typedef struct _BollData {
-	float r;		   // 大小
-	int32 color;	   // 颜色
-	double v;		   // 发射初速度
-	float range;	   // 射程
-	float scattering;  // 散射
+	float r;	  // 大小
+	int32 color;  // 颜色
+	double v;	  // 发射初速度
+	double atkv;  // 攻速
 } BollData;
 
 // 子弹节点
@@ -28,7 +27,7 @@ typedef struct _Boll {
 	struct _Boll *next;		 // 记录下一个子弹，形成链表
 } Boll;
 
-Boll *bollsCreate(float r, int32 color, double v, float range);
+Boll *bollsCreate(float r, int32 color, double v, double atkv);
 void bollsDispose(Boll *head);
 void bollUpdate(Boll *head, double t);
 void bollDraw(Boll *head, double t);

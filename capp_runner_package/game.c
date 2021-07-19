@@ -111,6 +111,11 @@ static void downScreenUpdate(double t) {
 		game.downT += t;
 		drawTextC(down_screen_ing, 0, 0, SCRW, SCRH, 234, 234, 234, 40);
 	} else {
+		// Test 试玩版
+		if (game.floor == -1) {
+			drawTextC(passed_test_floor1, 0, 0, SCRW, SCRH, 234, 234, 234, 40);
+			return;
+		}
 		game.downT = 0;
 		game.nextScreen = Screen_Game;
 		if (game.floor == 0) {
@@ -147,10 +152,15 @@ static void gamePassTest(float t) {
 	if (mapIsPassed(game.map)) {
 		// TODO 显示弹窗提示获得物品和下一关按钮
 		// 跳到下一层、下一关
-		if (game.floor > -3) {
-			game.nextScreen = Screen_Down;
+		if (game.nextFloorT < 2) {
+			game.nextFloorT += t;
 		} else {
-			game.nextScreen = Screen_Passed;
+			game.nextFloorT = 0;
+			if (game.floor > -3) {
+				game.nextScreen = Screen_Down;
+			} else {
+				game.nextScreen = Screen_Passed;
+			}
 		}
 	}
 }

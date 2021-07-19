@@ -14,7 +14,7 @@ enum RoleType {
 	RoleType_Unknown,
 
 	// 人物角色
-	RoleType_LongXin = 0x000001,	// 龙辛
+	RoleType_LongXin = 0x000001,  // 龙辛
 
 	// 第一层小怪
 	RoleType_Mouse = 0x010001,
@@ -45,16 +45,16 @@ enum RoleType {
 
 typedef struct _RoleData {
 	// 人物标识
-	char *name;		 // 姓名
-	char *caption;	 // 地图大字
-	char *info;		 // 人物描述
-	int r;			 // 地图人物半径
-	int32 color;		 // 地图人物颜色
-	int32 innerColor;	 // 地图人物内部颜色
+	char *name;		   // 姓名
+	char *caption;	   // 地图大字
+	char *info;		   // 人物描述
+	int r;			   // 地图人物半径
+	int32 color;	   // 地图人物颜色
+	int32 innerColor;  // 地图人物内部颜色
 	// 战斗属性
-	float hp;	// 基础生命值
-	float atk;	// 基础攻击力
-	float v0;	// 基础移动速度
+	float hp;	 // 基础生命值
+	float atk;	 // 基础攻击力
+	float v0;	 // 基础移动速度
 } RoleData;
 
 // 角色数据定义

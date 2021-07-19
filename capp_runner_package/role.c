@@ -282,7 +282,7 @@ Role *roleCreate(enum RoleType type, int enemy, int ai) {
 	role->v = data->v0;
 	role->enemy = enemy;
 
-	role->boll = bollsCreate(5, 0xffffffff, 500, 300);
+	role->boll = bollsCreate(5, 0xffffffff, 500, 0.3);
 	role->hpPercentT = 1;
 	role->dyingAlphaT = 1;
 
@@ -302,7 +302,6 @@ void roleUpdate(Role *role, double t) {
 	if (role->hp <= 0) {
 		return;
 	}
-	RoleData *data = role->data;
 	// AI
 	roleUpdateAI(role, t);
 	// 移动
@@ -315,7 +314,7 @@ void roleUpdate(Role *role, double t) {
 		bollAdd(role->boll, role, role->x, role->y, role->faceAngle);
 	}
 	if (role->attacking || role->attackingT > 0) {
-		if (role->attackingT < 0.3) {  // TODO 使用武器的攻速
+		if (role->attackingT < role->boll->data->atkv) {
 			role->attackingT += t;
 		} else {
 			role->attackingT = 0;

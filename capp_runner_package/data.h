@@ -13,6 +13,8 @@ char *init_screen_text1 = "传承";
 char *init_screen_start = "开始游戏";
 char *init_screen_exit = "退出";
 
+char *passed_test_floor1 = "（体验版）恭喜通过第一关";
+
 char *down_screen_ing = "下楼中...";
 
 char *passed_screen_caption = "已通关！感谢游玩";  // TODO 完成通关演出后删除。
@@ -73,7 +75,6 @@ FloorRole floor_enemies[4][100] = {
 		{1, RoleType_Mouse, 600, 100},
 		{1, RoleType_Mouse, 600, 400},
 		{1, RoleType_Mouse, 100, 400},
-		{1, RoleType_Mouse, 350, 250},
 
 		{2, RoleType_Mouse, 300, 200},
 		{2, RoleType_Mouse, 400, 300},
@@ -134,7 +135,8 @@ struct _RoleData role_longxin = {
 	0xff0288d1,
 	0xff01579b,
 
-	10,
+	// TODO 原生命值10，体验版没有装备、药包所以提升属性
+	14,
 	2,
 	300,
 };
@@ -176,8 +178,8 @@ struct _RoleData role_scorpion = {
 	0xff6633aa,
 
 	15,
-	3,
-	100,
+	2,
+	50,
 };
 
 ////////////////// 第一层boss ////////////////////////
