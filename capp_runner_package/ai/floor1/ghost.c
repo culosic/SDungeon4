@@ -160,6 +160,7 @@ void aiGhostMainUpdate(AIGhostMain *ai, double t) {
 			enemy->hp = fmax(0, enemy->hp - data->atk);
 			role->faceAngle += M_PI;  // TODO 冲刺攻击后面需要来一段缓冲
 			aiGhostMainInit(ai);
+			ai->attackAIT = 0.6; // 击中目标后，cd加长
 		} else if (ai->attackT < 0) {
 			// 体力耗尽，停止攻击。
 			aiGhostMainInit(ai);

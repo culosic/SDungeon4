@@ -2,6 +2,7 @@
 
 #include <base.h>
 #include <graphics.h>
+#include <math.h>
 
 #include "data.h"
 #include "game.h"
@@ -132,8 +133,10 @@ void roomDraw(Room *room, double t) {
 			drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xff696969);
 			break;
 		case RoomTile_Potions:
-			drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xff1b5e20);
-			drawTextC(room->caption, x + tile->x, y + tile->y, tile->w, tile->h, 165, 214, 167, 50);
+			if (tile->potionsUsed < 1) {
+				drawRect(x + tile->x, y + tile->y, tile->w, tile->h, getAlphaColor(0xff1b5e20, 1 - tile->potionsUsed));
+				drawTextC(room->caption, x + tile->x, y + tile->y, tile->w, tile->h, 165, 214, 167, 50);
+			}
 			break;
 		case RoomTile_Treasure:
 			drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xff773300);
@@ -176,6 +179,10 @@ static void roomColls(Room *room, float x, float y, float r, int isMainRole) {
 		RoomTile *tile = room->tiles[i];
 		if (isCirCollRect(x, y, r, tile->x, tile->y, tile->w, tile->h)) {
 			// patch 治疗房间
+			if (tile->type == RoomTile_Potions) {
+				room_colls_tiles[room_colls_count++] = tile;
+				break;
+			}
 			// patch 非主角暂时不切换房间。
 			if (isMainRole && tile->type == RoomTile_Door && !tile->doorClosed) {
 				room_colls_tiles[room_colls_count++] = tile;
@@ -193,44 +200,44 @@ static void roomColls(Room *room, float x, float y, float r, int isMainRole) {
  * @param room 
  * @param role 
  */
-static void roomUpdateColl(Room *room, Role *role) {
+static void roomUpdateColl(Room *room, Role *role, double t) {
 	Map *map = room->map;
 	RoleData *data = role->data;
-	if (role->vx != 0 && role->vy != 0) {
-		roomColls(room, role->x, role->y, data->r, role == game.mainRole);
-		for (int i = 0; i < room_colls_count; i++) {
-			RoomTile *tile = room_colls_tiles[i];
-			Room *linkRoom = tile->linkRoom;
-			switch (tile->type) {
-			case RoomTile_Door:
-				// 切换房间
-				switch (tile->direction) {
-				case 2:
-					role->x = linkRoom->roomW / 2.0 + linkRoom->wallD;
-					role->y = linkRoom->roomH + linkRoom->wallD - data->r - 10;
-					break;
-				case 6:
-					role->x = linkRoom->wallD + data->r + 10;
-					role->y = linkRoom->roomH / 2.0 + linkRoom->wallD;
-					break;
-				case 8:
-					role->x = linkRoom->roomW / 2.0 + linkRoom->wallD;
-					role->y = linkRoom->wallD + data->r + 10;
-					break;
-				case 4:
-					role->x = linkRoom->roomW + linkRoom->wallD - data->r - 10;
-					role->y = linkRoom->roomH / 2.0 + linkRoom->wallD;
-					break;
-				default:
-					break;
-				}
-				if (!linkRoom->passed) {
-					roomToggleDoor(linkRoom, 10 - tile->direction);
-				}
-				roomRoleGoto(room, role, linkRoom);
-				map->currentRoom = linkRoom;
+	roomColls(room, role->x, role->y, data->r, role == game.mainRole);
+	for (int i = 0; i < room_colls_count; i++) {
+		RoomTile *tile = room_colls_tiles[i];
+		Room *linkRoom = tile->linkRoom;
+		switch (tile->type) {
+		case RoomTile_Door:
+			// 切换房间
+			switch (tile->direction) {
+			case 2:
+				role->x = linkRoom->roomW / 2.0 + linkRoom->wallD;
+				role->y = linkRoom->roomH + linkRoom->wallD - data->r - 10;
 				break;
-			case RoomTile_Wall:
+			case 6:
+				role->x = linkRoom->wallD + data->r + 10;
+				role->y = linkRoom->roomH / 2.0 + linkRoom->wallD;
+				break;
+			case 8:
+				role->x = linkRoom->roomW / 2.0 + linkRoom->wallD;
+				role->y = linkRoom->wallD + data->r + 10;
+				break;
+			case 4:
+				role->x = linkRoom->roomW + linkRoom->wallD - data->r - 10;
+				role->y = linkRoom->roomH / 2.0 + linkRoom->wallD;
+				break;
+			default:
+				break;
+			}
+			if (!linkRoom->passed) {
+				roomToggleDoor(linkRoom, 10 - tile->direction);
+			}
+			roomRoleGoto(room, role, linkRoom);
+			map->currentRoom = linkRoom;
+			break;
+		case RoomTile_Wall:
+			if (role->vx != 0 && role->vy != 0) {
 				// 碰撞墙壁
 				switch (tile->direction) {
 				case 2:
@@ -256,10 +263,21 @@ static void roomUpdateColl(Room *room, Role *role) {
 				default:
 					break;
 				}
-				break;
-			default:
-				break;
 			}
+			break;
+		case RoomTile_Potions:
+			if (role->hp < role->hps && tile->potionsT < 1) {
+				if (tile->potionsT < 0.5) {
+					tile->potionsT += t;
+				} else {
+					tile->potionsUsed += 0.1;
+					tile->potionsT = 0;
+					role->hp = fmin(role->hp + role->hps * 0.1, role->hps);
+				}
+			}
+			break;
+		default:
+			break;
 		}
 	}
 }
@@ -272,7 +290,7 @@ void roomUpdate(Room *room, double t) {
 			passed = false;
 		}
 		roleUpdate(role, t);
-		roomUpdateColl(room, role);
+		roomUpdateColl(room, role, t);
 		roleUpdateAddition(role, t);
 	}
 	if (!room->passed && passed) {

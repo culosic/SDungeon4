@@ -25,6 +25,10 @@ typedef struct _RoomTile {
 	int h;
 	struct _Room *linkRoom;
 	int doorClosed;
+
+	// 药房间治疗计时。
+	double potionsT;
+	double potionsUsed;
 } RoomTile;
 
 // 房间类型
