@@ -46,7 +46,11 @@ typedef struct _Game {
 	int floor;
 
 	// 游戏界面相关
-	double nextFloorT;
+	int userControll; // 是否开启玩家控制。
+	int fail;
+	double failT;
+	int passed;
+	double passedT;
 
 	// 结束演出界面
 	enum PassedScreenType passedScreenType;

@@ -32,6 +32,7 @@ AIGhost *aiGhostCreate(Role *role) {
 	boll->color = 0xff000000;
 	boll->r = 10;
 	boll->v = 400;
+	boll->atkv = 0.2;
 	aiGhostInit(ai);
 	return ai;
 }
@@ -104,6 +105,9 @@ void aiGhostUpdate(AIGhost *ai, double t) {
 			mainRole->hp = fmin(mainRole->hps, role->hp + 20);
 			role->hp = 0;
 			roomAddRole(room, mainRole, role->x, role->y);
+			for (int i = 0; i < 3; i++) {
+				roomAddRole(room, roleCreate(RoleType_Ghost_Child, role->enemy, true), role->x, role->y);
+			}
 		}
 	}
 }
@@ -157,10 +161,10 @@ void aiGhostMainUpdate(AIGhostMain *ai, double t) {
 		ai->attackT -= t;
 		Role *enemy = roomGetCloestEnemy(role->room, role);
 		if (enemy && getLineSize(role->x, role->y, enemy->x, enemy->y) < data->r + enemy->data->r) {
-			enemy->hp = fmax(0, enemy->hp - data->atk);
+			roleReduceHP(enemy, data->atk);
 			role->faceAngle += M_PI;  // TODO 冲刺攻击后面需要来一段缓冲
 			aiGhostMainInit(ai);
-			ai->attackAIT = 0.6; // 击中目标后，cd加长
+			ai->attackAIT = 0.6;  // 击中目标后，cd加长
 		} else if (ai->attackT < 0) {
 			// 体力耗尽，停止攻击。
 			aiGhostMainInit(ai);
@@ -184,6 +188,15 @@ void aiGhostMainUpdate(AIGhostMain *ai, double t) {
 		if (tile) {
 			role->v = data->v0;
 			roleMove(role, aiGetAngleToEnemy(role, M_PI / 4));
+		}
+	}
+	// 死亡，同时清理附属小鬼。
+	if (role->hp <= 0) {
+		for (int i = 0; i < room->roleCount; i++) {
+			Role *r = room->roles[i];
+			if (r->type == RoleType_Ghost_Child) {
+				roleReduceHP(r, r->hps);
+			}
 		}
 	}
 }
@@ -230,6 +243,7 @@ void aiGhostChildUpdate(AIGhostChild *ai, double t) {
 		}
 		break;
 	case AIGhostChild_Attack:
+		// 小鬼暂时设计为不能攻击，避免太乱。小鬼目的是阻挡主角行为和弹道。
 		// TODO 撞击
 		// if (role->attackingT == 0) {
 		// 	roleAttack(role, aiGetAngleToEnemy(role, 0));

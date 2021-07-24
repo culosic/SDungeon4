@@ -279,8 +279,10 @@ Role *roleCreate(enum RoleType type, int enemy, int ai) {
 	role->fw = data->r * 2 > 20 / 0.5 ? data->r * 2 > 70 / 0.5 ? 70 : data->r * 2 * 0.5 : 20;
 	role->hp = data->hp;
 	role->hps = data->hp;
-	role->v = data->v0;
+	role->atk = data->atk;
+	role->v = role->v0 = data->v0;
 	role->enemy = enemy;
+	role->alive = true;
 
 	role->boll = bollsCreate(5, 0xffffffff, 500, 0.3);
 	role->hpPercentT = 1;
@@ -289,6 +291,7 @@ Role *roleCreate(enum RoleType type, int enemy, int ai) {
 	if (ai) {
 		role->ai = roleCreateAI(role);
 	}
+	role->atkv = role->boll->data->atkv;
 	return role;
 }
 
@@ -299,11 +302,17 @@ void roleDispose(Role *role) {
 }
 
 void roleUpdate(Role *role, double t) {
-	if (role->hp <= 0) {
+	if (!role->alive) {
 		return;
+	}
+	if (role->hp <= 0) {
+		role->alive = false;
 	}
 	// AI
 	roleUpdateAI(role, t);
+	if (!role->alive) {
+		return;
+	}
 	// 移动
 	float sx = role->vx * t;
 	float sy = role->vy * t;
@@ -314,7 +323,7 @@ void roleUpdate(Role *role, double t) {
 		bollAdd(role->boll, role, role->x, role->y, role->faceAngle);
 	}
 	if (role->attacking || role->attackingT > 0) {
-		if (role->attackingT < role->boll->data->atkv) {
+		if (role->attackingT < role->atkv) {
 			role->attackingT += t;
 		} else {
 			role->attackingT = 0;
@@ -348,7 +357,7 @@ void roleDraw(Role *role, double t) {
 			drawCir(x, y, data->r, getAlphaColor(data->innerColor, role->dyingAlphaT));
 		}
 	}
-	if (alive) {
+	if (alive && !game.passed) {
 		// 绘制血条
 		int hpWidth = data->r * 2;
 		int hpHeight = 6;
@@ -395,4 +404,11 @@ void roleAttack(Role *role, double angle) {
 
 void roleStopAttack(Role *role) {
 	role->attacking = false;
+}
+
+void roleReduceHP(Role *role, float hpDT) {
+	if (game.passed) {
+		return;
+	}
+	role->hp = fmax(0, role->hp - hpDT);
 }

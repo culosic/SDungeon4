@@ -13,8 +13,8 @@ static void aiFrogInit(AIFrog *ai) {
 	Role *role = ai->role;
 	role->v = role->data->v0;
 	ai->state = AIFrog_Idle;
-	ai->attackT = 0.2;
-	ai->attackAIT = 1;
+	ai->attackT = 0.6;
+	ai->attackAIT = 0.5;
 	roleStopMove(role);
 }
 
@@ -22,6 +22,7 @@ AIFrog *aiFrogCreate(Role *role) {
 	AIFrog *ai = create(sizeof(AIFrog));
 	ai->role = role;
 	aiFrogInit(ai);
+	ai->attackAIT = getRandFloat(0.3, ai->attackAIT * 2);
 	return ai;
 }
 
@@ -53,7 +54,7 @@ void aiFrogUpdate(AIFrog *ai, double t) {
 		ai->attackT -= t;
 		Role *enemy = roomGetCloestEnemy(role->room, role);
 		if (enemy && getLineSize(role->x, role->y, enemy->x, enemy->y) < data->r + enemy->data->r) {
-			enemy->hp = fmax(0, enemy->hp - data->atk);
+			roleReduceHP(enemy, data->atk);
 			aiFrogInit(ai);
 		} else if (ai->attackT < 0) {
 			// 体力耗尽，停止攻击。

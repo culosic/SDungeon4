@@ -27,6 +27,7 @@ AIAnt *aiAntCreate(Role *role) {
 	boll->r = 4;
 	boll->v = 300;
 	aiAntInit(ai);
+	ai->attackAIT = getRandFloat(1.3, ai->attackAIT);
 	return ai;
 }
 

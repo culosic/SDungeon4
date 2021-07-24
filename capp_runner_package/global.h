@@ -57,6 +57,11 @@ void drawText(char *c, int x, int y, int32 color, int textSize);
 void drawTextC(char* c, int x, int y, int w, int h, int r, int g, int b, int textSize);
 
 /**
+ * @brief 同drawTextC，可以换行。
+ */
+void drawTextexC(char *c, int x, int y, int w, int h, int r, int g, int b, int indent, int padding, int textSize);
+
+/**
  * @brief 改变透明度并返回颜色
  */
 int32 getAlphaColor(int32 color, float alpha);

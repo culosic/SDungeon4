@@ -47,6 +47,17 @@ void drawTextC(char* c, int x, int y, int w, int h, int r, int g, int b, int tex
 	dtext(c, x + (w - fw) / 2, y + (h - fh) / 2 - textSize / 8, r, g, b, 0, 1);
 }
 
+void drawTextexC(char* c, int x, int y, int w, int h, int r, int g, int b, int indent, int padding, int textSize) {
+	long fw = 0;
+	long fh = 0;
+	setTextSize(1, textSize);
+	textwh(c, 1, 1, &fw, &fh);
+	fw = fmax(fw, sizeof(*c) / 2 * textSize);
+	colorst color = {r, g, b};
+	rectst rect = {x + padding, y, w - padding * 2, h - padding * 2};
+	dtextex(c, x + indent, y + padding, &rect, &color, 0, 1);
+}
+
 int32 getAlphaColor(int32 color, float alpha) {
 	if (alpha == 0) {
 		return 0x00000000;

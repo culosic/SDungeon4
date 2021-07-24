@@ -25,6 +25,7 @@ AIWolf *aiWolfCreate(Role *role) {
 	AIWolf *ai = create(sizeof(AIWolf));
 	ai->role = role;
 	aiWolfInit(ai);
+	ai->attackAIT = getRandFloat(0.3, ai->attackAIT * 2);
 	return ai;
 }
 
@@ -71,7 +72,7 @@ void aiWolfUpdate(AIWolf *ai, double t) {
 		ai->attackT -= t;
 		Role *enemy = roomGetCloestEnemy(role->room, role);
 		if (enemy && getLineSize(role->x, role->y, enemy->x, enemy->y) < data->r + enemy->data->r) {
-			enemy->hp = fmax(0, enemy->hp - data->atk);
+			roleReduceHP(enemy, data->atk);
 			role->faceAngle += M_PI;  // TODO 冲刺攻击后面需要来一段缓冲
 			aiWolfInit(ai);
 		} else if (ai->attackT < 0) {

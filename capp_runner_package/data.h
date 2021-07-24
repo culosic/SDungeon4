@@ -10,17 +10,17 @@
 
 char *init_screen_caption = "S地牢";
 char *init_screen_text1 = "传承";
+char *init_screen_author = "火烧云作品(v0.4.4)";
 char *init_screen_start = "开始游戏";
 char *init_screen_exit = "退出";
 
-char *passed_test_floor1 = "（体验版）恭喜通过第一关";
-
 char *down_screen_ing = "下楼中...";
 
-char *passed_screen_caption = "已通关！感谢游玩";  // TODO 完成通关演出后删除。
+char *game_screen_exit_caption = "\x7e\xd3\x67\x5f\x0\x0";
+char *game_screen_exit_info = "\x8f\xd4\x56\xde\x4e\x3b\x83\xdc\x53\x55\x4f\x1a\x4e\x22\x59\x31\x6e\x38\x62\xf\x8f\xdb\x5e\xa6\xff\xc\x78\x6e\x5b\x9a\x89\x81\x8f\xd4\x56\xde\x54\x17\xff\x1f\x0\x0";
 
 char *passed_screen_story[10] = {
-	"【你已经历考验、被成为下一代传承者】",
+	"【你已经历考验、成为下一代传承者】",
 	"【愿你能坚守本心】",
 };
 
@@ -48,6 +48,41 @@ char *passed_screen_ps[10] = {
 
 char *passed_screen_back = "触摸屏幕返回主菜单";
 
+////////////////// 界面、弹窗信息 /////////////////////////
+
+char *headinfo_hp = "生命 %d/%d";
+char *headinfo_others = "攻 %d 射速 %.1f 移速 %d";
+char *mapinfo_caption = "图";
+
+char *dialog_box_caption = "宝箱";
+char *dialog_box_info = "你可以祈祷宝箱中符印的属性，点击宝箱来选择其中的一种：";
+char *dialog_box_hp = "磐石";
+char *dialog_box_hp_opened = "生命上限提升";
+char *dialog_box_atk = "破坏";
+char *dialog_box_atk_opened = "攻击力提升";
+char *dialog_box_atkv = "急速";
+char *dialog_box_atkv_opened = "攻击速度提升";
+char *dialog_box_v = "轻灵";
+char *dialog_box_v_opened = "移动速度提升";
+char *dialog_box_ext = "无尽";
+char *dialog_box_ext_opened = "弹幕数量增加";
+
+char *dialog_loss_caption = "死亡";
+char *dialog_loss_info = "在这阴暗的地牢中，你身受重伤，最终还是倒下了……";
+char *dialog_loss_back = "触摸屏幕返回主菜单";
+
+char *dialog_pass_caption = "胜利";
+char *dialog_pass_info1 = "本层地牢的守层者已被击败！";
+char *dialog_pass_info2 = "你的属性得到一些提升！";
+char *dialog_pass_info3 = "击败最终的首层者后";
+char *dialog_pass_info4 = "你发现了传承遗址……";
+char *dialog_pass_next = "触摸屏幕进入下一关";
+char *dialog_pass_end = "触摸屏幕继续";
+
+char *toast_heal = "治疗中";
+
+char *boss_start = "触摸屏幕开始战斗";
+
 ////////////////// 地图数据 /////////////////////////
 
 char *room_init_caption = "初";
@@ -70,6 +105,7 @@ typedef struct _FloorEnemy {
 
 // 所有楼层怪物数据
 FloorRole floor_enemies[4][100] = {
+	// 第一关。boss有两个形态
 	{
 		{1, RoleType_Mouse, 100, 100},
 		{1, RoleType_Mouse, 600, 100},
@@ -85,26 +121,33 @@ FloorRole floor_enemies[4][100] = {
 		{3, RoleType_Scorpion, 300, 300},
 		{3, RoleType_Scorpion, 400, 200},
 
-		{4, RoleType_Ghost, 450, 350},
+		{5, RoleType_Ghost, 450, 350},
 	},
+	// 第二关，特点是敌人多，子弹密集。
 	{
 		{1, RoleType_Ant, 100, 100},
-		{1, RoleType_Ant, 600, 100},
-		{1, RoleType_Ant, 600, 400},
-		{1, RoleType_Ant, 100, 400},
-		{1, RoleType_Ant, 350, 250},
+		{1, RoleType_Ant, 130, 130},
+		{1, RoleType_Ant, 700, 100},
+		{1, RoleType_Ant, 670, 130},
+		{1, RoleType_Ant, 700, 500},
+		{1, RoleType_Ant, 670, 470},
+		{1, RoleType_Ant, 100, 500},
+		{1, RoleType_Ant, 130, 470},
 
-		{2, RoleType_Ant, 300, 200},
-		{2, RoleType_Ant, 400, 300},
-		{2, RoleType_Frog, 350, 250},
+		{2, RoleType_Frog, 400, 300},
+		{2, RoleType_Frog, 500, 400},
+		{2, RoleType_Frog, 400, 400},
+		{2, RoleType_Frog, 500, 300},
 
 		{3, RoleType_Frog, 300, 200},
 		{3, RoleType_Frog, 400, 300},
-		{3, RoleType_Snake, 300, 300},
-		{3, RoleType_Snake, 400, 200},
+		{3, RoleType_Snake, 100, 100},
+		{3, RoleType_Snake, 700, 100},
+		{3, RoleType_Snake, 100, 500},
 
-		{4, RoleType_FlameM, 450, 350},
+		{5, RoleType_FlameM, 450, 350},
 	},
+	// 第三关，敌人体积大伤害高。
 	{
 		{1, RoleType_Bee, 100, 100},
 		{1, RoleType_Bee, 600, 100},
@@ -116,12 +159,12 @@ FloorRole floor_enemies[4][100] = {
 		{2, RoleType_Bee, 400, 300},
 		{2, RoleType_Tiger, 350, 250},
 
-		{3, RoleType_Tiger, 300, 200},
 		{3, RoleType_Tiger, 400, 300},
-		{3, RoleType_Tortoise, 300, 300},
-		{3, RoleType_Tortoise, 400, 200},
+		{3, RoleType_Tiger, 500, 400},
+		{3, RoleType_Tortoise, 200, 200},
+		{3, RoleType_Tortoise, 500, 500},
 
-		{4, RoleType_EDragon, 450, 350},
+		{5, RoleType_EDragon, 450, 350},
 	},
 };
 
@@ -135,11 +178,16 @@ struct _RoleData role_longxin = {
 	0xff0288d1,
 	0xff01579b,
 
-	// TODO 原生命值10，体验版没有装备、药包所以提升属性
 	14,
 	2,
-	300,
+	320,
 };
+
+float longxin_level_hp[3] = {8, 15, 22}; // 生命值、成长型数值
+float longxin_level_atk[3] = {1, 2, 3};
+float longxin_level_atkv[3] = {0.1, 0.06, 0.04};
+double longxin_level_v[3] = {50, 50, 50};
+double longxin_level_ext[3] = {1, 2, 4}; // 额外弹体、成长型数值
 
 ////////////////// 第一层怪物 ////////////////////////
 
@@ -188,7 +236,7 @@ struct _RoleData role_ghost = {
 	"幽鬼",
 	"鬼",
 	"日积月累...不断吞噬...最后，它成为了一个怪物！一团巨大的恶鬼。恐怖、诡异的身影，成为了每个探索者的噩梦。",
-	60,
+	80,
 	0xff444444,
 	0xff000000,
 
@@ -198,8 +246,8 @@ struct _RoleData role_ghost = {
 };
 
 struct _RoleData role_ghost_main = {
-	"魂魄",
-	"魄",
+	"鬼魁",
+	"魁",
 	"幽鬼头领",
 	40,
 	0xff444444,
@@ -207,7 +255,7 @@ struct _RoleData role_ghost_main = {
 
 	60,
 	3,
-	200,
+	220,
 };
 
 struct _RoleData role_ghost_child = {
@@ -229,7 +277,7 @@ struct _RoleData role_ant = {
 	"酸蚀蚁",
 	"蚁",
 	"成群出没，靠口中分泌的强烈酸液捕食猎物。",
-	12,
+	16,
 	0xff332200,
 	0xff332200,
 
@@ -243,12 +291,12 @@ struct _RoleData role_frog = {
 	"蛙",
 	"毒性较强，同时擅长跃击。",
 	25,
-	0xff22aa37,
+	0xff008837,
 	0xff008837,
 
 	20,
-	8,
-	150,
+	6,
+	50,
 };
 
 struct _RoleData role_snake = {
@@ -256,11 +304,11 @@ struct _RoleData role_snake = {
 	"蛇",
 	"毒液有剧毒，喷射毒液杀死猎物后吞掉猎物。",
 	20,
-	0xff800000,
+	0xff610000,
 	0xff610000,
 
 	12,
-	5,
+	3,
 	0,
 };
 
@@ -271,8 +319,8 @@ struct _RoleData role_flamem = {
 	"炎",
 	"元素精灵，可以聚集周围的火元素，胆敢靠近者会被慢慢烧成灰烬。",
 	70,
-	0xffff7700,
-	0xff663300,
+	0xffef6c00,
+	0xffef6c00,
 
 	220,
 	3,
@@ -285,25 +333,25 @@ struct _RoleData role_bee = {
 	"杀人蜂",
 	"蜂",
 	"成群出没，具有强烈的毒性，牙齿可以咬穿皮革。",
-	20,
+	30,
 	0xffffaa1f,
 	0xffaa8800,
 
 	10,
 	8,
-	150,
+	100,
 };
 
 struct _RoleData role_tiger = {
 	"虎拳",
 	"虎",
 	"高阶妖兽，半人半虎，擅长拳击。",
-	30,
+	40,
 	0xffffffff,
 	0xff999999,
 
 	30,
-	16,
+	14,
 	200,
 };
 
@@ -317,7 +365,7 @@ struct _RoleData role_tortoise = {
 
 	100,
 	0,
-	50,
+	30,
 };
 
 ////////////////// 第三层boss ////////////////////////

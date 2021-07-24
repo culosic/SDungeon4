@@ -12,7 +12,7 @@
 static void aiSnakeInit(AISnake *ai) {
 	Role *role = ai->role;
 	ai->state = AISnake_Idle;
-	ai->attackAIT = 3;
+	ai->attackAIT = 2;
 	ai->attackCount = 6;
 	roleStopAttack(role);
 }
@@ -25,7 +25,9 @@ AISnake *aiSnakeCreate(Role *role) {
 	boll->color = 0xff800000;
 	boll->r = 5;
 	boll->v = 200;
+	boll->atkv = 0.1;
 	aiSnakeInit(ai);
+	ai->attackAIT = getRandFloat(0.3, 0.6);
 	return ai;
 }
 

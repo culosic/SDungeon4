@@ -62,7 +62,7 @@ void bollUpdate(Boll *head, double t) {
 		if ((enemy = roomCollEnemy(room, boll->x, boll->y, data->r, boll->role))) {
 			// 碰撞到角色，产生伤害。
 			dispear = true;
-			enemy->hp = fmax(0, enemy->hp - boll->role->data->atk);
+			roleReduceHP(enemy, boll->role->data->atk);
 		} else if ((tile = roomColl(boll->room, boll->x, boll->y, data->r))) {
 			// 碰撞到墙壁。
 			dispear = true;

@@ -11,7 +11,7 @@ enum RoomTileType {
 	RoomTile_Floor,		// 地板
 	RoomTile_Wall,		// 墙体
 	RoomTile_Door,		// 门
-	RoomTile_Potions,		// 治疗草药
+	RoomTile_Potions,	// 治疗草药
 	RoomTile_Treasure,	// 宝箱
 };
 
@@ -25,10 +25,16 @@ typedef struct _RoomTile {
 	int h;
 	struct _Room *linkRoom;
 	int doorClosed;
+	int bossDoor;
 
 	// 药房间治疗计时。
 	double potionsT;
-	double potionsUsed;
+	double potionsUsedP;
+	double potionsTextT;
+
+	// 宝箱弹窗
+	int boxVisible;
+	int boxOpened;
 } RoomTile;
 
 // 房间类型
@@ -37,6 +43,7 @@ enum RoomType {
 	Room_Battle,
 	Room_Potions,
 	Room_Treasure,
+	Room_Prepare,
 	Room_Boss,
 };
 
@@ -81,7 +88,9 @@ Room *roomCreate(struct _Map *map, int x, int y, enum RoomType type);
 void roomDispose(Room *room);
 void roomInitTile(Room *room);
 void roomDraw(Room *room, double t);
+void roomDrawUI(Room *room, double t);
 void roomUpdate(Room *room, double t);
+void roomEvent(Room *room, int type, int p, int q);
 
 /**
  * @brief 向房间添加一个角色

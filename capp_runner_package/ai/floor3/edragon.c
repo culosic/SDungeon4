@@ -28,6 +28,7 @@ AIEdragon *aiEdragonCreate(Role *role) {
 	boll->color = 0xff000000;
 	boll->r = 10;
 	boll->v = 400;
+	boll->atkv = 0.2;
 	aiEdragonInit(ai);
 	return ai;
 }

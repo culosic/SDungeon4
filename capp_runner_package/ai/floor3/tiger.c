@@ -25,6 +25,7 @@ AITiger *aiTigerCreate(Role *role) {
 	AITiger *ai = create(sizeof(AITiger));
 	ai->role = role;
 	aiTigerInit(ai);
+	ai->attackAIT = getRandFloat(0.1, ai->chargeT);
 	return ai;
 }
 
@@ -72,7 +73,7 @@ void aiTigerUpdate(AITiger *ai, double t) {
 		ai->attackT -= t;
 		Role *enemy = roomGetCloestEnemy(role->room, role);
 		if (enemy && getLineSize(role->x, role->y, enemy->x, enemy->y) < data->r + enemy->data->r) {
-			enemy->hp = fmax(0, enemy->hp - data->atk);
+			roleReduceHP(enemy, data->atk);
 			role->faceAngle += M_PI;  // TODO 冲刺攻击后面需要来一段缓冲
 			aiTigerInit(ai);
 		} else if (ai->attackT < 0) {

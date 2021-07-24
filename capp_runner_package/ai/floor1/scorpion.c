@@ -12,7 +12,7 @@
 static void aiScorpionInit(AIScorpion *ai) {
 	Role *role = ai->role;
 	ai->state = AIScorpion_Move;
-	ai->attackAIT = getRandFloat(1, 2);
+	ai->attackAIT = 2;
 	ai->attackCount = 3;
 	roleStopAttack(role);
 	roleMove(role, getRandAngle());
@@ -27,6 +27,7 @@ AIScorpion *aiScorpionCreate(Role *role) {
 	boll->r = 10;
 	boll->v = 100;
 	aiScorpionInit(ai);
+	ai->attackAIT = getRandFloat(1.3, ai->attackAIT);
 	return ai;
 }
 

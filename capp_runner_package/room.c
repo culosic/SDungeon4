@@ -8,6 +8,7 @@
 #include "game.h"
 #include "global.h"
 #include "map.h"
+#include "role.h"
 
 RoomTile *roomTileCreate(int x, int y, int w, int h, enum RoomTileType type, int direction) {
 	RoomTile *tile = create(sizeof(RoomTile));
@@ -46,8 +47,8 @@ Room *roomCreate(Map *map, int x, int y, enum RoomType type) {
 		break;
 	case Room_Treasure:
 		room->caption = room_treasure_caption;
-		room->roomW = 400;
-		room->roomH = 400;
+		room->roomW = 500;
+		room->roomH = 500;
 		break;
 	case Room_Boss:
 		room->caption = room_boss_caption;
@@ -56,16 +57,16 @@ Room *roomCreate(Map *map, int x, int y, enum RoomType type) {
 		break;
 	default:
 		room->caption = "";
-		room->roomW = 100;
-		room->roomH = 100;
+		room->roomW = 300;
+		room->roomH = 300;
 		break;
 	}
 	room->wallD = 30;
 	room->doorW = 100;
 	room->roomW -= room->wallD * 2;
 	room->roomH -= room->wallD * 2;
-	room->px = (SCRW - room->roomW) / 2;
-	room->py = (SCRH - room->roomH) / 2;
+	room->px = (SCRW - room->roomW) / 2 - room->wallD;
+	room->py = (SCRH - room->roomH) / 2 - room->wallD;
 	return room;
 }
 
@@ -73,13 +74,20 @@ void roomInitTile(Room *room) {
 	// 地板
 	room->tiles[room->tileCount++] = roomTileCreate(room->wallD, room->wallD, room->roomW, room->roomH, RoomTile_Floor, 0);
 	// 特殊图块
+	int healD = 150, boxD = 80;
 	switch (room->type) {
 	case Room_Potions:
-		room->tiles[room->tileCount++] = roomTileCreate(room->roomW / 3 + room->wallD, room->roomH / 3 + room->wallD, room->roomW / 3, room->roomH / 3, RoomTile_Potions, 0);
+		room->tiles[room->tileCount++] = roomTileCreate((room->roomW - healD) / 2 + room->wallD, (room->roomH - healD) / 2 + room->wallD, healD, healD, RoomTile_Potions, 0);
 		break;
-	case Room_Treasure:
-		room->tiles[room->tileCount++] = roomTileCreate(room->roomW / 3 + room->wallD, room->roomH / 3 + room->wallD, room->roomW / 3, room->roomH / 3, RoomTile_Treasure, 0);
+	case Room_Treasure: {
+		Map *map = room->map;
+		room->tiles[room->tileCount++] = roomTileCreate((room->roomW - boxD) / 2 + room->wallD, (room->roomH - boxD) / 2 + room->wallD, boxD, boxD, RoomTile_Treasure, 0);
+		do {
+			map->boxSelect1 = rand() % 5;
+			map->boxSelect2 = rand() % 5;
+		} while (map->boxSelect1 == map->boxSelect2);
 		break;
+	}
 	default:
 		break;
 	}
@@ -105,8 +113,13 @@ void roomInitTile(Room *room) {
 				tile = roomTileCreate(room->roomW + room->wallD, room->wallD + room->roomH / 2 - room->doorW / 2, room->wallD, room->doorW, RoomTile_Door, 6);
 			}
 		}
-		tile->linkRoom = linkRoom;
-		room->tiles[room->tileCount++] = tile;
+		if (tile != NULL) {
+			if (room->type == Room_Boss || linkRoom->type == Room_Boss) {
+				tile->bossDoor = true;
+			}
+			tile->linkRoom = linkRoom;
+			room->tiles[room->tileCount++] = tile;
+		}
 	}
 }
 
@@ -133,14 +146,16 @@ void roomDraw(Room *room, double t) {
 			drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xff696969);
 			break;
 		case RoomTile_Potions:
-			if (tile->potionsUsed < 1) {
-				drawRect(x + tile->x, y + tile->y, tile->w, tile->h, getAlphaColor(0xff1b5e20, 1 - tile->potionsUsed));
-				drawTextC(room->caption, x + tile->x, y + tile->y, tile->w, tile->h, 165, 214, 167, 50);
+			if (tile->potionsUsedP < 1) {
+				drawRect(x + tile->x, y + tile->y, tile->w, tile->h, getAlphaColor(0xff1b5e20, 1 - tile->potionsUsedP));
+				drawTextC(room->caption, x + tile->x, y + tile->y, tile->w, tile->h, 165, 214, 167, 40);
 			}
 			break;
 		case RoomTile_Treasure:
-			drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xff773300);
-			drawTextC(room->caption, x + tile->x, y + tile->y, tile->w, tile->h, 255, 213, 79, 50);
+			if (!tile->boxOpened) {
+				drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xff773300);
+				drawTextC(room->caption, x + tile->x, y + tile->y, tile->w, tile->h, 255, 213, 79, 40);
+			}
 			break;
 		case RoomTile_Wall:
 			drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xffa9a9a9);
@@ -149,7 +164,7 @@ void roomDraw(Room *room, double t) {
 			if (tile->doorClosed) {
 				drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xffa9a9a9);
 			} else {
-				drawRect(x + tile->x, y + tile->y, tile->w, tile->h, 0xff795548);
+				drawRect(x + tile->x, y + tile->y, tile->w, tile->h, tile->bossDoor ? 0xff792211 : 0xff795548);
 			}
 			break;
 		default:
@@ -164,7 +179,11 @@ void roomDraw(Room *room, double t) {
 static void roomToggleDoor(Room *room, int direction) {
 	for (int i = room->tileCount - 1; i >= 0; i--) {
 		RoomTile *tile = room->tiles[i];
-		if (tile->type == RoomTile_Door && (room->type == Room_Boss || tile->direction != direction)) {
+		// if (tile->type == RoomTile_Door && (room->type == Room_Boss || tile->direction != direction)) {
+		// 	tile->doorClosed = true;
+		// }
+		// TODO 目前战斗容易划出房间，暂时关闭退出战斗房间的功能。
+		if (tile->type == RoomTile_Door) {
 			tile->doorClosed = true;
 		}
 	}
@@ -180,6 +199,11 @@ static void roomColls(Room *room, float x, float y, float r, int isMainRole) {
 		if (isCirCollRect(x, y, r, tile->x, tile->y, tile->w, tile->h)) {
 			// patch 治疗房间
 			if (tile->type == RoomTile_Potions) {
+				room_colls_tiles[room_colls_count++] = tile;
+				break;
+			}
+			// patch 宝箱房间
+			if (tile->type == RoomTile_Treasure) {
 				room_colls_tiles[room_colls_count++] = tile;
 				break;
 			}
@@ -230,8 +254,12 @@ static void roomUpdateColl(Room *room, Role *role, double t) {
 			default:
 				break;
 			}
-			if (!linkRoom->passed) {
+			if (!linkRoom->passed) {  // 进入一个新战斗房间，先不显示其他门口。
 				roomToggleDoor(linkRoom, 10 - tile->direction);
+				if (linkRoom->type == Room_Boss) { // 进入boss房间，先展开一段聚焦演出
+					map->bossPreShow = true;
+					game.userControll = false;
+				}
 			}
 			roomRoleGoto(room, role, linkRoom);
 			map->currentRoom = linkRoom;
@@ -266,14 +294,33 @@ static void roomUpdateColl(Room *room, Role *role, double t) {
 			}
 			break;
 		case RoomTile_Potions:
-			if (role->hp < role->hps && tile->potionsT < 1) {
-				if (tile->potionsT < 0.5) {
+			map->activeTile = tile;
+			if (role->hp < role->hps && tile->potionsUsedP < 1) {
+				if (tile->potionsT < 0.25) {
 					tile->potionsT += t;
 				} else {
-					tile->potionsUsed += 0.1;
+					tile->potionsUsedP += 0.05;
 					tile->potionsT = 0;
-					role->hp = fmin(role->hp + role->hps * 0.1, role->hps);
+					role->hp = fmin(role->hp + role->hps * 0.05, role->hps);
 				}
+				tile->potionsTextT += t;
+			} else {
+				if (tile->potionsT > 0 && tile->potionsT <= 0.5) {
+					tile->potionsT += t;
+					tile->potionsTextT += t;
+				} else {
+					tile->potionsT = 0;
+					tile->potionsTextT = 0;
+				}
+			}
+			break;
+		case RoomTile_Treasure:
+			if (!tile->boxVisible && !tile->boxOpened) {
+				map->activeTile = tile;
+				tile->boxVisible = true;
+				game.userControll = false;
+				roleStopMove(game.mainRole);
+				roleStopAttack(game.mainRole);
 			}
 			break;
 		default:

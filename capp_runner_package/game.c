@@ -1,5 +1,6 @@
 #include "game.h"
 
+#include <android.h>
 #include <base.h>
 #include <exb.h>
 #include <graphics.h>
@@ -20,13 +21,18 @@ static void screenGotoNextUpdate(double t) {
 			drawRect(0, 0, SCRW, SCRH, getAlphaColor(0xff000000, game.screenT / T));
 		} else {
 			// 跳转到下一个页面
-			if ((game.screen == Screen_Game && game.nextScreen == Screen_Init) || game.nextScreen == Screen_Passed) {  // 回到主菜单界面
+			if (game.nextScreen == Screen_Init || game.nextScreen == Screen_Passed) {  // 回到主菜单界面
 				if (game.mainRole != NULL) {
 					mapDispose(game.map);
 					roleDispose(game.mainRole);
 					game.map = NULL;
 					game.mainRole = NULL;
 					game.floor = 0;
+					game.userControll = true;
+					game.fail = false;
+					game.failT = 0;
+					game.passed = false;
+					game.passedT = 0;
 				}
 				game.passedScreenType = PassedScreen_None;
 			}
@@ -47,8 +53,12 @@ static void downFloor() {
 	if (game.map) {
 		mapDispose(game.map);
 	}
+	game.passed = false;
+	game.passedT = 0;
+	game.userControll = true;
 	game.nextScreen = Screen_Game;
 	game.floor--;
+	game.mainRole->hp = game.mainRole->hps;
 	Map *map = game.map = mapCreate();
 	Room *initRoom = map->currentRoom;
 	FloorRole *enemies = (FloorRole *)(void *)&floor_enemies[-game.floor - 1];
@@ -69,6 +79,8 @@ static void downFloor() {
 static void startGame() {
 	game.mainRole = roleCreate(RoleType_LongXin, false, true);
 	game.floor = 0;
+	game.fail = false;
+	game.failT = 0;
 	downFloor();
 }
 
@@ -86,13 +98,14 @@ static void initScreenUpdate(double t) {
 	int32 mainColor = 0xffaaaaaaa;
 	drawText(init_screen_caption, 300, 150, mainColor, 80);
 	drawRect(200, 250, 500, 3, mainColor);
-	drawRect(530, 265, 100, 45, getShiningColor(0xff999999, 0xffffffff, at += t, 1.5));
+	drawRect(530, 265, 100, 45, getShiningColor(0xff666666, 0xffffffff, at += t, 1.5));
 	drawText(init_screen_text1, 550, 270, 0xff000000, 30);
 	// 按钮
 	// drawRect(SCRW - 330, SCRH - 230, 30 * 6, 90, 0xff999999);
 	// drawRect(SCRW - 330, SCRH - 130, 30 * 6, 90, 0xff555555);
-	drawText(init_screen_start, SCRW - 300, SCRH - 200, 0xffe0e0e0, 30);
 	drawText(init_screen_exit, SCRW - 300, SCRH - 100, 0xffe0e0e0, 30);
+	drawText(init_screen_start, SCRW - 300, SCRH - 200, 0xffe0e0e0, 30);
+	drawText(init_screen_author, SCRW - 300, SCRH - 300, 0xff888888, 25);
 }
 
 static void initScreenEvent(int type, int p, int q) {
@@ -111,11 +124,11 @@ static void downScreenUpdate(double t) {
 		game.downT += t;
 		drawTextC(down_screen_ing, 0, 0, SCRW, SCRH, 234, 234, 234, 40);
 	} else {
-		// Test 试玩版
-		if (game.floor == -1) {
-			drawTextC(passed_test_floor1, 0, 0, SCRW, SCRH, 234, 234, 234, 40);
-			return;
-		}
+		// // Test 试玩版
+		// if (game.floor == -1) {
+		// 	drawTextC(passed_test_floor1, 0, 0, SCRW, SCRH, 234, 234, 234, 40);
+		// 	return;
+		// }
 		game.downT = 0;
 		game.nextScreen = Screen_Game;
 		if (game.floor == 0) {
@@ -128,7 +141,7 @@ static void downScreenUpdate(double t) {
 
 //////////////////////////////// 游戏界面 //////////////////////////////
 
-static void gameUserControll(float t) {
+static void gameUserControll(double t) {
 	Cirpad *dpad = game.dpad;
 	Cirpad *apad = game.apad;
 	Role *role = game.mainRole;
@@ -141,35 +154,25 @@ static void gameUserControll(float t) {
 	}
 	if (apad->active) {
 		Role *cloestEnemy = roomGetCloestEnemy(role->room, role);
-		double angle = cloestEnemy ? getAngle(role->x, role->y, cloestEnemy->x, cloestEnemy->y) : role->faceAngle;
+		double angle = apad->dragged
+						   ? apad->angle
+					   : cloestEnemy
+						   ? getAngle(role->x, role->y, cloestEnemy->x, cloestEnemy->y)
+						   : role->faceAngle;
 		roleAttack(role, angle);
 	} else {
 		roleStopAttack(role);
 	}
 }
 
-static void gamePassTest(float t) {
-	if (mapIsPassed(game.map)) {
-		// TODO 显示弹窗提示获得物品和下一关按钮
-		// 跳到下一层、下一关
-		if (game.nextFloorT < 2) {
-			game.nextFloorT += t;
-		} else {
-			game.nextFloorT = 0;
-			if (game.floor > -3) {
-				game.nextScreen = Screen_Down;
-			} else {
-				game.nextScreen = Screen_Passed;
-			}
-		}
-	}
-}
-
 static void gameScreenEvent(int type, int p, int q) {
 	int result = false;
-	if (!result) {
+	if (!result && game.userControll) {
 		result |= cirpadEvent(game.dpad, type, p, q);
 		result |= cirpadEvent(game.apad, type, p, q);
+	}
+	if (!result) {
+		mapEvent(game.map, type, p, q);
 	}
 }
 
@@ -178,14 +181,19 @@ static void gameScreenUpdate(double t) {
 
 	// 逻辑
 	mapUpdate(game.map, t);
-	gameUserControll(t);
-	gamePassTest(t);
+	if (game.userControll) {
+		gameUserControll(t);
+	}
 
 	// 绘图
 	mapDraw(game.map, t);
-	// mapDrawMiniMap(game.map, t);
-	cirpadDraw(game.dpad, t);
-	cirpadDraw(game.apad, t);
+
+	// UI
+	if (game.userControll) {
+		cirpadDraw(game.dpad, t);
+		cirpadDraw(game.apad, t);
+	}
+	mapDrawUI(game.map, t);
 }
 
 //////////////////////////////// 通关界面 //////////////////////////////
@@ -199,17 +207,25 @@ static void passedScreenUpdate(double t) {
 		game.passedRoleY = SCRH * 0.7;
 		game.passedRoleFz = data->r * 2 > 20 / 0.5 ? data->r * 2 > 70 / 0.5 ? 70 : data->r * 2 * 0.5 : 20;
 		game.passedRoleT = 0;
-		game.passedRoleRun = true;
+		game.passedRoleRun = false;
 		game.passedRoleFly = false;
 		game.passedScreenType = PassedScreen_Story;
 		game.passedEnd = false;
 		game.passedTextT = 0;
-		game.passedTextIndex = 0;
+		game.passedTextIndex = -1;
 		break;
 	case PassedScreen_Story:
 		// 第一幕 传承
 		if (game.passedTextIndex < 2) {
-			if (game.passedTextT < 3) {
+			if (game.passedTextIndex == -1) {  // 准备屏
+				if (game.passedTextT < 2) {
+					game.passedTextT += t;
+				} else {
+					game.passedTextIndex++;
+					game.passedTextT = 0;
+					game.passedRoleRun = true;
+				}
+			} else if (game.passedTextT < 3) {
 				game.passedTextT += t;
 				drawTextC(passed_screen_story[game.passedTextIndex], 0, SCRH * 0.7, SCRW, SCRH * 0.3, 179, 229, 252, 40);
 			} else {
@@ -288,16 +304,16 @@ static void passedScreenEvent(int type, int p, int q) {
 
 //////////////////////////////// 游戏场景控制 //////////////////////////////
 
-static void gameDrawFPS(double t) {
-	char s[50];
-	game.fpsDT += t;
-	if (game.fps < 1 || game.fpsDT > 1) {
-		game.fpsDT = 0;
-		game.fps = 1.0 / t;
-	}
-	sprintf(s, "FPS %.1f  SCR %d*%d", game.fps, SCRW, SCRH);
-	drawTextC(s, 0, 0, 400, 60, 255, 255, 255, 30);
-}
+// static void gameDrawFPS(double t) {
+// 	char s[50];
+// 	game.fpsDT += t;
+// 	if (game.fps < 1 || game.fpsDT > 1) {
+// 		game.fpsDT = 0;
+// 		game.fps = 1.0 / t;
+// 	}
+// 	sprintf(s, "FPS %d", (int)game.fps, SCRW, SCRH);
+// 	drawTextC(s, 0, 0, SCRW, 60, 255, 255, 255, 30);
+// }
 
 void gameUpdate(long data) {
 	int32 now = getuptime();
@@ -322,7 +338,7 @@ void gameUpdate(long data) {
 	}
 	screenGotoNextUpdate(t);
 
-	gameDrawFPS(t);
+	// gameDrawFPS(t);
 	ref(0, 0, SCRW, SCRH);
 }
 
@@ -347,8 +363,11 @@ void gameEvent(int type, int p, int q) {
 		if (game.screen == Screen_Init) {
 			exit();
 		} else {
-			endGame();
+			dlgcreate(game_screen_exit_caption, game_screen_exit_info, 1);
 		}
+	}
+	if (type == MR_DIALOG && p == 0) {	// 确定返回。
+		endGame();
 	}
 }
 

@@ -12,7 +12,7 @@
 static void aiBeeInit(AIBee *ai) {
 	Role *role = ai->role;
 	ai->state = AIBee_Move;
-	ai->attackAIT = getRandFloat(1, 2);
+	ai->attackAIT = 1;
 	ai->attackCount = 1;
 	roleStopAttack(role);
 	roleMove(role, getRandAngle());
@@ -27,6 +27,7 @@ AIBee *aiBeeCreate(Role *role) {
 	boll->r = 8;
 	boll->v = 300;
 	aiBeeInit(ai);
+	ai->attackAIT = getRandFloat(0.3, ai->attackAIT);
 	return ai;
 }
 
@@ -70,14 +71,14 @@ void aiBeeUpdate(AIBee *ai, double t) {
 		ai->turnAIT -= t;
 	} else {
 		ai->turnAIT = getRandFloat(1, 1.5);
-		roleMove(role, aiGetAngleToEnemy(role, M_PI / 4));
+		roleMove(role, aiGetAngleToEnemy(role, M_PI / 8));
 	}
 	// 碰撞墙壁，也需要转向
 	if (role->vx != 0 && role->vy != 0) {
 		RoomTile *tile = roomColl(room, role->x + role->vx * t, role->y + role->vy * t, data->r);
 		if (tile) {
 			role->v = data->v0;
-			roleMove(role, aiGetAngleToEnemy(role, M_PI / 4));
+			roleMove(role, aiGetAngleToEnemy(role, M_PI / 8));
 		}
 	}
 }

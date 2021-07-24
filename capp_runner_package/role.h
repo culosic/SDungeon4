@@ -43,6 +43,15 @@ enum RoleType {
 	RoleType_EDragon = 0x03ff01,
 };
 
+// 角色符印加成类型
+enum FuyinType {
+	Fuyin_HP,
+	Fuyin_Atk,
+	Fuyin_AtkV,
+	Fuyin_V,
+	Fuyin_EXT,
+};
+
 typedef struct _RoleData {
 	// 人物标识
 	char *name;		   // 姓名
@@ -52,9 +61,9 @@ typedef struct _RoleData {
 	int32 color;	   // 地图人物颜色
 	int32 innerColor;  // 地图人物内部颜色
 	// 战斗属性
-	float hp;	 // 基础生命值
-	float atk;	 // 基础攻击力
-	float v0;	 // 基础移动速度
+	float hp;	// 基础生命值
+	float atk;	// 基础攻击力
+	float v0;	// 基础移动速度
 } RoleData;
 
 // 角色数据定义
@@ -63,8 +72,12 @@ typedef struct _Role {
 	enum RoleType type;		 // 角色类型
 
 	int enemy;
+	int alive;
 	float hps;
 	float hp;
+	float atk;
+	float atkv;
+	double v0;
 
 	struct _Room *room;	 // 当前所在房间
 	float x;
@@ -115,9 +128,12 @@ void roleStopMove(Role *role);
 void roleAttack(Role *role, double angle);
 /**
  * @brief 角色停止攻击
- * 
- * @param role 
  */
 void roleStopAttack(Role *role);
+
+/**
+ * @brief 伤害结算
+ */
+void roleReduceHP(Role *role, float hpDT);
 
 #endif

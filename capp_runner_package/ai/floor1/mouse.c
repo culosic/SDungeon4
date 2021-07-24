@@ -12,7 +12,7 @@
 static void aiMouseInit(AIMouse *ai) {
 	Role *role = ai->role;
 	ai->state = AIMouse_Move;
-	ai->attackAIT = getRandFloat(1.5, 2);
+	ai->attackAIT = 2;
 	ai->attackCount = 2;
 	roleStopAttack(role);
 	roleMove(role, getRandAngle());
@@ -28,6 +28,7 @@ AIMouse *aiMouseCreate(Role *role) {
 	boll->v = 300;
 	boll->atkv = 0.1;
 	aiMouseInit(ai);
+	ai->attackAIT = getRandFloat(0.3, ai->attackAIT);
 	return ai;
 }
 
