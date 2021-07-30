@@ -7,9 +7,9 @@
 
 // 炎兽的状态
 enum AIFlameMState {
-	AIFlameM_Move,	  // 移动
+	AIFlameM_Idle,	  // 休息
 	AIFlameM_Attack,  // 攻击
-	AIFlameM_State2,  // 第二阶段
+	AIFlameM_Circle,  // 环形弹幕
 };
 
 // 炎兽的实时ai数据
@@ -20,8 +20,6 @@ typedef struct _AIFlameM {
 	double turnAIT;			   // 转向倒计时。
 	double attackAIT;		   // 攻击计划倒计时。
 	int attackCount;		   // 攻击剩余计数。
-	double childT;			   // 生成小鬼倒计时。
-	double childCDT;		   // 生成小鬼计CD。
 } AIFlameM;
 
 AIFlameM *aiFlameMCreate(struct _Role *role);

@@ -13,7 +13,7 @@ static void aiTigerInit(AITiger *ai) {
 	Role *role = ai->role;
 	role->v = role->data->v0;
 	ai->state = AITiger_Move;
-	ai->chargeT = 0.8;
+	ai->chargeT = 0.6;
 	ai->attackT = 0.2;
 	ai->attackAIT = 0;
 	ai->turnAIT = 0;

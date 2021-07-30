@@ -13,7 +13,7 @@ static void aiBeeInit(AIBee *ai) {
 	Role *role = ai->role;
 	ai->state = AIBee_Move;
 	ai->attackAIT = 1;
-	ai->attackCount = 1;
+	ai->attackCount = 6;
 	roleStopAttack(role);
 	roleMove(role, getRandAngle());
 }
@@ -24,8 +24,9 @@ AIBee *aiBeeCreate(Role *role) {
 	ai->role = role;
 	// TODO 临时处理，设置子弹颜色，实际子弹颜色应该由武器决定。
 	boll->color = 0xffffaa1f;
-	boll->r = 8;
-	boll->v = 300;
+	boll->r = 12;
+	boll->v = 500;
+	boll->atkv = 0.2;
 	aiBeeInit(ai);
 	ai->attackAIT = getRandFloat(0.3, ai->attackAIT);
 	return ai;

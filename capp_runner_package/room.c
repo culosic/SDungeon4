@@ -231,6 +231,7 @@ static void roomUpdateColl(Room *room, Role *role, double t) {
 	for (int i = 0; i < room_colls_count; i++) {
 		RoomTile *tile = room_colls_tiles[i];
 		Room *linkRoom = tile->linkRoom;
+		map->activeTile = NULL;
 		switch (tile->type) {
 		case RoomTile_Door:
 			// 切换房间

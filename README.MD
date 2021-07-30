@@ -16,10 +16,9 @@
 游戏代码可以自行随意使用，无需联系本作者，但是要在醒目位置标明原作者。由于作者偷懒，导致后期游戏代码比较冗杂（嘿嘿）。
 
 ### 截图
-![截图](https://github.com/culosic/SDungeon/blob/master/screenshots/Screenshot_2021-07-15-01-23-41-234_com.xl.capp.jpg)
-![截图](https://github.com/culosic/SDungeon/blob/master/screenshots/Screenshot_2021-07-15-01-23-48-794_com.xl.capp.jpg)
-![截图](https://github.com/culosic/SDungeon/blob/master/screenshots/Screenshot_2021-07-15-01-23-01-001_com.xl.capp.jpg)
-![截图](https://github.com/culosic/SDungeon/blob/master/screenshots/Screenshot_2021-07-15-01-22-06-967_com.xl.capp.jpg)
+![截图](https://github.com/culosic/SDungeon/blob/master/screenshots/Screenshot_2021-07-30-23-30-08-671_com.xl.capp.jpg)
+![截图](https://github.com/culosic/SDungeon/blob/master/screenshots/Screenshot_2021-07-30-23-31-12-679_com.xl.capp.jpg)
+![截图](https://github.com/culosic/SDungeon/blob/master/screenshots/Screenshot_2021-07-30-23-31-42-920_com.xl.capp.jpg)
 
 ### 实现步骤（基本完成）
 1. **实现地图**
@@ -32,6 +31,14 @@
 3. **优化体验**
 5. **简化游戏，时间预算不够，缩短开发周期**
 4. **设计剩余的两层关卡**
+
+### 更新日志
+
+2021年7月30日
+* 平衡敌人，重构第二层boss，优化游戏说明文本。
+
+2021年7月25日 v0.4.4
+* 完成简化后的基本功能，包括菜单、敌人、房间元素等。
 
 ### 还有一些想说的
 这段时间在陆陆续续的做这个游戏，终于做好了，看到成品，起码自己玩的挺开心的嘻嘻。

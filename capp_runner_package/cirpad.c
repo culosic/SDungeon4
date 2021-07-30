@@ -44,8 +44,10 @@ void cirpadUpdate(Cirpad *pad, double t) {
 			up = false;
 			// patch 下面的让摇杆移动生效的判断在移动键盘中不合适。
 			// if (dist > pad->barR) {	 // 摇杆移动生效
-			pad->dragged = true;
-			pad->angle = getAngle(pad->x, pad->y, x, y);
+			if (dist > 5) {	 // 摇杆移动生效
+				pad->dragged = true;
+				pad->angle = getAngle(pad->x, pad->y, x, y);
+			}
 			// }
 			if (dist <= pad->activeR) {	 // 摇杆在范围内拖拽
 				pad->barX = x;

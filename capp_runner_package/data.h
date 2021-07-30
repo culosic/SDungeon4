@@ -10,7 +10,7 @@
 
 char *init_screen_caption = "S地牢";
 char *init_screen_text1 = "传承";
-char *init_screen_author = "火烧云作品(v0.4.4)";
+char *init_screen_author = "火烧云作品(v0.4.5 alpha)";
 char *init_screen_start = "开始游戏";
 char *init_screen_exit = "退出";
 
@@ -72,11 +72,12 @@ char *dialog_loss_info = "在这阴暗的地牢中，你身受重伤，最终还是倒下了……";
 char *dialog_loss_back = "触摸屏幕返回主菜单";
 
 char *dialog_pass_caption = "胜利";
-char *dialog_pass_info1 = "本层地牢的守层者已被击败！";
-char *dialog_pass_info2 = "你的属性得到一些提升！";
-char *dialog_pass_info3 = "击败最终的首层者后";
-char *dialog_pass_info4 = "你发现了传承遗址……";
-char *dialog_pass_next = "触摸屏幕进入下一关";
+char *dialog_pass_info_levelup = "升级！你的生命、攻速、攻击提升";
+char *dialog_pass_info_nextlevel_2 = "【下一层】会更加凶险，野兽密集";
+char *dialog_pass_info_nextlevel_3 = "下面是【最后一层】，妖兽强大但稀少";
+char *dialog_pass_info_allwin = "击败【最终的守层者】后";
+char *dialog_pass_info_found = "你发现了传承遗址……";
+char *dialog_pass_next = "触摸屏幕进入下一层";
 char *dialog_pass_end = "触摸屏幕继续";
 
 char *toast_heal = "治疗中";
@@ -147,22 +148,16 @@ FloorRole floor_enemies[4][100] = {
 
 		{5, RoleType_FlameM, 450, 350},
 	},
-	// 第三关，敌人体积大伤害高。
+	// 第三关，敌人稀少、体积大伤害高。
 	{
 		{1, RoleType_Bee, 100, 100},
-		{1, RoleType_Bee, 600, 100},
 		{1, RoleType_Bee, 600, 400},
-		{1, RoleType_Bee, 100, 400},
-		{1, RoleType_Bee, 350, 250},
 
 		{2, RoleType_Bee, 300, 200},
-		{2, RoleType_Bee, 400, 300},
-		{2, RoleType_Tiger, 350, 250},
+		{2, RoleType_Tortoise, 350, 250},
 
-		{3, RoleType_Tiger, 400, 300},
-		{3, RoleType_Tiger, 500, 400},
-		{3, RoleType_Tortoise, 200, 200},
-		{3, RoleType_Tortoise, 500, 500},
+		{3, RoleType_Tiger, 350, 250},
+		{3, RoleType_Tortoise, 250, 250},
 
 		{5, RoleType_EDragon, 450, 350},
 	},
@@ -295,7 +290,7 @@ struct _RoleData role_frog = {
 	0xff008837,
 
 	20,
-	6,
+	4,
 	50,
 };
 
@@ -323,7 +318,7 @@ struct _RoleData role_flamem = {
 	0xffef6c00,
 
 	220,
-	3,
+	4,
 	100,
 };
 
@@ -338,7 +333,7 @@ struct _RoleData role_bee = {
 	0xffaa8800,
 
 	10,
-	8,
+	10,
 	100,
 };
 
@@ -351,7 +346,7 @@ struct _RoleData role_tiger = {
 	0xff999999,
 
 	30,
-	14,
+	16,
 	200,
 };
 
@@ -379,8 +374,8 @@ struct _RoleData role_edragon = {
 	0xff000000,
 
 	300,
-	4,
-	200,
+	5,
+	120,
 };
 
 #endif

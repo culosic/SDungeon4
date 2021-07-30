@@ -218,14 +218,14 @@ static void passedScreenUpdate(double t) {
 		// 第一幕 传承
 		if (game.passedTextIndex < 2) {
 			if (game.passedTextIndex == -1) {  // 准备屏
-				if (game.passedTextT < 2) {
+				if (game.passedTextT < 0.5) {
 					game.passedTextT += t;
 				} else {
 					game.passedTextIndex++;
 					game.passedTextT = 0;
 					game.passedRoleRun = true;
 				}
-			} else if (game.passedTextT < 3) {
+			} else if (game.passedTextT < 2) {
 				game.passedTextT += t;
 				drawTextC(passed_screen_story[game.passedTextIndex], 0, SCRH * 0.7, SCRW, SCRH * 0.3, 179, 229, 252, 40);
 			} else {
@@ -241,7 +241,7 @@ static void passedScreenUpdate(double t) {
 	case PassedScreen_Fly:
 		// 第二幕 飞行
 		if (game.passedTextIndex < 3) {
-			if (game.passedTextT < 3) {
+			if (game.passedTextT < 2) {
 				game.passedTextT += t;
 				drawTextC(passed_screen_fly[game.passedTextIndex], 0, SCRH * 0.7, SCRW, SCRH * 0.3, 235, 235, 235, 40);
 			} else {

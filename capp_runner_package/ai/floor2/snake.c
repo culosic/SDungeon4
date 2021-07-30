@@ -13,7 +13,7 @@ static void aiSnakeInit(AISnake *ai) {
 	Role *role = ai->role;
 	ai->state = AISnake_Idle;
 	ai->attackAIT = 2;
-	ai->attackCount = 6;
+	ai->attackCount = 4;
 	roleStopAttack(role);
 }
 

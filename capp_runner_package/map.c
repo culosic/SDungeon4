@@ -286,24 +286,28 @@ void mapDrawUI(Map *map, double t) {
 			drawRect(x, y, w, h, 0xff555555);
 			drawRect(x, y, w, 60, 0xffaaaaaa);
 			drawTextC(dialog_pass_caption, x, y, w, 60, 33, 33, 33, 40);
-			if (game.floor > -3) {
-				drawTextC(dialog_pass_info1, x, y + 60, w, 60, 204, 204, 204, 40);
-				drawTextC(dialog_pass_info2, x, y + 120, w, 60, 204, 204, 204, 40);
+			if (game.floor >= -1) { // 第一层
+				drawTextC(dialog_pass_info_levelup, x, y + 100, w, 60, 204, 204, 204, 40);
+				drawTextC(dialog_pass_info_nextlevel_2, x, y + 160, w, 60, 204, 204, 204, 40);
 				drawTextC(dialog_pass_next, x, y + 300, w, 300, r, r, r, 40);
-			} else {
-				drawTextC(dialog_pass_info3, x, y + 60, w, 60, 204, 204, 204, 40);
-				drawTextC(dialog_pass_info4, x, y + 120, w, 60, 204, 204, 204, 40);
+			} else if (game.floor == -2) { // 第二层
+				drawTextC(dialog_pass_info_levelup, x, y + 100, w, 60, 204, 204, 204, 40);
+				drawTextC(dialog_pass_info_nextlevel_3, x, y + 160, w, 60, 204, 204, 204, 40);
+				drawTextC(dialog_pass_next, x, y + 300, w, 300, r, r, r, 40);
+			} else { // 最后一层
+				drawTextC(dialog_pass_info_allwin, x, y + 100, w, 60, 204, 204, 204, 40);
+				drawTextC(dialog_pass_info_found, x, y + 160, w, 60, 204, 204, 204, 40);
 				drawTextC(dialog_pass_end, x, y + 300, w, 300, r, r, r, 40);
 			}
 		}
 	} else if (tile) {
-		if (tile->potionsTextT > 0) {  // 治疗提示
+		if (tile->type == RoomTile_Potions && tile->potionsTextT > 0) {  // 治疗提示
 			uint16 c = getShiningColor(0xffaaaaaa, 0xff000000, tile->potionsTextT, 0.5) % 256;
 			int b = 3;
 			drawRect(0, 100, SCRW, 60, 0xff333333);
 			drawRect(0, 100 + b, SCRW, 60 - b * 2, 0xffaaaaaa);
 			drawTextC(toast_heal, 0, 100, SCRW, 60, c, c, c, 40);
-		} else if (tile->boxVisible) {	// 宝箱弹窗
+		} else if (tile->type == RoomTile_Treasure && tile->boxVisible) {	// 宝箱弹窗
 			int w = 800, h = 600;
 			int x = SCRW / 2 - w / 2;
 			int y = SCRH / 2 - h / 2;
