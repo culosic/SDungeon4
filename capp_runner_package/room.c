@@ -227,11 +227,11 @@ static void roomColls(Room *room, float x, float y, float r, int isMainRole) {
 static void roomUpdateColl(Room *room, Role *role, double t) {
 	Map *map = room->map;
 	RoleData *data = role->data;
+	int healing = false;
 	roomColls(room, role->x, role->y, data->r, role == game.mainRole);
 	for (int i = 0; i < room_colls_count; i++) {
 		RoomTile *tile = room_colls_tiles[i];
 		Room *linkRoom = tile->linkRoom;
-		map->activeTile = NULL;
 		switch (tile->type) {
 		case RoomTile_Door:
 			// 切换房间
@@ -296,6 +296,7 @@ static void roomUpdateColl(Room *room, Role *role, double t) {
 			break;
 		case RoomTile_Potions:
 			map->activeTile = tile;
+			healing = true;
 			if (role->hp < role->hps && tile->potionsUsedP < 1) {
 				if (tile->potionsT < 0.25) {
 					tile->potionsT += t;
@@ -327,6 +328,10 @@ static void roomUpdateColl(Room *room, Role *role, double t) {
 		default:
 			break;
 		}
+	}
+	if (!healing && map->activeTile != NULL && map->activeTile->type == RoomTile_Potions) {
+		// patch 避免出房间之后还显示治疗。
+		map->activeTile = NULL;
 	}
 }
 

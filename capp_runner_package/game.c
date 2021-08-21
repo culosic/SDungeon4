@@ -2,6 +2,7 @@
 
 #include <android.h>
 #include <base.h>
+#include <ex_math.h>
 #include <exb.h>
 #include <graphics.h>
 #include <math.h>
@@ -154,11 +155,24 @@ static void gameUserControll(double t) {
 	}
 	if (apad->active) {
 		Role *cloestEnemy = roomGetCloestEnemy(role->room, role);
-		double angle = apad->dragged
-						   ? apad->angle
-					   : cloestEnemy
-						   ? getAngle(role->x, role->y, cloestEnemy->x, cloestEnemy->y)
-						   : role->faceAngle;
+		double angle = 0;
+		if (apad->dragged) {  // 摇杆攻击
+			angle = apad->angle;
+		} else if (cloestEnemy) {  // 自动瞄准
+			float ex = cloestEnemy->x;
+			float ey = cloestEnemy->y;
+			int preAttack = 1;	// 默认开启预瞄
+			if (preAttack) {
+				if (cloestEnemy->moving && fabs(cloestEnemy->v) < 300 && cloestEnemy->v < cloestEnemy->v0 * 2) {
+					double t = getLineSize(role->x, role->y, ex, ey) / role->boll->data->v;
+					ex += cloestEnemy->vx * t;
+					ey += cloestEnemy->vy * t;
+				}
+			}
+			angle = getAngle(role->x, role->y, ex, ey);
+		} else {
+			angle = role->faceAngle;
+		}
 		roleAttack(role, angle);
 	} else {
 		roleStopAttack(role);

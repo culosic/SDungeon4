@@ -387,8 +387,8 @@ static void mapUpdatePassOrFail(Map *map, double t) {
 			game.passed = true;
 			game.userControll = false;
 			// 过关后提升主角属性。
-			game.mainRole->hp += 10;
-			game.mainRole->hps += 10;
+			game.mainRole->hp += 14;
+			game.mainRole->hps += 14;
 			game.mainRole->atk++;
 			game.mainRole->boll->data->r += 2;
 			game.mainRole->atkv = game.mainRole->boll->data->atkv = fmax(0.1, game.mainRole->boll->data->atkv - 0.05);

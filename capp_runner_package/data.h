@@ -10,7 +10,7 @@
 
 char *init_screen_caption = "S地牢";
 char *init_screen_text1 = "传承";
-char *init_screen_author = "火烧云作品(v0.4.5 alpha)";
+char *init_screen_author = "火烧云作品(v0.4.5)";
 char *init_screen_start = "开始游戏";
 char *init_screen_exit = "退出";
 
@@ -173,12 +173,12 @@ struct _RoleData role_longxin = {
 	0xff0288d1,
 	0xff01579b,
 
-	14,
+	16,
 	2,
 	320,
 };
 
-float longxin_level_hp[3] = {8, 15, 22}; // 生命值、成长型数值
+float longxin_level_hp[3] = {10, 16, 22}; // 生命值、成长型数值
 float longxin_level_atk[3] = {1, 2, 3};
 float longxin_level_atkv[3] = {0.1, 0.06, 0.04};
 double longxin_level_v[3] = {50, 50, 50};
